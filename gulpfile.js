@@ -13,7 +13,8 @@ const gulp = require("gulp"),
 
 const pdot = (s) => `.${s}`;
 
-const typejson = ["json", "mcmeta"].map(pdot),
+const typeignore = ["bbmodel"].map(pdot),
+  typejson = ["json", "mcmeta"].map(pdot),
   typeimage = ["png"].map(pdot);
 
 const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
@@ -35,7 +36,7 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
   addDist = (list, dest) =>
     list.map((src) =>
       gulp
-        .src(src)
+        .src([src, ...typeignore.map((s) => `!${src}${s}`)])
         .on("data", function (file) {
           if (typejson.includes(file.extname)) {
             file.contents = minJSON(file.contents);
