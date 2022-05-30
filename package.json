@@ -1,7 +1,7 @@
 {
-  "name": "fuhospray",
+  "name": "fuhopack",
   "version": "1.0.0",
-  "description": "",
+  "description": "Bundle your packs ",
   "main": "gulpfile.js",
   "directories": {
     "lib": "lib"
@@ -9,12 +9,26 @@
   "scripts": {
     "build": "gulp"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "hUwUtao",
+  "license": "MIT",
   "dependencies": {
     "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "sharp": "^0.30.4"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Team-Fuho/resourcepack.git"
+  },
+  "keywords": [
+    "minecraft",
+    "resourcepack",
+    "bundler"
+  ],
+  "bugs": {
+    "url": "https://github.com/Team-Fuho/resourcepack/issues"
+  },
+  "homepage": "https://github.com/Team-Fuho/resourcepack#readme"
 }
