@@ -1,0 +1,17 @@
+{
+  "parent": "item/spray/base",
+  "display": {
+    "fixed": {
+      "scale": [
+        2,
+        2,
+        2
+      ],
+      "rotation": [
+        0,
+        180,
+        0
+      ]
+    }
+  }
+}

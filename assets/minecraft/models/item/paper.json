@@ -1,0 +1,44 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/paper"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 101
+      },
+      "model": "item/spray/fast"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 110001
+      },
+      "model": "item/1x1/anya"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 220001
+      },
+      "model": "item/2x2/anya"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 110002
+      },
+      "model": "item/1x1/quochuy"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 220002
+      },
+      "model": "item/2x2/quochuy"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 330001
+      },
+      "model": "item/fast/anya"
+    }
+  ]
+}

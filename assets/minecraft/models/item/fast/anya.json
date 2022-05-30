@@ -1,0 +1,20 @@
+{
+  "parent": "item/spray/fast",
+  "textures": {
+    "0": "item/sprays/anya"
+  },
+  "display": {
+    "fixed": {
+      "translation": [
+        0,
+        0,
+        -0.01
+      ],
+      "scale": [
+        4,
+        4,
+        4
+      ]
+    }
+  }
+}

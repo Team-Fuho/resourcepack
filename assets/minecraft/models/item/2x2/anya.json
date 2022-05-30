@@ -1,0 +1,6 @@
+{
+  "parent": "item/spray/2x2",
+  "textures": {
+    "layer0": "item/sprays/anya"
+  }
+}
