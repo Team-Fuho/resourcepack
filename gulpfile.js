@@ -48,6 +48,6 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
       .pipe(zip("final.zip"))
       .pipe(gulp.dest("."));
 
-task("default", function (cb) {
-  bundling(["./pack.mcmeta", "./pack.png", "./assets/**/*", "./assets/*"]);
+task("default", function () {
+  return bundling(["./pack.mcmeta", "./pack.png", "./assets/**/*", "./assets/*"]);
 });
