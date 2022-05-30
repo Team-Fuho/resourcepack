@@ -12,7 +12,6 @@
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
-    "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
     "sharp": "^0.30.4"

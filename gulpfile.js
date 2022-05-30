@@ -5,9 +5,8 @@
 /*/==========================================================/*/
 
 const gulp = require("gulp"),
-  { task, series } = require("gulp"),
+  { task } = require("gulp"),
   zip = require("gulp-zip"),
-  del = require("del"),
   sharp = require("sharp"),
   ReadableStream = require("stream").Readable;
 
@@ -33,39 +32,22 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
           });
       },
     }),
-  addDist = (list, dest) =>
-    list.map((src) =>
-      gulp
-        .src([src, ...typeignore.map((s) => `!${src}${s}`)])
-        .on("data", function (file) {
-          if (typejson.includes(file.extname)) {
-            file.contents = minJSON(file.contents);
-          } else if (typeimage.includes(file.extname)) {
-            file.contents = optimizePNG(file.contents);
-          }
-        })
-        .pipe(gulp.dest(dest))
-    ),
-  addZip = (list) =>
-    list.map((src) =>
-      gulp.src(src).pipe(zip("final.zip")).pipe(gulp.dest("./"))
-    );
-
-task("clean", function (cb) {
-  del.sync(["dist"]);
-  cb();
-});
-task("optimizing", function (cb) {
-  addDist(["./pack.mcmeta"], "./dist/");
-  addDist(["./assets/**/*", "./assets/*"], "./dist/assets");
-  cb();
-});
-
-task("pack", function (cb) {
-  addZip(["./dist/*", "./dist/**"]);
-  cb();
-});
+  bundling = (list) =>
+    gulp
+      .src([...list, ...typeignore.map((s) => `!./assets/**/*${s}`)])
+      .on("data", function (file) {
+        if (typejson.includes(file.extname)) {
+          file.contents = minJSON(file.contents);
+        } else if (typeimage.includes(file.extname)) {
+          file.contents = optimizePNG(file.contents);
+        }
+      })
+      .on("data", function (file) {
+        console.log(file.path);
+      })
+      .pipe(zip("final.zip"))
+      .pipe(gulp.dest("."));
 
 task("default", function (cb) {
-  series("clean", "optimizing", "pack")(cb);
+  bundling(["./pack.mcmeta", "./pack.png", "./assets/**/*", "./assets/*"]);
 });
