@@ -32,7 +32,7 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
           });
       },
     }),
-  bundling = (list) =>
+  bundling = (list, dist) =>
     gulp
       .src([...list, ...typeignore.map((s) => `!./assets/**/*${s}`)])
       .on("data", function (file) {
@@ -45,9 +45,13 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
       .on("data", function (file) {
         console.log(file.path);
       })
-      .pipe(zip("final.zip"))
-      .pipe(gulp.dest("."));
+      // .pipe(zip("final.zip"))
+      .pipe(gulp.dest("dist/" + dist)),
+    zipping = () => gulp.src(["dist/**/*"]).pipe(zip("final.zip")).pipe(gulp.dest("."));
 
-task("default", function () {
-  return bundling(["./pack.mcmeta", "./pack.png", "./assets/**/*", "./assets/*"]);
+task("default", function (cb) {
+  bundling(["./pack.mcmeta", "./pack.png"], "./");
+  bundling(["./assets/**/*"], "./assets");
+  zipping();
+  return cb();
 });
