@@ -1,0 +1,6 @@
+{
+    "parent": "fuho:2",
+    "textures": {
+        "layer0": "sprays:quochuy"
+    }
+}

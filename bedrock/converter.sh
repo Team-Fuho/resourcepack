@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-: ${1?'Please specify an input resource pack in the same directory as the script (e.g. ./converter.sh MyResourcePack.zip)'}
+#! /bin/bash
+# : ${1?'Please specify an input resource pack in the same directory as the script (e.g. ./converter.sh MyResourcePack.zip)'}
 
 # define color placeholders
 C_RED='\e[31m'
@@ -50,31 +50,31 @@ user_input () {
 
 # ensure input pack exists
 if ! test -f "${1}"; then
-   status_message error "Input resource pack ${1} is not in this directory"
+   status_message error "${1} not exist"
    exit 1
 else
-  status_message process "Input file ${1} detected"
+  status_message process "Input ${1}"
 fi
 
-printf '\e[1;31m%-6s\e[m\n' "
-███████████████████████████████████████████████████████████████████████████████
-████████████████████████ # <!> # W A R N I N G # <!> # ████████████████████████
-███████████████████████████████████████████████████████████████████████████████
-███ This script has been provided as is. If your resource pack does not     ███
-███ entirely conform the vanilla resource specification, including but not  ███
-███ limited to, missing textures, improper parenting, improperly defined    ███
-███ predicates, and malformed JSON files, among other problems, there is a  ███
-███ strong possibility this script will fail. Please remedy any potential   ███
-███ resource pack formatting errors before attempting to make use of this   ███
-███ converter. You have been warned.                                        ███
-███████████████████████████████████████████████████████████████████████████████
-███████████████████████████████████████████████████████████████████████████████
-███████████████████████████████████████████████████████████████████████████████
-"
+# printf '\e[1;31m%-6s\e[m\n' "
+# ███████████████████████████████████████████████████████████████████████████████
+# ████████████████████████ # <!> # W A R N I N G # <!> # ████████████████████████
+# ███████████████████████████████████████████████████████████████████████████████
+# ███ This script has been provided as is. If your resource pack does not     ███
+# ███ entirely conform the vanilla resource specification, including but not  ███
+# ███ limited to, missing textures, improper parenting, improperly defined    ███
+# ███ predicates, and malformed JSON files, among other problems, there is a  ███
+# ███ strong possibility this script will fail. Please remedy any potential   ███
+# ███ resource pack formatting errors before attempting to make use of this   ███
+# ███ converter. You have been warned.                                        ███
+# ███████████████████████████████████████████████████████████████████████████████
+# ███████████████████████████████████████████████████████████████████████████████
+# ███████████████████████████████████████████████████████████████████████████████
+# "
 
-read -p $'\e[37mTo acknowledge and continue, press enter. To exit, press Ctrl+C.:\e[0m
+# read -p $'\e[37mTo acknowledge and continue, press enter. To exit, press Ctrl+C.:\e[0m
 
-'
+# '
 
 # ensure we have all the required dependencies
 dependency_check "jq-1.6" "https://stedolan.github.io/jq/download/" "jq --version" "1.6"
@@ -836,8 +836,8 @@ if test -f ${merge_input}; then
 fi
 
 # cleanup
-status_message critical "Deleting scratch files"
-rm -rf assets && rm -f pack.mcmeta && rm -f pack.png && rm -f parents.json && rm -f all.csv && rm -f pa.csv && rm -f README.md && rm -f README.txt && rm -f *.temp && rm -f spritesheet.json
+# status_message critical "Deleting scratch files"
+# rm -rf assets && rm -f pack.mcmeta && rm -f pack.png && rm -f parents.json && rm -f all.csv && rm -f pa.csv && rm -f README.md && rm -f README.txt && rm -f *.temp && rm -f spritesheet.json
 
 status_message critical "Deleting unused entries from config"
 jq 'map_values(del(.path, .element_parent, .parent, .geyserID))' config.json | sponge config.json

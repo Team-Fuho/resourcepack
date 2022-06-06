@@ -1,5 +1,5 @@
 {
-  "parent": "item/spray/base",
+  "parent": "fuho:b",
   "display": {
     "fixed": {
       "scale": [

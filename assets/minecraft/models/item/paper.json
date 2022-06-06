@@ -1,44 +1,32 @@
 {
-  "parent": "item/generated",
+  "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "item/paper"
+    "layer0": "minecraft:item/paper"
   },
   "overrides": [
     {
       "predicate": {
+        "custom_model_data": 100
+      },
+      "model": "fuho:1"
+    },
+    {
+      "predicate": {
         "custom_model_data": 101
       },
-      "model": "item/spray/fast"
+      "model": "fuho:f"
     },
     {
       "predicate": {
-        "custom_model_data": 110001
+        "custom_model_data": 1000
       },
-      "model": "item/1x1/anya"
+      "model": "sprays:1000.anya.fast"
     },
     {
       "predicate": {
-        "custom_model_data": 220001
+        "custom_model_data": 1001
       },
-      "model": "item/2x2/anya"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 110002
-      },
-      "model": "item/1x1/quochuy"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 220002
-      },
-      "model": "item/2x2/quochuy"
-    },
-    {
-      "predicate": {
-        "custom_model_data": 330001
-      },
-      "model": "item/fast/anya"
+      "model": "sprays:1001.quochuy.2x2"
     }
   ]
 }

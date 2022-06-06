@@ -6,7 +6,10 @@
 
 const gulp = require("gulp"),
   { task } = require("gulp"),
+  { series } = require("async"),
+  argv = require("yargs").argv,
   zip = require("gulp-zip"),
+  del = require("del"),
   sharp = require("sharp"),
   ReadableStream = require("stream").Readable;
 
@@ -43,15 +46,18 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
         }
       })
       .on("data", function (file) {
-        console.log(file.path);
+        console.log("\x1b[32m+\x1b[0m", file.path);
       })
-      // .pipe(zip("final.zip"))
       .pipe(gulp.dest("dist/" + dist)),
-    zipping = () => gulp.src(["dist/**/*"]).pipe(zip("final.zip")).pipe(gulp.dest("."));
+  zipping = () =>
+    gulp.src(["dist/**/*"]).pipe(zip("final.zip")).pipe(gulp.dest("."));
 
-task("default", function (cb) {
-  bundling(["./pack.mcmeta", "./pack.png"], "./");
-  bundling(["./assets/**/*"], "./assets");
-  zipping();
-  return cb();
-});
+task("default", (end) =>
+  series([
+    (cb) => bundling(["./pack.mcmeta", "./pack.png"], "./").on("end", cb),
+    (cb) => bundling(["./assets/**/*"], "./assets").on("end", cb),
+    (cb) => zipping().on("end", cb),
+    (cb) => (!argv.noClean ? del(["dist/**/*"]).then(() => cb()) : cb()),
+    (cb) => cb() && end(),
+  ])
+);

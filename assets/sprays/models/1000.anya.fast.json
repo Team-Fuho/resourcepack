@@ -1,7 +1,7 @@
 {
-  "parent": "item/spray/fast",
+  "parent": "fuho:f",
   "textures": {
-    "0": "item/sprays/anya"
+    "0": "sprays:anya"
   },
   "display": {
     "fixed": {
