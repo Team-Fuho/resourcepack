@@ -27,6 +27,12 @@
         "custom_model_data": 1001
       },
       "model": "sprays:1001.quochuy.2x2"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 1002
+      },
+      "model": "sprays:1002.suanha.fast"
     }
   ]
 }

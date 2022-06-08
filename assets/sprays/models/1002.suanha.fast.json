@@ -1,0 +1,20 @@
+{
+  "parent": "fuho:f",
+  "textures": {
+    "0": "sprays:suanha"
+  },
+  "display": {
+    "fixed": {
+      "translation": [
+        0,
+        0,
+        -0.01
+      ],
+      "scale": [
+        2.5,
+        2.5,
+        1
+      ]
+    }
+  }
+}

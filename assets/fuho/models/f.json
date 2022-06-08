@@ -1,8 +1,8 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"0": "sprays:null",
-		"particle": "sprays:null"
+		"0": "fuho:null",
+		"particle": "fuho:null"
 	},
 	"elements": [
 		{
