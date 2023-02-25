@@ -1,13 +1,15 @@
 {
   "name": "fuhopack",
   "version": "1.0.0",
-  "description": "Bundle your packs ",
+  "description": "Bundle your packs",
   "main": "gulpfile.js",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "build": "gulp"
+    "build": "gulp",
+    "decals": "node decals",
+    "clean": "rm assets/decals/*/* -rvf"
   },
   "author": "hUwUtao",
   "license": "MIT",

@@ -2,6 +2,11 @@ const fs = require("fs"),
   path = require("path"),
   crc32 = require("crc/crc32");
 
+// function crc32() {
+//   console.log(...arguments);
+//   return hcrc32(...arguments);
+// }
+
 // ["models", "textures"].map((f) =>
 //   fs.rm(
 //     path.join(__dirname, "assets/decals/", f),
@@ -27,7 +32,54 @@ function lfs(...a) {
 }
 
 const textures = {},
-  models = {};
+  models = {},
+  explorable = `
+<h1>Team Fuho's decal explorer</h1>  
+<sub>Tech tip: Click twice to select all</sub>
+<style>
+body{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.expl_gr{
+display: flex;
+flex-direction: row;
+align-items: flex-start;
+flex-wrap: wrap;
+justify-content: center;
+}
+.expl_gr>*{
+margin:1em;
+}
+div.expl_bg{
+width:384px;
+height:384px;
+border: solid;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: #eee;
+background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black),
+linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
+background-size: 256px 256px;
+background-position: 0 0, 128px 128px;
+}
+.expl_i{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+.expl_i>*{
+margin-bottom: 3px;
+}
+input{
+width: 100%;
+}
+img{--s:1; width: calc(var(--s) * 128px);height: calc(var(--s) * 128px);transform: translate(calc(var(--x) * 128px), calc(var(--y) * 128px));}
+</style>
+<div class=expl_gr>
+`.split("\n");
 
 const df = fs
   .readFileSync("decals.txt") //
@@ -43,11 +95,11 @@ function sign(n) {
 }
 
 function ha(t) {
-  return (n) => {
+  return (n, s) => {
     return (
       (t ? textures : models)[n] ||
       ((t ? textures : models)[n] = crc32(
-        `${n} ${t ? sign(n) : JSON.stringify(n)}`
+        `${n} ${t ? sign(n) : JSON.stringify([n, s])}`
       )) ||
       (t ? textures : models)[n]
     );
@@ -64,17 +116,21 @@ const tex = ha(!0),
 
 function add(i, n, m, x, y, s) {
   m = mode[m];
-  const t = mod(n);
-  const mn = i + "." + mod(n, [n, m, x, y, s]);
-  const mp = vd(path.join(__dirname, "assets/decals/models/", `${mn}.json`));
+  const mn = i + "." + mod(n, [n, m, x, y, s]),
+    mp = vd(path.join(__dirname, "assets/decals/models/", `${mn}.json`)),
+    dt = tex(path.join(__dirname, "decals/", `${n}.png`));
+  explorable.push(
+    `<div class=expl_i>
+    <b>${i}</b> <input value="minecraft:give @p paper{CustomModelData:${i}}" readonly><br>
+    <div class=expl_bg><img src=assets/decals/textures/${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
+    </div>`
+  );
   fs.writeFile(
     mp,
     JSON.stringify({
       parent: "fuho:" + m,
       textures: {
-        [m == mode.default ? "layer0" : "0"]: `decals:${tex(
-          path.join(__dirname, "decals/", `${n}.png`)
-        )}`,
+        [m == mode.default ? "layer0" : "0"]: `decals:${dt}`,
       },
       display: {
         fixed: {
@@ -105,8 +161,13 @@ fs.writeFile(
     },
     overrides: df.map((s) => s.split(" ")).map((i) => add(...i)),
   }),
-  () =>
-    lfs(...arguments) &&
+  () => (
+    lfs(...arguments),
+    fs.writeFile(
+      "explore.html",
+      [...explorable, "</div>"].join("\n"),
+      () => {}
+    ),
     Object.keys(textures).map((k) => {
       const dn = textures[k];
       fs.copyFile(
@@ -115,4 +176,5 @@ fs.writeFile(
         lfs(`* ${k}`)
       );
     })
+  )
 );
