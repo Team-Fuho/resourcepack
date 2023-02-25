@@ -121,7 +121,7 @@ function add(i, n, m, x, y, s) {
     dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
-    <b>${i}</b> <input value="minecraft:give @p paper{CustomModelData:${i}}" readonly>
+    <b>${i}</b> <input value="give @p paper{CustomModelData:${i}}" readonly>
     <div class=expl_bg><img src=assets/decals/textures/${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
     </div>`
   );
