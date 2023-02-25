@@ -36,6 +36,7 @@ const textures = {},
   explorable = `
 <h1>Team Fuho's decal explorer</h1>  
 <sub>Tech tip: Click twice to select all</sub>
+Invisible item_frame: <input value="give @p item_frame{EntityTag:{Invisible:1}}" readonly>
 <style>
 body{
 display: flex;
@@ -115,14 +116,18 @@ const tex = ha(!0),
   mod = ha(!1);
 
 function add(i, n, m, x, y, s) {
+  i = parseInt(i);
   m = mode[m];
-  const mn = i + "." + mod(n, [n, m, x, y, s]),
+  x = parseFloat(x);
+  y = parseFloat(y);
+  s = parseFloat(s);
+  const mn = "m" + i + "_" + mod(n, [n, m, x, y, s]),
     mp = vd(path.join(__dirname, "assets/decals/models/", `${mn}.json`)),
     dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
     <b>${i}</b> <input value="give @p paper{CustomModelData:${i}}" readonly>
-    <div class=expl_bg><img src=assets/decals/textures/${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
+    <div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
     </div>`
   );
   fs.writeFile(
@@ -130,12 +135,13 @@ function add(i, n, m, x, y, s) {
     JSON.stringify({
       parent: "fuho:" + m,
       textures: {
-        [m == mode.default ? "layer0" : "0"]: `decals:${dt}`,
+        [m == mode.default ? "layer0" : "0"]: `decals:t${dt}`,
       },
       display: {
         fixed: {
           translation: [x, y, -0.01],
           scale: Array(3).fill(s * 2),
+          rotation: m == "d" ? [0, 180, 0] : undefined,
         },
       },
     }),
@@ -172,7 +178,7 @@ fs.writeFile(
       const dn = textures[k];
       fs.copyFile(
         k,
-        vd(path.join(__dirname, "assets/decals/textures/", `${dn}.png`)),
+        vd(path.join(__dirname, "assets/decals/textures/", `t${dn}.png`)),
         lfs(`* ${k}`)
       );
     })
