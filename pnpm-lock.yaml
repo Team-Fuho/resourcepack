@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   async: ^3.2.3
+  crc: ^4.3.2
   del: ^6.1.1
   gulp: ^4.0.2
   gulp-zip: ^5.1.0
@@ -10,6 +11,7 @@ specifiers:
 
 dependencies:
   async: 3.2.3
+  crc: 4.3.2
   del: 6.1.1
   gulp: 4.0.2
   gulp-zip: 5.1.0_gulp@4.0.2
@@ -532,6 +534,16 @@ packages:
 
   /core-util-is/1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+    dev: false
+
+  /crc/4.3.2:
+    resolution: {integrity: sha512-uGDHf4KLLh2zsHa8D8hIQ1H/HtFQhyHrc0uhHBcoKGol/Xnb+MPYfUMw7cvON6ze/GUESTudKayDcJC5HnJv1A==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      buffer: '>=6.0.3'
+    peerDependenciesMeta:
+      buffer:
+        optional: true
     dev: false
 
   /d/1.0.1:

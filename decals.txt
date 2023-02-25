@@ -1,0 +1,12 @@
+# DecalFile
+# Each line: <id> <mode> <x> <y> <scale>
+# id: The model export to CustomModelData nbt. interger
+# mode: fast, default
+#       fast: 1 cube, 1 face, disappear when origin out of viewport
+#       default: w*h*6 face. lag expected. behave like normal Minecraft 2d items. alpha image result crispy edge!
+# x, y: surface offset. float
+# scale: in block. float
+
+10000 anya fast 0 0 4
+10001 quochuy default 0 0 4
+10002 suanha fast 0 0 2

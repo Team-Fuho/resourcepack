@@ -147,3 +147,4 @@ dist
 final.zip
 bedrock/**
 !bedrock/converter.sh
+assets/decals
