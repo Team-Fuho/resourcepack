@@ -7,10 +7,10 @@
 const gulp = require("gulp"),
   { task } = require("gulp"),
   { series } = require("async"),
-  argv = require("yargs").argv,
   zip = require("gulp-zip"),
   del = require("del"),
   sharp = require("sharp"),
+  { readdirSync } = require("fs"),
   ReadableStream = require("stream").Readable;
 
 const pdot = (s) => `.${s}`;
@@ -35,9 +35,11 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
           });
       },
     }),
-  bundling = (list, dist) =>
+  dist = (list, dist, base) =>
     gulp
-      .src([...list, ...typeignore.map((s) => `!./assets/**/*${s}`)])
+      .src([...list, ...typeignore.map((s) => `!./assets/**/*${s}`)], {
+        base,
+      })
       .on("data", function (file) {
         if (typejson.includes(file.extname)) {
           file.contents = minJSON(file.contents);
@@ -48,16 +50,42 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
       .on("data", function (file) {
         console.log("\x1b[32m+\x1b[0m", file.path);
       })
-      .pipe(gulp.dest("dist/" + dist)),
-  zipping = () =>
-    gulp.src(["dist/**/*"]).pipe(zip("final.zip")).pipe(gulp.dest("."));
+      .pipe(gulp.dest("./dist/pack/" + dist)),
+  zipping = (fnm) =>
+    gulp.src(["dist/**/*"]).pipe(zip(fnm)).pipe(gulp.dest(".")),
+  patch = (cb, list, fnm) =>
+    series(
+      [
+        (cb) => dist(["./pack.mcmeta", "./pack.png"], "./").on("end", cb),
+        (cb) =>
+          series(
+            //
+            list.map((l) => (cb) => dist(...l).on("end", cb)),
+            cb
+          ),
+        (cb) => zipping(`./dist/${fnm}`).on("end", cb),
+        (cb) =>
+          !process.env.noclean
+            ? del(["./dist/pack/**/*"]).then(() => cb())
+            : cb(),
+        (cb) => cb() && end(),
+      ],
+      cb
+    );
 
 task("default", (end) =>
-  series([
-    (cb) => bundling(["./pack.mcmeta", "./pack.png"], "./").on("end", cb),
-    (cb) => bundling(["./assets/**/*"], "./assets").on("end", cb),
-    (cb) => zipping().on("end", cb),
-    (cb) => (!argv.noClean ? del(["dist/**/*"]).then(() => cb()) : cb()),
-    (cb) => cb() && end(),
-  ])
+  patch(
+    end,
+    [
+      [["./assets/**/*"], "./", "./"],
+      ...readdirSync("./patches")
+        .filter((i) => !i.startsWith("."))
+        .map((patch) => [
+          [`./patches/${patch}/**/*`],
+          "./",
+          `./patches/${patch}`,
+        ]),
+    ],
+    "tfh.fullpatch.zip"
+  )
 );

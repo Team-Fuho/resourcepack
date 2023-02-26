@@ -1,0 +1,26 @@
+Vanilla Tweaks Resource Pack
+Version: 1.16
+Packs:
+	PathSides
+	SnowSides
+	JappaCompass
+	JappaClock
+	StonecutterFix
+	NicerFastLeaves
+	PingColorIndicator
+	BorderlessStainedGlass
+	NoVignette
+	CleanGlass
+	VisualHoney
+	VariatedStone
+	VariatedEndStone
+	VariatedUnpolishedStones
+	VariatedCobblestone
+	VariatedBricks
+	VariatedGravel
+	VariatedBookshelves+ConnectedBookshelves
+	ConnectedPolishedStones
+	ConnectedLapisBlocks
+	ConnectedIronBlocks
+	FancySunflowers
+	117Ores

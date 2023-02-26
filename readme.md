@@ -3,8 +3,8 @@
 ## Roadmap
 - [x] Bootstrap decals
 - [x] DecalScript, easy, ease and clean
-- [-] Pack n patches selector (Working)
-- [-] Props
+- [x] Pack n patches selector (Working)
+- [ ] Props
 
 ## How does it work?
 This repo, can be cloned directly into `.minecraft/resourcepack` with fully functional features. However, you 

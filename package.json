@@ -7,8 +7,8 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "gulp",
-    "decals": "node decals",
+    "build": "pnpm clean && pnpm decals && gulp",
+    "decals": "make && node decals",
     "clean": "rm assets/decals/*/* -rvf"
   },
   "author": "hUwUtao",
@@ -19,8 +19,7 @@
     "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
-    "sharp": "^0.30.4",
-    "yargs": "^17.5.1"
+    "sharp": "^0.30.4"
   },
   "repository": {
     "type": "git",
