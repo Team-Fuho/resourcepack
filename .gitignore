@@ -149,3 +149,5 @@ bedrock/**
 assets/decals
 assets/minecraft/models/item/paper.json
 explore.html
+*.min.js
+*.exe

@@ -33,5 +33,9 @@
   "bugs": {
     "url": "https://github.com/Team-Fuho/resourcepack/issues"
   },
-  "homepage": "https://github.com/Team-Fuho/resourcepack#readme"
+  "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
+  "devDependencies": {
+    "esbuild": "^0.17.18",
+    "nexe": "4.0.0-rc.2"
+  }
 }
