@@ -2,6 +2,13 @@ const fs = require("fs"),
   path = require("path"),
   crc32 = require("crc/crc32");
 
+[
+  //
+  "assets/decals",
+  "assets/decals/models",
+  "assets/decals/textures",
+].map((d) => fs.mkdirSync(d, { recursive: true }));
+
 // function crc32() {
 //   console.log(...arguments);
 //   return hcrc32(...arguments);
