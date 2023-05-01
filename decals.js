@@ -3,91 +3,32 @@ const fs = require("fs"),
   crc32 = require("crc/crc32");
 
 [
-  //
+  "dist", //
   "assets/decals",
   "assets/decals/models",
   "assets/decals/textures",
 ].map((d) => fs.mkdirSync(d, { recursive: true }));
 
-// function crc32() {
-//   console.log(...arguments);
-//   return hcrc32(...arguments);
-// }
-
-// ["models", "textures"].map((f) =>
-//   fs.rm(
-//     path.join(__dirname, "assets/decals/", f),
-//     {
-//       recursive: true,
-//       force: true,
-//     },
-//     () => {
-//       fs.mkdirSync(path.join(__dirname, "assets/decals/", f));
-//     }
-//   )
-// );
 console.log(__dirname);
-function vd(p) {
-  console.log(p);
-  return p;
-}
 
-function lfs(...a) {
-  return (...b) => {
-    console.log(...a, ...b);
-  };
-}
+const vd = (a) => (console.log(a), a),
+  lfs =
+    (...a) =>
+    (...b) =>
+      a[0] && console.log(...a, ...b);
 
 const textures = {},
   models = {},
-  explorable = `
-<h1>Team Fuho's decal explorer</h1>  
+  explorable =
+    //
+    [
+      `<h1>Team Fuho's decal explorer</h1>  
 <sub>Tech tip: Click twice to select all</sub>
 Invisible item_frame: <input value="give @p item_frame{EntityTag:{Invisible:1}}" readonly>
-<style>
-body{
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-.expl_gr{
-display: flex;
-flex-direction: row;
-align-items: flex-start;
-flex-wrap: wrap;
-justify-content: center;
-}
-.expl_gr>*{
-margin:1em;
-}
-div.expl_bg{
-width:384px;
-height:384px;
-border: solid;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: #eee;
-background-image: linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black),
-linear-gradient(45deg, black 25%, transparent 25%, transparent 75%, black 75%, black);
-background-size: 256px 256px;
-background-position: 0 0, 128px 128px;
-}
-.expl_i{
-display: flex;
-flex-direction: column;
-align-items: center;
-}
-.expl_i>*{
-margin-bottom: 3px;
-}
-input{
-width: 100%;
-}
-img{--s:1; width: calc(var(--s) * 128px);height: calc(var(--s) * 128px);transform: translate(calc(var(--x) * 128px), calc(var(--y) * 128px));}
-</style>
-<div class=expl_gr>
-`.split("\n");
+<link rel="stylesheet" type="text/css" href="explore.css" /> 
+<div class=expl_gr>` //
+        .replace("\n"),
+    ];
 
 const df = fs
   .readFileSync("decals.txt") //
@@ -102,17 +43,12 @@ function sign(n) {
   return `${mtime} ${size}`;
 }
 
-function ha(t) {
-  return (n, s) => {
-    return (
-      (t ? textures : models)[n] ||
-      ((t ? textures : models)[n] = crc32(
-        `${n} ${t ? sign(n) : JSON.stringify([n, s])}`
-      )) ||
-      (t ? textures : models)[n]
-    );
-  };
-}
+const ha = (t) => (n, s) =>
+  (t ? textures : models)[n] ||
+  ((t ? textures : models)[n] = crc32(
+    `${n} ${t ? sign(n) : [n, s||[]].flat().join()}`
+  )) ||
+  (t ? textures : models)[n];
 
 const mode = {
   fast: "f",
@@ -124,7 +60,7 @@ const tex = ha(!0),
 
 function add(i, n, m, x, y, s) {
   i = parseInt(i);
-  m = mode[m];
+  m = mode[m] || mode["fast"];
   x = parseFloat(x);
   y = parseFloat(y);
   s = parseFloat(s);
@@ -133,9 +69,9 @@ function add(i, n, m, x, y, s) {
     dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
-    <b>${i}</b> <input value="give @p paper{CustomModelData:${i}}" readonly>
-    <div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
-    </div>`
+<b>${i}</b> <input value="give @p paper{CustomModelData:${i}}" readonly>
+<div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
+</div>`
   );
   fs.writeFile(
     mp,

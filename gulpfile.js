@@ -63,7 +63,8 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
   patch = (cb, list, outname, patch) =>
     series(
       [
-        (cb) => dist(["./pack.mcmeta", "./pack.png"], "./").on("end", cb),
+        (cb) =>
+          dist(["./pack.mcmeta", "./pack.png", "LICENSE"], "./").on("end", cb),
         (cb) =>
           series(
             //

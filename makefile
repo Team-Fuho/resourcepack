@@ -15,6 +15,6 @@ patch:
 dev:
 	pnpm gulp pdev
 mkdbg:
-	esbuild decals.js --platform=node --bundle --minify > decals.min.js
-	nexe decals.min.js --bundle -t 12.16.3 --cwd .
-	rm decals.min.js
+	mkdir -p dist
+	esbuild decals.js --platform=node --target=node12.16 --bundle --minify --charset=utf8 --format=cjs > decals.min.js
+	nexe decals.min.js -t 12.16.3 --cwd . -o decals.exe
