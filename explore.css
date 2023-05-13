@@ -37,6 +37,7 @@ body {
   background-position: 0 0, 128px 128px;
   transition: all 64ms ease-in-out;
   transform: none;
+  transform-style: preserve-3d;
 }
 .expl_bg:hover {
   transform: perspective(50mm) rotateY(10deg);
