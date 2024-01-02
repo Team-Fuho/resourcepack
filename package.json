@@ -7,7 +7,7 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "pnpm clean && pnpm decals && gulp",
+    "build": "pnpm clean && pnpm decals && gulp patch && openssl sha1 ./dist/tfh.base.zip > ./dist/master.sha1",
     "decals": "make && node decals",
     "clean": "rm assets/decals/*/* -rvf"
   },

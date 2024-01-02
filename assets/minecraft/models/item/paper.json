@@ -1,1 +1,0 @@
-{"parent":"minecraft:item/generated","textures":{"layer0":"minecraft:item/paper"},"overrides":[{"predicate":{"custom_model_data":10000},"model":"decals:m10000_1716566031"},{"predicate":{"custom_model_data":10001},"model":"decals:m10001_3797718603"},{"predicate":{"custom_model_data":10002},"model":"decals:m10002_1895871763"}]}

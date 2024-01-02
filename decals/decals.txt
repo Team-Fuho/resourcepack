@@ -7,6 +7,6 @@
 # x, y: surface offset. float
 # scale: in block. float
 
-10000 anya fast 0 0 2
-10001 quochuy default 0 0 2
-10002 suanha fast 0 0 1
+10000 graffiti/anya fast 0 0 2
+10001 logo/quochuy default 0 0 2
+10002 graffiti/suanha fast 0 0 1

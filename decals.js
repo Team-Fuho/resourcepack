@@ -22,16 +22,15 @@ const textures = {},
   explorable =
     //
     [
-      `<h1>Team Fuho's decal explorer</h1>  
-<sub>Tech tip: Click twice to select all</sub>
-Invisible item_frame: <input value="give @p item_frame{EntityTag:{Invisible:1}}" readonly>
-<link rel="stylesheet" type="text/css" href="explore.css" /> 
+      `<h1>Team Fuho's decal explorer</h1>
+Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span>
+<link rel="stylesheet" type="text/css" href="explore.css" />
 <div class=expl_gr>` //
-        .replace("\n"),
+        .replace("\n", "<br>"),
     ];
 
 const df = fs
-  .readFileSync("decals.txt") //
+  .readFileSync("decals/decals.txt") //
   .toString("utf8")
   .split("\n")
   .map((i) => i.trim())
@@ -46,7 +45,7 @@ function sign(n) {
 const ha = (t) => (n, s) =>
   (t ? textures : models)[n] ||
   ((t ? textures : models)[n] = crc32(
-    `${n} ${t ? sign(n) : [n, s||[]].flat().join()}`
+    `${n} ${t ? sign(n) : [n, s || []].flat().join()}`
   )) ||
   (t ? textures : models)[n];
 
@@ -69,7 +68,7 @@ function add(i, n, m, x, y, s) {
     dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
-<b>${i}</b> <input value="give @p paper{CustomModelData:${i}}" readonly>
+<b>${i} ${n}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
 <div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
 </div>`
   );

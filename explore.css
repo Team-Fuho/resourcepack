@@ -45,8 +45,12 @@ body {
 .expl_i > * {
   margin-bottom: 3px;
 }
-input {
+.ip {
+  border: solid 1px;
+  border-radius: 5px;
+  padding: 1px 5px;
   width: 100%;
+  user-select: all;
 }
 img {
   --s: 1;

@@ -10,6 +10,8 @@
 This repo, can be cloned directly into `.minecraft/resourcepack` with fully functional features. However, you 
 need to setup first
 
+Simple, just `pnpm i` (`npm install` is ok but break the git).(2) Then `node decals` to generate decal file. Reload the game. Add more decals, define into `decals.txt`, repeat step (2)
+
 ### 1. Decals
 - First, add pictures into `decals/`, guides and schema written in `decals.txt`.
 - Run `pnpm decals` to generate minecraft-compatible models apply to `minecraft:paper` item
