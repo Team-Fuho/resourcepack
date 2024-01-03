@@ -9,7 +9,7 @@
   "scripts": {
     "build": "pnpm clean && pnpm decals && gulp patch && pnpm mkmeta",
     "mkmeta": "sh scripts/mmeta.sh",
-    "decals": "make && node decals",
+    "decals": "node decals",
     "clean": "rm assets/decals/*/* -rvf"
   },
   "author": "hUwUtao",

@@ -31,7 +31,7 @@
 10014 national/flag_cp_vertical fast 0 -0.5 2
 
 # artwork
-10201 national/artworks/rebel01 fast 0 0 5
+10201 national/artworks/rebel01_812 fast 0 0 5
 10202 national/artworks/rebel02 fast 0 0 4
 
 # Misc

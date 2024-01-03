@@ -1,7 +1,6 @@
 all: init decals
 init:
 	pnpm i
-	mkdir -p assets/decals
 	mkdir -p assets/decals/models
 	mkdir -p assets/decals/textures
 clean:
