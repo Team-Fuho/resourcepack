@@ -38,9 +38,11 @@ body {
   transition: all 64ms ease-in-out;
   transform: none;
   transform-style: preserve-3d;
+  overflow: hidden;
 }
 .expl_bg:hover {
   transform: perspective(50mm) rotateY(10deg);
+  overflow: visible;
 }
 .expl_i > * {
   margin-bottom: 3px;

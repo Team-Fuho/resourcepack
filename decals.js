@@ -68,8 +68,8 @@ function add(i, n, m, x, y, s) {
     dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
-<b>${i} ${n}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
-<div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${x};--y:${y};--s:${s}></div>
+<b><code>${i} ${n}</code> ${m}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
+<div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${-x};--y:${-y};--s:${s}></div>
 </div>`
   );
   fs.writeFile(
@@ -81,8 +81,8 @@ function add(i, n, m, x, y, s) {
       },
       display: {
         fixed: {
-          translation: [x, y, -0.01],
-          scale: Array(3).fill(s * 2),
+          translation: [x * 32, y * 32, -0.01],
+          scale: Array(3).fill(s * (m == mode.default ? 2 : 1)),
           rotation: m == "d" ? [0, 180, 0] : undefined,
         },
       },

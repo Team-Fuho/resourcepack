@@ -6,7 +6,34 @@
 #       default: w*h*6 face. lag expected. behave like normal Minecraft 2d items. alpha image result crispy edge!
 # x, y: surface offset. float
 # scale: in block. float
+# caveats:
+# default mode wont exceed scale>2 (minecraft size = 4)
 
-10000 graffiti/anya fast 0 0 2
-10001 logo/quochuy default 0 0 2
-10002 graffiti/suanha fast 0 0 1
+# # National
+# normal
+10001 national/quochuy default 0 0 2
+10002 national/quochuy fast 0 0 3
+# fragment 5x5
+10003 national/quochuy_0 default 0 0 2
+10004 national/quochuy_1 default 0 0 2
+10005 national/quochuy_2 default 0 0 2
+10006 national/quochuy_3 default 0 0 2
+# flags
+10007 national/flag fast 0 0 2
+10008 national/flag fast 0 0 3
+10009 national/flag_cp fast 0 0 2
+100010 national/flag_cp fast 0 0 3
+# square variant
+10011 national/flag_square fast 0 0 1
+10012 national/flag_cp_square fast 0 0 1
+# vertical variant
+10013 national/flag_vertical fast 0 -0.5 2
+10014 national/flag_cp_vertical fast 0 -0.5 2
+
+# artwork
+10201 national/artworks/rebel01 fast 0 0 5
+10202 national/artworks/rebel02 fast 0 0 4
+
+# Misc
+11000 graffiti/anya fast 0 0 2
+11002 graffiti/suanha fast 0 0 1

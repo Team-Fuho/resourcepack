@@ -16,7 +16,7 @@ const gulp = require("gulp"),
 
 const pdot = (s) => `.${s}`;
 
-const typeignore = ["bbmodel"].map(pdot),
+const typeignore = ["bbmodel", "gitignore"].map(pdot),
   typejson = ["json", "mcmeta"].map(pdot),
   typeimage = ["png"].map(pdot);
 
