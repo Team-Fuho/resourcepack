@@ -22,7 +22,7 @@
 10007 national/flag fast 0 0 2
 10008 national/flag fast 0 0 3
 10009 national/flag_cp fast 0 0 2
-100010 national/flag_cp fast 0 0 3
+10010 national/flag_cp fast 0 0 3
 # square variant
 10011 national/flag_square fast 0 0 1
 10012 national/flag_cp_square fast 0 0 1
