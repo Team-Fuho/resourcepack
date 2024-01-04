@@ -29,6 +29,8 @@
 # vertical variant
 10013 national/flag_vertical fast 0 -0.5 2
 10014 national/flag_cp_vertical fast 0 -0.5 2
+# extra cm logo
+10014 national/cmil fast 0 0 1
 
 # fragment 3x3
 10023 national/quochuy_0 default -0.25 -0.25 1.5
@@ -43,3 +45,9 @@
 # Misc
 11000 graffiti/anya fast 0 0 2
 11002 graffiti/suanha fast 0 0 1
+
+# Test
+65501 graffiti/coconut default 0 0 1
+65502 graffiti/coconut default 1 1 2
+65503 graffiti/coconut fast 0 0 1
+65504 graffiti/coconut default 0 0 10
