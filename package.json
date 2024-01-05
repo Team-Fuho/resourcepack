@@ -10,7 +10,8 @@
     "build": "pnpm clean && pnpm decals && gulp patch && pnpm mkmeta",
     "mkmeta": "sh scripts/mmeta.sh",
     "decals": "node decals",
-    "clean": "rm assets/decals/*/* -rvf"
+    "clean": "rm assets/decals/*/* -rvf",
+    "fmt": "biome check . --apply"
   },
   "author": "hUwUtao",
   "license": "MIT",
@@ -36,6 +37,7 @@
   },
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
+    "@biomejs/biome": "^1.4.1",
     "esbuild": "^0.17.18",
     "nexe": "4.0.0-rc.2"
   }
