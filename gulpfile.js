@@ -11,7 +11,7 @@ const gulp = require("gulp"),
   del = require("del"),
   { relative } = require("path"),
   sharp = require("sharp"),
-  { readdirSync, writeFile } = require("fs"),
+  { readFileSync, readdirSync, writeFile } = require("fs"),
   ReadableStream = require("stream").Readable;
 
 const pdot = (s) => `.${s}`;
@@ -80,7 +80,8 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
       cb
     );
 
-const patches = readdirSync("./patches").filter((i) => !i.startsWith("."));
+const disabled_patches = readFileSync("./patches/.disabled.txt", {encoding: "utf8"}).split("\n");
+const patches = readdirSync("./patches").filter((i) => !i.startsWith(".") && !disabled_patches.includes(i));
 task("default", (end) =>
   patch(
     end,

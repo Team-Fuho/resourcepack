@@ -74,7 +74,7 @@ function add(i, n, m, x, y, s) {
   );
   function gentf(slt) {
     return {
-      translation: [x * 32, y * 32, -0.01],
+      translation: [x * 32, y * 32, -0.03],
       scale: Array(3).fill(
         s * (m == mode.default ? 2 : 1) * (slt == "head" ? 1 : 1)
       ),

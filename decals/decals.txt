@@ -12,7 +12,7 @@
 # # National
 # normal
 10001 national/quochuy default 0 0 2
-10002 national/quochuy fast 0 0 3
+10002 national/quochuy default 0 0 4
 # fragment 5x5
 10003 national/quochuy_0 default 0 0 2
 10004 national/quochuy_1 default 0 0 2
@@ -30,8 +30,9 @@
 10013 national/flag_vertical fast 0 -0.5 2
 10014 national/flag_cp_vertical fast 0 -0.5 2
 # extra cm logo
-10015 national/cmil fast 0 0 1
+10015 national/cmil default 0 0 1
 10016 national/quochuy default 0 0 1.07
+10017 national/quochuy fast 0 0 3
 
 # fragment 3x3
 10023 national/quochuy_0 default -0.25 -0.25 1.5
