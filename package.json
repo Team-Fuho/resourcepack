@@ -16,12 +16,11 @@
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
-    "async": "^3.2.3",
-    "crc": "^4.3.2",
+    "async": "^3.2.5",
     "del": "^6.1.1",
     "gulp": "^4.0.2",
     "gulp-zip": "^5.1.0",
-    "sharp": "^0.30.4"
+    "sharp": "^0.33.1"
   },
   "repository": {
     "type": "git",
@@ -38,7 +37,7 @@
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
     "@biomejs/biome": "^1.4.1",
-    "esbuild": "^0.17.18",
+    "esbuild": "^0.19.11",
     "nexe": "4.0.0-rc.2"
   }
 }

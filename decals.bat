@@ -1,6 +1,6 @@
 @echo off
 :lo
-decals
+node decals
 echo =================================
 echo DONE! Press ctrl+c to quit, or
 pause

@@ -7,10 +7,9 @@
 - [ ] Props
 
 ## How does it work?
-This repo, can be cloned directly into `.minecraft/resourcepack` with fully functional features. However, you 
-need to setup first
+This repo, can be cloned directly into `.minecraft/resourcepack` with fully functional features, still, you need some extra setup.
 
-Simple, just `pnpm i` (`npm install` is ok but break the git).(2) Then `node decals` to generate decal file. Reload the game. Add more decals, define into `decals.txt`, repeat step (2)
+To preview ingame, or through explorer, you likely don't have to install any dependencies. Simply have NodeJS installed and run the `decals.bat`. **`F3` + `T`** to reload anything in game.
 
 ### 1. Decals
 - First, add pictures into `decals/`, guides and schema written in `decals.txt`.
@@ -23,7 +22,16 @@ Still need to export manually, but you can reserve `bbmodel` files in source!
 Comming soon
 
 ### 3. Patches
+Desc: You have multiple minipacks to choose, though all of them should be installed through a browser-based selector
+
 Comming soon
 
 ## To production
 Just run `pnpm build` and it should be ready! zip and optimized.
+
+## Caveats
+
+- `default` object size won't bigger than `2` (in decalfile) or `4` in json file
+- Natural transformation of `head` and `fixed` may differ ingame
+- `fast` object slightly bigger than `default` in some case
+- ~~`fast` flicker due to float percision of the renderer~~. This may differ across renderers.
