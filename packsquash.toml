@@ -1,0 +1,9 @@
+pack_directory = "./dist/base"
+output_file_path = "./dist/tfh_dist.zip"
+zip_compression_iterations = 255
+automatic_minecraft_quirks_detection = true
+allow_mods = ["OptiFine"]
+validate_pack_metadata_file = false
+zip_spec_conformance_level = "high"
+['**/*?.png']
+image_data_compression_iterations = 255

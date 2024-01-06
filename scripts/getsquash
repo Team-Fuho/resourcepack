@@ -1,0 +1,11 @@
+#!/bin/bash
+
+PACKSQUASH_VER=${PACKSQUASH_VER:-0.4.0}
+[[ -f dist/packsquash ]] && echo packsquash $PACKSQUASH_VER already downloaded && exit
+
+mkdir -p dist
+curl https://github.com/ComunidadAylas/PackSquash/releases/download/v$PACKSQUASH_VER/PackSquash.CLI.executable.x86_64-unknown-linux-musl.zip -Lodist/squash.zip
+cd dist
+unzip squash.zip
+rm squash.zip
+chmod u+x packsquash
