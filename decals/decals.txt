@@ -46,7 +46,12 @@
 10025 national/quochuy_2 default -0.25 0.25 1.5
 10026 national/quochuy_3 default 0.25 0.25 1.5
 
-# preserve 4
+# flag patterns
+
+10027 national/star fast 0 0 1
+10028 national/star fast 0 0 2
+10029 national/cp fast 0 0 1
+10030 national/cp fast 0 0 2
 
 # portrait
 10030 national/UncleHoPortrait fast 0 0 1
