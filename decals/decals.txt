@@ -34,15 +34,30 @@
 10016 national/quochuy default 0 0 1.07
 10017 national/quochuy fast 0 0 3
 
+# extra flag
+10020 national/flag_fnl fast 0 0 2
+10021 national/flag_fnl fast 0 0 3
+10022 national/flag_fnl_square fast 0 0 1
+
 # fragment 3x3
 10023 national/quochuy_0 default -0.25 -0.25 1.5
 10024 national/quochuy_1 default 0.25 -0.25 1.5
 10025 national/quochuy_2 default -0.25 0.25 1.5
 10026 national/quochuy_3 default 0.25 0.25 1.5
 
+# preserve 4
+
+# portrait
+10030 national/UncleHoPortrait fast 0 0 1
+10031 national/UncleHoPortrait fast 0 0 2
+10032 national/UncleHoPortrait fast 0 0 7
+
 # artwork
 10201 national/artworks/rebel01_812 fast 0 0 5
 10202 national/artworks/rebel02 fast 0 0 4
+
+# -- todo: add subdecalfile/autoproc
+10231 national/artworks/marine01 fast 0 0 5
 
 # Misc
 11000 graffiti/anya fast 0 0 2
