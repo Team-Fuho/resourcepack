@@ -24,11 +24,11 @@
 10009 national/flag_cp fast 0 0 2
 10010 national/flag_cp fast 0 0 3
 # square variant
-10011 national/flag_square fast 0 0 1
-10012 national/flag_cp_square fast 0 0 1
+10011 national/flag_square_v2 fast 0 0 1
+10012 national/flag_cp_square_v2 fast 0 0 1
 # vertical variant
-10013 national/flag_vertical fast 0 -0.5 2
-10014 national/flag_cp_vertical fast 0 -0.5 2
+10013 national/flag_vertical_v2 fast 0 -0.5 2
+10014 national/flag_cp_vertical_v2 fast 0 -0.5 2
 # extra cm logo
 10015 national/cmil default 0 0 1
 10016 national/quochuy default 0 0 1.07
@@ -37,7 +37,8 @@
 # extra flag
 10020 national/flag_fnl fast 0 0 2
 10021 national/flag_fnl fast 0 0 3
-10022 national/flag_fnl_square fast 0 0 1
+10022 national/flag_fnl_square_v2 fast 0 0 1
+10023 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
 # fragment 3x3
 10023 national/quochuy_0 default -0.25 -0.25 1.5
