@@ -54,9 +54,9 @@
 10030 national/cp fast 0 0 2
 
 # portrait
-10030 national/UncleHoPortrait default 0 0 1
-10031 national/UncleHoPortrait fast 0 0 2
-10032 national/UncleHoPortrait fast 0 0 7
+10031 national/UncleHoPortrait default 0 0 1
+10032 national/UncleHoPortrait fast 0 0 2
+10033 national/UncleHoPortrait fast 0 0 7
 
 # mps
 
