@@ -54,9 +54,15 @@
 10030 national/cp fast 0 0 2
 
 # portrait
-10030 national/UncleHoPortrait fast 0 0 1
+10030 national/UncleHoPortrait default 0 0 1
 10031 national/UncleHoPortrait fast 0 0 2
 10032 national/UncleHoPortrait fast 0 0 7
+
+# mps
+
+10036 national/mps default 0 0 1
+10037 national/mps default 0 0 1.5
+10038 national/mps default 0 0 3
 
 # artwork
 10201 national/artworks/rebel01_812 fast 0 0 5
