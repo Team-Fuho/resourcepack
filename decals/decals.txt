@@ -74,6 +74,7 @@
 # Misc
 11000 graffiti/anya fast 0 0 2
 11002 graffiti/suanha fast 0 0 1
+11003 env/exit default 0 0 1
 
 # Test
 #65501 graffiti/coconut default 0 0 1
