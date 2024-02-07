@@ -29,6 +29,8 @@ Comming soon
 ## To production
 Just run `pnpm build` and it should be ready! zip and optimized.
 
+Anyways we use `webhookd` to trigger the build and force update through pterodactyl api btw. Example in our whitespace!
+
 ## Caveats
 
 - `default` object size won't bigger than `2` (in decalfile) or `4` in json file
