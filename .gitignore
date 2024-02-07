@@ -151,3 +151,4 @@ assets/minecraft/models/item/paper.*
 explore.html
 *.min.js
 *.exe
+trigger_*.sh
