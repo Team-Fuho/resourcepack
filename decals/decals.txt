@@ -38,7 +38,7 @@
 10020 national/flag_fnl fast 0 0 2
 10021 national/flag_fnl fast 0 0 3
 10022 national/flag_fnl_square_v2 fast 0 0 1
-10023 national/flag_fnl_vertical_v2 fast 0 -0.5 2
+# 10023 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
 # fragment 3x3
 10023 national/quochuy_0 default -0.25 -0.25 1.5
@@ -70,6 +70,9 @@
 
 # -- todo: add subdecalfile/autoproc
 10231 national/artworks/marine01 fast 0 0 5
+
+# colision 10023
+10232 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
 # Misc
 11000 graffiti/anya fast 0 0 2
