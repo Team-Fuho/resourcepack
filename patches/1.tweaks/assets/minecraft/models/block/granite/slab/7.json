@@ -1,1 +1,8 @@
-{"parent":"block/slab","textures":{"top":"variated/granite/7","side":"variated/granite/7","bottom":"variated/granite/7"}}
+{
+  "parent": "block/slab",
+  "textures": {
+    "top": "variated/granite/7",
+    "side": "variated/granite/7",
+    "bottom": "variated/granite/7"
+  }
+}

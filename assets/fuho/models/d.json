@@ -1,9 +1,9 @@
 {
-	"parent": "fuho:b",
-	"display": {
-		"fixed": {
-			"scale": [2, 2, 2],
-			"rotation": [0, 180, 0]
-		}
-	}
+  "parent": "fuho:b",
+  "display": {
+    "fixed": {
+      "scale": [2, 2, 2],
+      "rotation": [0, 180, 0]
+    }
+  }
 }

@@ -1,6 +1,6 @@
 {
-	"parent": "minecraft:item/handheld",
-	"textures": {
-		"layer0": "fuho:null"
-	}
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "fuho:null"
+  }
 }

@@ -1,1 +1,8 @@
-{"parent":"block/inner_stairs","textures":{"top":"variated/andesite/6","side":"variated/andesite/6","bottom":"variated/andesite/6"}}
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "top": "variated/andesite/6",
+    "side": "variated/andesite/6",
+    "bottom": "variated/andesite/6"
+  }
+}

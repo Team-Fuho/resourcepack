@@ -1,1 +1,8 @@
-{"parent":"block/slab","textures":{"top":"variated/andesite/5","side":"variated/andesite/5","bottom":"variated/andesite/5"}}
+{
+  "parent": "block/slab",
+  "textures": {
+    "top": "variated/andesite/5",
+    "side": "variated/andesite/5",
+    "bottom": "variated/andesite/5"
+  }
+}

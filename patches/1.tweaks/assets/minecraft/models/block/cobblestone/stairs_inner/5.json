@@ -1,1 +1,8 @@
-{"parent":"block/inner_stairs","textures":{"top":"variated/cobblestone/5","side":"variated/cobblestone/5","bottom":"variated/cobblestone/5"}}
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "top": "variated/cobblestone/5",
+    "side": "variated/cobblestone/5",
+    "bottom": "variated/cobblestone/5"
+  }
+}

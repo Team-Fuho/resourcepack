@@ -1,6 +1,6 @@
 @echo off
 :lo
-node decals
+deno task decals
 echo =================================
 echo DONE! Press ctrl+c to quit, or
 pause

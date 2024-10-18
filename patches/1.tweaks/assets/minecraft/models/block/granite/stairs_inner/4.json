@@ -1,1 +1,8 @@
-{"parent":"block/inner_stairs","textures":{"top":"variated/granite/4","side":"variated/granite/4","bottom":"variated/granite/4"}}
+{
+  "parent": "block/inner_stairs",
+  "textures": {
+    "top": "variated/granite/4",
+    "side": "variated/granite/4",
+    "bottom": "variated/granite/4"
+  }
+}

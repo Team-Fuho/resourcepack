@@ -32,7 +32,9 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #eee;
-  background-image: var(--bi), var(--bi);
+  background-image:
+    var(--bi),
+     var(--bi);
   background-size: 256px 256px;
   background-position: 0 0, 128px 128px;
   transition: all 64ms ease-in-out;

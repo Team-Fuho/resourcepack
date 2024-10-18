@@ -7,10 +7,10 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "pnpm clean && pnpm decals && gulp patch && pnpm mkmeta",
+    "build": "pnpm clean && pnpm decal && gulp patch && pnpm mkmeta",
     "mkmeta": "sh scripts/mmeta.sh",
-    "decals": "node decals",
-    "clean": "rm assets/decals/*/* -rvf",
+    "decals": "deno run --allow-write=. --allow-read=. decals.ts",
+    "clean": "rm assets/decals/*/* -rf",
     "fmt": "biome check . --apply"
   },
   "author": "hUwUtao",

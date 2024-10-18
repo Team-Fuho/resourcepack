@@ -4,15 +4,15 @@
  */
 module.exports = {};
 
-const gulp = require("gulp"),
-  { task } = require("gulp"),
-  { series } = require("async"),
+const gulp = require("node:gulp"),
+  { task } = require("node:gulp"),
+  { series } = require("node:async"),
   zip = require("gulp-zip"),
   del = require("del"),
-  { relative } = require("path"),
+  { relative } = require("node:path"),
   sharp = require("sharp"),
-  { readFileSync, readdirSync, writeFile } = require("fs"),
-  ReadableStream = require("stream").Readable;
+  { readFileSync, readdirSync, writeFile } = require("node:fs"),
+  ReadableStream = require("node:stream").Readable;
 
 const pdot = (s) => `.${s}`;
 
@@ -69,7 +69,7 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
           series(
             //
             list.map((l) => (cb) => dist(...l, patch).on("end", cb)),
-            cb
+            cb,
           ),
         (cb) => zipack(`./dist/${outname}`, patch).on("end", cb),
         (cb) =>
@@ -77,14 +77,14 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
             ? del(["./dist/pack/**/*"]).then(() => cb())
             : cb(),
       ],
-      cb
+      cb,
     );
 
 const disabled_patches = readFileSync("./patches/.disabled.txt", {
   encoding: "utf8",
 }).split("\n");
 const patches = readdirSync("./patches").filter(
-  (i) => !i.startsWith(".") && !disabled_patches.includes(i)
+  (i) => !i.startsWith(".") && !disabled_patches.includes(i),
 );
 task("default", (end) =>
   patch(
@@ -97,9 +97,8 @@ task("default", (end) =>
         `./patches/${pn}`,
       ]),
     ],
-    "tfh.fullpatch.zip"
-  )
-);
+    "tfh.fullpatch.zip",
+  ));
 
 task("patch", (end) => {
   series(
@@ -112,11 +111,11 @@ task("patch", (end) => {
             end,
             [[[`./patches/${pn}/**/*`], "./", `./patches/${pn}`]],
             `tfh.${pn}.zip`,
-            pn.split(".")[0]
-          )
+            pn.split(".")[0],
+          ),
       ),
     ],
-    end
+    end,
   );
 });
 
@@ -150,13 +149,12 @@ task("pdev", (end) =>
                       ],
                     },
                   }),
-                  cb
+                  cb,
                 ),
             ],
-            cb
-          )
+            cb,
+          ),
       ),
     ],
-    end
-  )
-);
+    end,
+  ));
