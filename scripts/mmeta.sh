@@ -1,1 +1,0 @@
-echo \{\"url\":\"https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist/tfh.base.zip\",\"hash\":\"$(openssl sha1 dist/tfh.base.zip | cut -d\  -f2)\"\} > dist/metadata.json

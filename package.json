@@ -7,8 +7,8 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "pnpm clean && pnpm decal && gulp patch && pnpm mkmeta",
-    "mkmeta": "sh scripts/mmeta.sh",
+    "build": "deno task clean && deno task decals && deno run --allow-env --allow-read --allow-write --allow-sys --allow-run --allow-ffi npm:gulp patch && deno task mkmeta",
+    "mkmeta": "deno run --allow-read --allow-write scripts/mmeta.ts",
     "decals": "deno run --allow-write=. --allow-read=. decals.ts",
     "clean": "rm assets/decals/*/* -rf",
     "fmt": "biome check . --apply"
@@ -16,11 +16,11 @@
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
-    "async": "^3.2.5",
-    "del": "^6.1.1",
-    "gulp": "^4.0.2",
-    "gulp-zip": "^5.1.0",
-    "sharp": "^0.33.1"
+    "async": "^3.2.6",
+    "del": "^8.0.0",
+    "gulp": "^5.0.0",
+    "gulp-zip": "^6.0.0",
+    "sharp": "^0.33.5"
   },
   "repository": {
     "type": "git",
@@ -36,8 +36,8 @@
   },
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
-    "@biomejs/biome": "^1.4.1",
-    "esbuild": "^0.19.11",
-    "nexe": "4.0.0-rc.2"
+    "@types/async": "^3.2.24",
+    "@types/gulp": "^4.0.17",
+    "@types/gulp-zip": "^4.0.4"
   }
 }

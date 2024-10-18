@@ -2,17 +2,17 @@
  * @description Minecraft resourcepack production-ready compilation tool
  * @author stdpi
  */
-module.exports = {};
 
-const gulp = require("node:gulp"),
-  { task } = require("node:gulp"),
-  { series } = require("node:async"),
-  zip = require("gulp-zip"),
-  del = require("del"),
-  { relative } = require("node:path"),
-  sharp = require("sharp"),
-  { readFileSync, readdirSync, writeFile } = require("node:fs"),
-  ReadableStream = require("node:stream").Readable;
+import { src, dest } from "gulp";
+import { task } from "gulp";
+import { series } from "async";
+import { default as zip } from "gulp-zip";
+import { deleteAsync } from "del";
+import { relative } from "node:path";
+import sharp from "sharp";
+import { readFileSync, readdirSync, writeFile } from "node:fs";
+import { Readable as ReadableStream } from "node:stream";
+import { Buffer } from "node:buffer";
 
 const pdot = (s) => `.${s}`;
 
@@ -35,6 +35,11 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
           .then((data) => {
             this.push(data);
             this.push(null);
+          })
+          .catch((error) => {
+            // console.error(`Error processing image: ${error.message}`);
+            this.push(img);
+            this.push(null);
           });
       },
     }),
@@ -46,20 +51,21 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
     }
   },
   dist = (list, dist, base, patch) =>
-    gulp
-      .src([...list, ...ignoreGlob], {
-        base,
-      })
+    src([...list, ...ignoreGlob], {
+      base,
+    })
       .on("data", opt)
       .on("data", (file) => {
-        console.log("\x1b[32m+\x1b[0m", relative(__dirname, file.path));
+        console.log(
+          "\x1b[32m+\x1b[0m",
+          relative(import.meta.dirname, file.path),
+        );
       })
-      .pipe(gulp.dest(`./dist/${patch || "base"}/${dist}`)),
+      .pipe(dest(`./dist/${patch || "base"}/${dist}`)),
   zipack = (outname, patch) =>
-    gulp
-      .src([`dist/${patch || "base"}/**/*`])
+    src([`dist/${patch || "base"}/**/*`])
       .pipe(zip(outname))
-      .pipe(gulp.dest(".")),
+      .pipe(dest(".")),
   patch = (cb, list, outname, patch) =>
     series(
       [
@@ -74,7 +80,7 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
         (cb) => zipack(`./dist/${outname}`, patch).on("end", cb),
         (cb) =>
           !process.env.noclean
-            ? del(["./dist/pack/**/*"]).then(() => cb())
+            ? deleteAsync(["./dist/pack/**/*"]).then(() => cb())
             : cb(),
       ],
       cb,
@@ -98,7 +104,8 @@ task("default", (end) =>
       ]),
     ],
     "tfh.fullpatch.zip",
-  ));
+  ),
+);
 
 task("patch", (end) => {
   series(
@@ -127,11 +134,10 @@ task("pdev", (end) =>
           series(
             [
               (cb) =>
-                gulp
-                  .src([`./patches/${pn}/**/*`, ...ignoreGlob], {
-                    base: `./patches/${pn}`,
-                  })
-                  .pipe(gulp.dest(`../DEV--${pn}`))
+                src([`./patches/${pn}/**/*`, ...ignoreGlob], {
+                  base: `./patches/${pn}`,
+                })
+                  .pipe(dest(`../DEV--${pn}`))
                   .on("end", cb),
               (cb) =>
                 writeFile(
@@ -157,4 +163,5 @@ task("pdev", (end) =>
       ),
     ],
     end,
-  ));
+  ),
+);
