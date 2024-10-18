@@ -19,7 +19,7 @@ dependencies. Simply have Deno installed and run the `decals.bat`. **`F3` +
 ### 1. Decals
 
 - First, add pictures into `decals/`, guides and schema written in `decals.txt`.
-- Run `deno run decals.ts` to generate minecraft-compatible models apply to
+- Run `deno task decals` to generate minecraft-compatible models apply to
   `minecraft:paper` item
 - Open `explore.html` in browser. Please don't use IE :)
 
@@ -38,7 +38,7 @@ Comming soon
 
 ## To production
 
-Just run `deno run build.ts` and it should be ready! zip and optimized.
+Just run `deno task build` and it should be ready! zip and optimized.
 
 Anyways we use `webhookd` to trigger the build and force update through
 pterodactyl api btw. Example in our whitespace!
