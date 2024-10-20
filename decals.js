@@ -66,7 +66,7 @@ function add(i, n, m, x, y, s) {
   s = parseFloat(s);
   const mn = `m${i}_${mod(n, [n, m, x, y, s])}`,
     mp = vd(path.join(__dirname, "assets/decals/models/", `${mn}.json`)),
-    dt = tex(path.join(__dirname, "decals/item/", `${n}.png`));
+    dt = tex(path.join(__dirname, "decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
 <b><code>${i} ${n}</code> ${m}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
