@@ -5,7 +5,7 @@ const fs = require("node:fs"),
 [
   "dist", //
   "assets/decals/models",
-  "assets/decals/textures",
+  "assets/decals/textures/item",
 ].map((d) => fs.mkdirSync(d, { recursive: true }));
 
 console.log(__dirname);
@@ -66,7 +66,7 @@ function add(i, n, m, x, y, s) {
   s = parseFloat(s);
   const mn = `m${i}_${mod(n, [n, m, x, y, s])}`,
     mp = vd(path.join(__dirname, "assets/decals/models/", `${mn}.json`)),
-    dt = tex(path.join(__dirname, "decals/", `${n}.png`));
+    dt = tex(path.join(__dirname, "decals/item/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
 <b><code>${i} ${n}</code> ${m}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
@@ -87,7 +87,7 @@ function add(i, n, m, x, y, s) {
     JSON.stringify({
       parent: `fuho:${m}`,
       textures: {
-        [m === mode.default ? "layer0" : "0"]: `decals:t${dt}`,
+        [m === mode.default ? "layer0" : "0"]: `decals:item/t${dt}`,
       },
       display: {
         head: gentf("head"),
@@ -127,7 +127,7 @@ fs.writeFile(
       const dn = textures[k];
       fs.copyFile(
         k,
-        vd(path.join(__dirname, "assets/decals/textures/", `t${dn}.png`)),
+        vd(path.join(__dirname, "assets/decals/textures/item/", `t${dn}.png`)),
         lfs(`* ${k}`)
       );
     })
