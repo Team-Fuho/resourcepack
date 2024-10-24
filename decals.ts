@@ -1,12 +1,16 @@
-import { createHash } from "node:crypto";
-import * as path from "https://deno.land/std/path/mod.ts";
+import { randomBytes } from "crypto";
+import * as path from "path";
+import * as fs from "node:fs";
 
-["dist", "assets/decals/models", "assets/decals/textures/item"].map((d) =>
-  Deno.mkdirSync(d, { recursive: true })
+["dist", "assets/decals/models", "assets/decals/textures/item"].map(async (d) =>
+  fs.promises.mkdir(d, { recursive: true }),
 );
 
 const vd = (a: any) => (console.log(a), a),
-  lfs = (...a: any[]) => (...b: any[]) => a[0] && console.log(...a, ...b);
+  lfs =
+    (...a: any[]) =>
+    (...b: any[]) =>
+      a[0] && console.log(...a, ...b);
 
 const textures: Record<string, string> = {},
   models: Record<string, string> = {},
@@ -17,26 +21,30 @@ Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Inv
 <div class=expl_gr>`.replace("\n", "<br>"),
   ];
 
-const df = Deno.readTextFileSync("decals/decals.txt")
+const df = (await Bun.file("decals/decals.txt").text())
   .split("\n")
   .map((i) => i.trim())
   .filter((i) => i)
   .filter((i) => !i.trimStart().startsWith("#"));
 
-function sign(n: string): string {
-  const { mtime, size } = Deno.statSync(n);
+async function sign(n: string): Promise<string> {
+  const stats = await fs.promises.stat(n);
+  const { mtime, size } = stats;
   return `${mtime} ${size}`;
 }
 
-const hash = (t: string): string =>
-  createHash("sha1").update(t).digest("base64url").slice(0, 12);
+const hash = (t: string): string => {
+  return Bun.hash(t).toString(36).slice(0, 12);
+};
 
-const ha = (t: boolean) => (n: string, s?: any): string =>
-  (t ? textures : models)[n] ||
-  ((t ? textures : models)[n] = hash(
-    `${n} ${t ? sign(n) : [n, s || []].flat().join()}`,
-  )) ||
-  (t ? textures : models)[n];
+const ha =
+  (t: boolean) =>
+  async (n: string, s?: any): Promise<string> =>
+    (t ? textures : models)[n] ||
+    ((t ? textures : models)[n] = hash(
+      `${n} ${t ? await sign(n) : [n, s || []].flat().join()}`,
+    )) ||
+    (t ? textures : models)[n];
 
 const mode = {
   fast: "f",
@@ -46,15 +54,22 @@ const mode = {
 const tex = ha(true),
   mod = ha(false);
 
-function add(i: string, n: string, m: string, x: string, y: string, s: string) {
+async function add(
+  i: string,
+  n: string,
+  m: string,
+  x: string,
+  y: string,
+  s: string,
+) {
   i = Number.parseInt(i);
   m = mode[m as keyof typeof mode] || mode.fast;
   x = Number.parseFloat(x);
   y = Number.parseFloat(y);
   s = Number.parseFloat(s);
-  const mn = `m${i}_${mod(n, [n, m, x, y, s])}`,
+  const mn = `m${i}_${await mod(n, [n, m, x, y, s])}`,
     mp = vd(path.join("assets/decals/models/", `${mn}.json`)),
-    dt = tex(path.join("decals/", `${n}.png`));
+    dt = await tex(path.join("decals/", `${n}.png`));
   explorable.push(
     `<div class=expl_i>
 <b><code>${i} ${n}</code> ${m}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
@@ -70,7 +85,7 @@ function add(i: string, n: string, m: string, x: string, y: string, s: string) {
       rotation: m === "d" ? [0, 180, 0] : undefined,
     };
   }
-  Deno.writeTextFileSync(
+  await Bun.write(
     mp,
     JSON.stringify({
       parent: `fuho:${m}`,
@@ -94,22 +109,24 @@ function add(i: string, n: string, m: string, x: string, y: string, s: string) {
 }
 
 const pp = vd(path.join("assets/minecraft/models/item/paper.json"));
-Deno.writeTextFileSync(
+await Bun.write(
   pp,
   JSON.stringify({
     parent: "minecraft:item/generated",
     textures: {
       layer0: "minecraft:item/paper",
     },
-    overrides: df.map((s) => s.split(" ")).map((i) => add(...i)),
+    overrides: await Promise.all(
+      df.map((s) => s.split(" ")).map((i) => add(...i)),
+    ),
   }),
 );
 lfs()();
-Deno.writeTextFileSync("explore.html", [...explorable, "</div>"].join("\n"));
+await Bun.write("explore.html", [...explorable, "</div>"].join("\n"));
 for (const [k, dn] of Object.entries(textures)) {
-  Deno.copyFileSync(
-    k,
+  await Bun.write(
     vd(path.join("assets/decals/textures/", `item/t${dn}.png`)),
+    Bun.file(k),
   );
   lfs(`* ${k}`)();
 }

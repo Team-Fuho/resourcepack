@@ -7,10 +7,12 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "deno task clean && deno task decals && deno run --allow-env --allow-read --allow-write --allow-sys --allow-run --allow-ffi npm:gulp patch && deno task mkmeta",
-    "mkmeta": "deno run --allow-read --allow-write scripts/mmeta.ts",
-    "decals": "deno run --allow-write=. --allow-read=. decals.ts",
-    "clean": "rm assets/decals/*/* -rf",
+    "build": "npm run clean && npm run decals && npm run mkmeta",
+    "pack:deno": "deno run --allow-env --allow-read --allow-write --allow-sys --allow-run --allow-ffi npm:gulp patch",
+    "pack": "bun ./node_modules/gulp/bin/gulp.js patch",
+    "mkmeta": "bun run scripts/mmeta.ts",
+    "decals": "bun run decals.ts",
+    "clean": "git clean -fdx assets/decals",
     "fmt": "biome check . --apply"
   },
   "author": "hUwUtao",
@@ -18,8 +20,9 @@
   "dependencies": {
     "async": "^3.2.6",
     "del": "^8.0.0",
-    "gulp": "^5.0.0",
+    "gulp": "^4.0.0",
     "gulp-zip": "^6.0.0",
+    "imagescript": "^1.3.0",
     "sharp": "^0.33.5"
   },
   "repository": {
@@ -38,6 +41,10 @@
   "devDependencies": {
     "@types/async": "^3.2.24",
     "@types/gulp": "^4.0.17",
-    "@types/gulp-zip": "^4.0.4"
-  }
+    "@types/gulp-zip": "^4.0.4",
+    "bun-types": "*"
+  },
+  "trustedDependencies": [
+    "es5-ext"
+  ]
 }

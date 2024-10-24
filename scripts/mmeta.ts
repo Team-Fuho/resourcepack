@@ -1,15 +1,16 @@
-import { crypto } from "https://deno.land/std/crypto/mod.ts";
-import { resolve, normalize } from "https://deno.land/std/path/mod.ts";
+import { join, resolve } from "path";
+import { readdir } from "node:fs/promises";
 
-const distPath = normalize(resolve(Deno.cwd(), "dist"));
+const distPath = resolve(process.cwd(), "dist");
 
 async function processZipFiles() {
   const zipFiles = [];
 
   try {
-    for await (const entry of Deno.readDir(distPath)) {
-      if (entry.isFile && entry.name.endsWith(".zip")) {
-        zipFiles.push(resolve(distPath, entry.name));
+    const files = await readdir(distPath);
+    for (const file of files) {
+      if (file.endsWith(".zip")) {
+        zipFiles.push(join(distPath, file));
       }
     }
   } catch (error) {
@@ -22,11 +23,10 @@ async function processZipFiles() {
 
   for (const zipFile of zipFiles) {
     try {
-      const fileContent = await Deno.readFile(zipFile);
-      const hash = await crypto.subtle.digest("SHA-1", fileContent);
-      const hashHex = Array.from(new Uint8Array(hash))
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+      const fileContent = await Bun.file(zipFile).arrayBuffer();
+      const hasher = new Bun.CryptoHasher("sha1");
+      hasher.update(new Uint8Array(fileContent));
+      const hashHex = hasher.digest("hex");
 
       const fileName = zipFile.split(/[/\\]/).pop();
       const url = `https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist/${fileName}`;
@@ -38,7 +38,7 @@ async function processZipFiles() {
   }
 
   try {
-    await Deno.writeTextFile(
+    await Bun.write(
       `${distPath}/metadata.json`,
       JSON.stringify(fileMetadata, null, 2),
     );
