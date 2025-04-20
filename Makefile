@@ -7,7 +7,7 @@ release: dist/tfh_dist.zip
 dist/packsquash:
 	sh scripts/getsquash
 dist/tfh.base.zip:
-	deno task build
+	bun run build
 dist/tfh_dist.zip: dist/packsquash dist/tfh.base.zip
 	dist/packsquash packsquash.toml
 on/finish:

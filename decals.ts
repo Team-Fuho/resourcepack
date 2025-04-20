@@ -1,115 +1,155 @@
 import { createHash } from "node:crypto";
-import * as path from "https://deno.land/std/path/mod.ts";
+import { copyFile, mkdirSync, statSync } from "node:fs";
+import * as path from "node:path";
 
-["dist", "assets/decals/models", "assets/decals/textures/item"].map((d) =>
-  Deno.mkdirSync(d, { recursive: true })
-);
+// Ensure required directories exist
+for (const dir of [
+	"dist",
+	"assets/decals/models",
+	"assets/decals/textures/item",
+]) {
+	mkdirSync(dir, { recursive: true });
+}
 
-const vd = (a: any) => (console.log(a), a),
-  lfs = (...a: any[]) => (...b: any[]) => a[0] && console.log(...a, ...b);
+// Logging utilities
+const vd = <T>(a: T): T => (console.log(a), a);
+const lfs =
+	(...prefix: any[]) =>
+	(...suffix: any[]): void =>
+		prefix[0] && console.log(...prefix, ...suffix);
 
-const textures: Record<string, string> = {},
-  models: Record<string, string> = {},
-  explorable: string[] = [
-    `<h1>Team Fuho's decal explorer</h1>
+// Model and texture mappings
+const textures: Record<string, string> = {};
+const models: Record<string, string> = {};
+const explorable: string[] = [
+	`<h1>Team Fuho's decal explorer</h1>
 Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span>
 <link rel="stylesheet" type="text/css" href="explore.css" />
 <div class=expl_gr>`.replace("\n", "<br>"),
-  ];
+];
 
-const df = Deno.readTextFileSync("decals/decals.txt")
-  .split("\n")
-  .map((i) => i.trim())
-  .filter((i) => i)
-  .filter((i) => !i.trimStart().startsWith("#"));
+// Read and process decals
+const rawDecalText = await Bun.file("decals/decals.txt").text();
+const df = rawDecalText
+	.split("\n")
+	.map((line) => line.trim())
+	.filter((line) => line && !line.startsWith("#"));
 
-function sign(n: string): string {
-  const { mtime, size } = Deno.statSync(n);
-  return `${mtime} ${size}`;
+// Sign and hash helpers
+function sign(filePath: string): string {
+	const { mtime, size } = statSync(filePath);
+	return `${mtime} ${size}`;
 }
 
-const hash = (t: string): string =>
-  createHash("sha1").update(t).digest("base64url").slice(0, 12);
+const hash = (text: string): string =>
+	createHash("sha1").update(text).digest("base64url").slice(0, 12);
 
-const ha = (t: boolean) => (n: string, s?: any): string =>
-  (t ? textures : models)[n] ||
-  ((t ? textures : models)[n] = hash(
-    `${n} ${t ? sign(n) : [n, s || []].flat().join()}`,
-  )) ||
-  (t ? textures : models)[n];
+// Generate hash-based key and memoize
+const makeHasher =
+	(isTexture: boolean) =>
+	(filePath: string, metadata?: unknown): string => {
+		const store = isTexture ? textures : models;
+		if (store[filePath]) return store[filePath];
+		const input = isTexture
+			? `${filePath} ${sign(filePath)}`
+			: [filePath, metadata ?? []].flat().join();
+		const result = hash(input);
+		store[filePath] = result;
+		return result;
+	};
 
 const mode = {
-  fast: "f",
-  default: "d",
-};
+	fast: "f",
+	default: "d",
+} as const;
 
-const tex = ha(true),
-  mod = ha(false);
+const tex = makeHasher(true);
+const mod = makeHasher(false);
 
-function add(i: string, n: string, m: string, x: string, y: string, s: string) {
-  i = Number.parseInt(i);
-  m = mode[m as keyof typeof mode] || mode.fast;
-  x = Number.parseFloat(x);
-  y = Number.parseFloat(y);
-  s = Number.parseFloat(s);
-  const mn = `m${i}_${mod(n, [n, m, x, y, s])}`,
-    mp = vd(path.join("assets/decals/models/", `${mn}.json`)),
-    dt = tex(path.join("decals/", `${n}.png`));
-  explorable.push(
-    `<div class=expl_i>
-<b><code>${i} ${n}</code> ${m}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}\}</span>
-<div class=expl_bg><img src=assets/decals/textures/t${dt}.png class=${m} style=--x:${-x};--y:${-y};--s:${s}></div>
+// Add a decal entry
+function add(
+	iStr: string,
+	name: string,
+	modeKey: string,
+	xStr: string,
+	yStr: string,
+	scaleStr: string,
+): { predicate: { custom_model_data: number }; model: string } {
+	const i = Number.parseInt(iStr, 10);
+	const resolvedMode = mode[modeKey as keyof typeof mode] ?? mode.fast;
+	const x = Number.parseFloat(xStr);
+	const y = Number.parseFloat(yStr);
+	const s = Number.parseFloat(scaleStr);
+
+	const modelKey = `m${i}_${mod(name, [name, resolvedMode, x, y, s])}`;
+	const modelPath = vd(path.join("assets/decals/models/", `${modelKey}.json`));
+	const texKey = tex(path.join("decals/", `${name}.png`));
+
+	explorable.push(
+		`<div class=expl_i>
+<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span>
+<div class=expl_bg><img src=assets/decals/textures/item/t${texKey}.png class=${resolvedMode} style=--x:${-x};--y:${-y};--s:${s}></div>
 </div>`,
-  );
-  function gentf(slt: string) {
-    return {
-      translation: [x * 32, y * 32, -0.03],
-      scale: Array(3).fill(
-        s * (m === mode.default ? 2 : 1) * (slt === "head" ? 1 : 1),
-      ),
-      rotation: m === "d" ? [0, 180, 0] : undefined,
-    };
-  }
-  Deno.writeTextFileSync(
-    mp,
-    JSON.stringify({
-      parent: `fuho:${m}`,
-      textures: {
-        [m === mode.default ? "layer0" : "0"]: `decals:item/t${dt}`,
-      },
-      display: {
-        head: gentf("head"),
-        fixed: gentf("frame"),
-      },
-    }),
-  );
-  lfs()();
+	);
 
-  return {
-    predicate: {
-      custom_model_data: i,
-    },
-    model: `decals:${mn}`,
-  };
+	const gentf = (slot: string) => ({
+		translation: [x * 32, y * 32, -0.03],
+		scale: Array(3).fill(s * (resolvedMode === mode.default ? 2 : 1)),
+		rotation: resolvedMode === "d" ? [0, 180, 0] : undefined,
+	});
+
+	Bun.write(
+		modelPath,
+		JSON.stringify({
+			parent: `fuho:${resolvedMode}`,
+			textures: {
+				[resolvedMode === mode.default ? "layer0" : "0"]:
+					`decals:item/t${texKey}`,
+			},
+			display: {
+				head: gentf("head"),
+				fixed: gentf("frame"),
+			},
+		}),
+	);
+
+	lfs()();
+	return {
+		predicate: { custom_model_data: i },
+		model: `decals:${modelKey}`,
+	};
 }
 
-const pp = vd(path.join("assets/minecraft/models/item/paper.json"));
-Deno.writeTextFileSync(
-  pp,
-  JSON.stringify({
-    parent: "minecraft:item/generated",
-    textures: {
-      layer0: "minecraft:item/paper",
-    },
-    overrides: df.map((s) => s.split(" ")).map((i) => add(...i)),
-  }),
+// Create main item override model file
+const paperPath = vd(path.join("assets/minecraft/models/item/paper.json"));
+Bun.write(
+	paperPath,
+	JSON.stringify({
+		parent: "minecraft:item/generated",
+		textures: {
+			layer0: "minecraft:item/paper",
+		},
+		overrides: df.map((line) =>
+			// @ts-ignore
+			add(...line.split(" ")),
+		),
+	}),
 );
+
 lfs()();
-Deno.writeTextFileSync("explore.html", [...explorable, "</div>"].join("\n"));
-for (const [k, dn] of Object.entries(textures)) {
-  Deno.copyFileSync(
-    k,
-    vd(path.join("assets/decals/textures/", `item/t${dn}.png`)),
-  );
-  lfs(`* ${k}`)();
+
+// Generate explorer HTML
+Bun.write("explore.html", [...explorable, "</div>"].join("\n"));
+
+// Copy texture files
+
+for (const i of Object.entries(textures)) {
+	const [sourcePath, hashId] = i;
+	if (!sourcePath || !hashId) continue;
+	copyFile(
+		sourcePath,
+		vd(path.join("assets/decals/textures/", `item/t${hashId}.png`)),
+		() => {},
+	);
+	lfs(`* ${sourcePath}`)();
 }

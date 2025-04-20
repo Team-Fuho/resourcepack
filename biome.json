@@ -2,7 +2,8 @@
   "$schema": "https://raw.githubusercontent.com/biomejs/biome/main/packages/%40biomejs/biome/configuration_schema.json",
   "formatter": {
     "ignore": ["node_modules", "public", "dist", "assets/decals"],
-    "lineEnding": "lf"
+    "lineEnding": "lf",
+    "useEditorconfig": true
   },
   "linter": {
     "ignore": ["node_modules", "public", "dist", "patches"],

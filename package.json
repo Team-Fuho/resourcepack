@@ -7,30 +7,27 @@
     "lib": "lib"
   },
   "scripts": {
-    "build": "deno task clean && deno task decals && deno run --allow-env --allow-read --allow-write --allow-sys --allow-run --allow-ffi npm:gulp patch && deno task mkmeta",
-    "mkmeta": "deno run --allow-read --allow-write scripts/mmeta.ts",
-    "decals": "deno run --allow-write=. --allow-read=. decals.ts",
+    "build": "bun run clean && bun run decals && bun --bun gulp patch && bun run mkmeta",
+    "mkmeta": "bun scripts/mmeta.ts",
+    "decals": "bun decals.ts",
     "clean": "rm assets/decals/*/* -rf",
-    "fmt": "biome check . --apply"
+    "fmt": "biome check . --write"
   },
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
+    "@biomejs/biome": "^1.9.4",
     "async": "^3.2.6",
     "del": "^8.0.0",
     "gulp": "^5.0.0",
-    "gulp-zip": "^6.0.0",
+    "gulp-zip": "^6.1.0",
     "sharp": "^0.33.5"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Team-Fuho/resourcepack.git"
   },
-  "keywords": [
-    "minecraft",
-    "resourcepack",
-    "bundler"
-  ],
+  "keywords": ["minecraft", "resourcepack", "bundler"],
   "bugs": {
     "url": "https://github.com/Team-Fuho/resourcepack/issues"
   },
@@ -38,6 +35,10 @@
   "devDependencies": {
     "@types/async": "^3.2.24",
     "@types/gulp": "^4.0.17",
-    "@types/gulp-zip": "^4.0.4"
-  }
+    "@types/gulp-zip": "^4.0.4",
+    "bun-types": "^1.2.10",
+    "typescript": "^5.8.3",
+    "@types/bun": "latest"
+  },
+  "private": true
 }

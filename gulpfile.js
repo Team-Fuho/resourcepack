@@ -3,16 +3,16 @@
  * @author stdpi
  */
 
-import { src, dest } from "gulp";
-import { task } from "gulp";
-import { series } from "async";
-import { default as zip } from "gulp-zip";
-import { deleteAsync } from "del";
-import { relative } from "node:path";
-import sharp from "sharp";
-import { readFileSync, readdirSync, writeFile } from "node:fs";
-import { Readable as ReadableStream } from "node:stream";
 import { Buffer } from "node:buffer";
+import { readFileSync, readdirSync, writeFile } from "node:fs";
+import { relative } from "node:path";
+import { Readable as ReadableStream } from "node:stream";
+import { series } from "async";
+import { deleteAsync } from "del";
+import { dest, src } from "gulp";
+import { task } from "gulp";
+import { default as zip } from "gulp-zip";
+import sharp from "sharp";
 
 const pdot = (s) => `.${s}`;
 
@@ -26,10 +26,15 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
   optimizePNG = (img) =>
     new ReadableStream({
       read() {
+        /**
+         * TODO:
+         * 1. Auto squareify the image
+         * 2. Round the image to power of two if larger than 256px
+         */
         sharp(img)
           .png({
             compressionLevel: 8,
-            progressive: true,
+            progressive: false,
           })
           .toBuffer()
           .then((data) => {
@@ -37,7 +42,7 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
             this.push(null);
           })
           .catch((error) => {
-            // console.error(`Error processing image: ${error.message}`);
+            console.error(`Error processing image: ${error.message}`);
             this.push(img);
             this.push(null);
           });
@@ -46,13 +51,16 @@ const minJSON = (json) => Buffer.from(JSON.stringify(JSON.parse(json))),
   opt = (file) => {
     if (typejson.includes(file.extname)) {
       file.contents = minJSON(file.contents);
-    } else if (typeimage.includes(file.extname)) {
-      file.contents = optimizePNG(file.contents);
-    }
+    } 
+    // else if (typeimage.includes(file.extname)) {
+    //   file.contents = optimizePNG(file.contents);
+    // }
   },
   dist = (list, dist, base, patch) =>
     src([...list, ...ignoreGlob], {
       base,
+      // gulp treaty does not goes well
+      encoding: false,
     })
       .on("data", opt)
       .on("data", (file) => {

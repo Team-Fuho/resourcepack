@@ -1,66 +1,64 @@
 .expl_i,
 body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 .expl_gr {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  justify-content: center;
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	flex-wrap: wrap;
+	justify-content: center;
 }
 .expl_gr > * {
-  margin: 1em;
+	margin: 1em;
 }
 .expl_bg {
-  --bi: linear-gradient(
-    45deg,
-    black 25%,
-    transparent 25%,
-    transparent 75%,
-    black 75%,
-    black
-  );
-  --bs: 384px;
+	--bi: linear-gradient(
+		45deg,
+		black 25%,
+		transparent 25%,
+		transparent 75%,
+		black 75%,
+		black
+	);
+	--bs: 384px;
 
-  width: var(--bs);
-  height: var(--bs);
-  border: solid;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #eee;
-  background-image:
-    var(--bi),
-     var(--bi);
-  background-size: 256px 256px;
-  background-position: 0 0, 128px 128px;
-  transition: all 64ms ease-in-out;
-  transform: none;
-  transform-style: preserve-3d;
-  overflow: hidden;
+	width: var(--bs);
+	height: var(--bs);
+	border: solid;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #eee;
+	background-image: var(--bi), var(--bi);
+	background-size: 256px 256px;
+	background-position: 0 0, 128px 128px;
+	transition: all 64ms ease-in-out;
+	transform: none;
+	transform-style: preserve-3d;
+	overflow: hidden;
 }
 .expl_bg:hover {
-  transform: perspective(50mm) rotateY(10deg);
-  overflow: visible;
+	transform: perspective(50mm) rotateY(10deg);
+	overflow: visible;
 }
 .expl_i > * {
-  margin-bottom: 3px;
+	margin-bottom: 3px;
 }
 .ip {
-  border: solid 1px;
-  border-radius: 5px;
-  padding: 1px 5px;
-  width: 100%;
-  user-select: all;
+	border: solid 1px;
+	border-radius: 5px;
+	padding: 1px 5px;
+	width: 100%;
+	user-select: all;
 }
 img {
-  --s: 1;
-  --cs: calc(var(--s) * 128px);
-  width: var(--cs);
-  height: var(--cs);
-  image-rendering: crisp-edges;
-  transform: translate(calc(var(--x) * 128px), calc(var(--y) * 128px));
+	--s: 1;
+	--cs: calc(var(--s) * 128px);
+	width: var(--cs);
+	height: var(--cs);
+	image-rendering: crisp-edges;
+	transform: translate(calc(var(--x) * 128px), calc(var(--y) * 128px));
 }

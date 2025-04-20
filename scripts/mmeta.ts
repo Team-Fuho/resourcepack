@@ -1,50 +1,51 @@
-import { crypto } from "https://deno.land/std/crypto/mod.ts";
-import { resolve, normalize } from "https://deno.land/std/path/mod.ts";
+import fs from "node:fs/promises";
+import path from "node:path";
 
-const distPath = normalize(resolve(Deno.cwd(), "dist"));
+const distPath = path.resolve(process.cwd(), "dist");
+
+async function getZipFiles() {
+	const zipFiles: string[] = [];
+	const files = await fs.readdir(distPath);
+
+	for (const file of files) {
+		const filePath = path.join(distPath, file);
+		const stat = await fs.stat(filePath);
+		if (stat.isFile() && file.endsWith(".zip")) {
+			zipFiles.push(filePath);
+		}
+	}
+
+	return zipFiles;
+}
+
+async function computeHash(filePath: string): Promise<string> {
+	const hasher = new Bun.CryptoHasher("sha1");
+	const fileBuffer = await fs.readFile(filePath);
+	hasher.update(fileBuffer);
+	return hasher.digest("hex");
+}
 
 async function processZipFiles() {
-  const zipFiles = [];
+	const zipFiles = await getZipFiles();
+	const fileMetadata: { url: string; hash: string }[] = [];
 
-  try {
-    for await (const entry of Deno.readDir(distPath)) {
-      if (entry.isFile && entry.name.endsWith(".zip")) {
-        zipFiles.push(resolve(distPath, entry.name));
-      }
-    }
-  } catch (error) {
-    console.error(`Error reading directory: ${error.message}`);
-    console.error(`Attempted to read directory: ${distPath}`);
-    return;
-  }
+	for (const zipFile of zipFiles) {
+		try {
+			const hash = await computeHash(zipFile);
+			const fileName = path.basename(zipFile);
+			const url = `https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist/${fileName}`;
+			fileMetadata.push({ url, hash });
+		} catch (error) {
+			console.error(`Error processing file ${zipFile}: ${error.message}`);
+		}
+	}
 
-  const fileMetadata = [];
-
-  for (const zipFile of zipFiles) {
-    try {
-      const fileContent = await Deno.readFile(zipFile);
-      const hash = await crypto.subtle.digest("SHA-1", fileContent);
-      const hashHex = Array.from(new Uint8Array(hash))
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
-
-      const fileName = zipFile.split(/[/\\]/).pop();
-      const url = `https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist/${fileName}`;
-
-      fileMetadata.push({ url, hash: hashHex });
-    } catch (error) {
-      console.error(`Error processing file ${zipFile}: ${error.message}`);
-    }
-  }
-
-  try {
-    await Deno.writeTextFile(
-      `${distPath}/metadata.json`,
-      JSON.stringify(fileMetadata, null, 2),
-    );
-  } catch (error) {
-    console.error(`Error writing metadata file: ${error.message}`);
-  }
+	try {
+		const metadataPath = path.join(distPath, "metadata.json");
+		await fs.writeFile(metadataPath, JSON.stringify(fileMetadata, null, 2));
+	} catch (error) {
+		console.error(`Error writing metadata file: ${error.message}`);
+	}
 }
 
 processZipFiles();
