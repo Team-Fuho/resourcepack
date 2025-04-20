@@ -24,6 +24,7 @@ const models: Record<string, string> = {};
 const explorable: string[] = [
 	`<h1>Team Fuho's decal explorer</h1>
 Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span>
+<span class=ip>minecraft:give @p item_frame[entity_data={id:"minecraft:item_frame",Invisible:true}] 1</span>
 <link rel="stylesheet" type="text/css" href="explore.css" />
 <div class=expl_gr>`.replace("\n", "<br>"),
 ];
@@ -87,7 +88,7 @@ function add(
 
 	explorable.push(
 		`<div class=expl_i>
-<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span>
+<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span><span class=ip>minecraft:give @p paper[custom_model_data=${i}]</span>
 <div class=expl_bg><img src=assets/decals/textures/item/t${texKey}.png class=${resolvedMode} style=--x:${-x};--y:${-y};--s:${s}></div>
 </div>`,
 	);
