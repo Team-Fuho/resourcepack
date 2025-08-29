@@ -13,7 +13,7 @@ This repo, can be cloned directly into `.minecraft/resourcepack` with fully
 functional features, still, you need some extra setup.
 
 To preview ingame, or through explorer, you likely don't have to install any
-dependencies. Simply have Deno installed and run the `decals.bat`. **`F3` +
+dependencies. Simply have Bun installed and run the `decals.bat`. **`F3` +
 `T`** to reload anything in game.
 
 ### 1. Decals

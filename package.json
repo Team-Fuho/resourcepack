@@ -11,7 +11,8 @@
     "mkmeta": "bun scripts/mmeta.ts",
     "decals": "bun decals.ts",
     "clean": "rm assets/decals/*/* -rf",
-    "fmt": "biome check . --write"
+    "fmt": "biome check . --write",
+    "build:exe": "bun build decals.ts --minify --sourcemap --compile --outfile=decals.exe"
   },
   "author": "hUwUtao",
   "license": "MIT",
