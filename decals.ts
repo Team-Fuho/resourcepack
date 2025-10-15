@@ -43,7 +43,7 @@ function sign(filePath: string): string {
 }
 
 const hash = (text: string): string =>
-	createHash("sha1").update(text).digest("base64url").slice(0, 12);
+	createHash("sha1").update(text).digest("base64url").slice(0, 12).toLowerCase();
 
 // Generate hash-based key and memoize
 const makeHasher =
