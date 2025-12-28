@@ -2,6 +2,16 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const distPath = path.resolve(process.cwd(), "dist");
+const defaultBaseUrl =
+	"https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist";
+
+const normalizeBaseUrl = (baseUrl: string) => baseUrl.replace(/\/+$/, "");
+const baseUrl = normalizeBaseUrl(
+	process.env.RESOURCEPACK_BASE_URL || defaultBaseUrl,
+);
+const latestBaseUrl = normalizeBaseUrl(
+	process.env.RESOURCEPACK_LATEST_BASE_URL || baseUrl,
+);
 
 async function getZipFiles() {
 	const zipFiles: string[] = [];
@@ -27,14 +37,16 @@ async function computeHash(filePath: string): Promise<string> {
 
 async function processZipFiles() {
 	const zipFiles = await getZipFiles();
-	const fileMetadata: { url: string; hash: string }[] = [];
+	const fileMetadata: { url: string; hash: string; latest_url?: string }[] =
+		[];
 
 	for (const zipFile of zipFiles) {
 		try {
 			const hash = await computeHash(zipFile);
 			const fileName = path.basename(zipFile);
-			const url = `https://whitespace.teamfuho.net/Team-Fuho/resourcepacks/dist/${fileName}`;
-			fileMetadata.push({ url, hash });
+			const url = `${baseUrl}/${fileName}`;
+			const latestUrl = `${latestBaseUrl}/${fileName}`;
+			fileMetadata.push({ url, hash, latest_url: latestUrl });
 		} catch (error) {
 			console.error(`Error processing file ${zipFile}: ${error.message}`);
 		}

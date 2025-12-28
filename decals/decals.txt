@@ -33,6 +33,7 @@
 10015 national/cmil default 0 0 1
 10016 national/quochuy default 0 0 1.07
 10017 national/quochuy fast 0 0 3
+10018 national/cmil default 0 0 2
 
 # extra flag
 10020 national/flag_fnl fast 0 0 2

@@ -5,11 +5,15 @@ on:
     branches:
       - "**"
   pull_request:
+  release:
+    types: [published]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,15 +26,68 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Set metadata base URLs
+        run: |
+          repo_name="${GITHUB_REPOSITORY#*/}"
+          pages_base_url="https://${GITHUB_REPOSITORY_OWNER}.github.io/${repo_name}"
+          release_base_url="https://github.com/${GITHUB_REPOSITORY}/releases/latest/download"
+          if [ "${{ github.event_name }}" = "release" ]; then
+            echo "RESOURCEPACK_BASE_URL=${release_base_url}" >> "$GITHUB_ENV"
+          else
+            echo "RESOURCEPACK_BASE_URL=${pages_base_url}" >> "$GITHUB_ENV"
+          fi
+          echo "RESOURCEPACK_LATEST_BASE_URL=${release_base_url}" >> "$GITHUB_ENV"
+
       - name: Build
         run: bun run build
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: resourcepack-dist-${{ github.sha }}
-          path: |
-            dist/*.zip
-            dist/metadata.json
+          name: resourcepack-dist
+          path: dist
           if-no-files-found: error
           retention-days: 7
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  release:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: resourcepack-dist
+
+      - name: Upload release assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            dist/metadata.json

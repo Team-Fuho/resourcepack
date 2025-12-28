@@ -6,4 +6,4 @@ allow_mods = ["OptiFine"]
 validate_pack_metadata_file = false
 zip_spec_conformance_level = "high"
 ['**/*?.png']
-image_data_compression_iterations = 255
+image_data_compression_iterations = 8
