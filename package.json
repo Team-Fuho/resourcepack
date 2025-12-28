@@ -2,26 +2,27 @@
   "name": "fuhopack",
   "version": "1.0.0",
   "description": "Bundle your packs",
-  "main": "gulpfile.js",
+  "main": "scripts/pack.ts",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "build": "bun run clean && bun run decals && bun --bun gulp patch && bun run mkmeta",
+    "build": "bun run clean && bun run decals && bun scripts/pack.ts patch && bun run mkmeta",
     "mkmeta": "bun scripts/mmeta.ts",
     "decals": "bun decals.ts",
     "clean": "rm assets/decals/*/* -rf",
     "fmt": "biome check . --write",
-    "build:exe": "bun build decals.ts --minify --sourcemap --compile --outfile=decals.exe"
+    "build:exe": "bun build decals.ts --minify --sourcemap --compile --outfile=decals.exe",
+    "pack": "bun scripts/pack.ts",
+    "pack:full": "bun scripts/pack.ts full",
+    "pack:dev": "bun scripts/pack.ts pdev"
   },
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
-    "async": "^3.2.6",
-    "del": "^8.0.0",
-    "gulp": "^5.0.0",
-    "gulp-zip": "^6.1.0",
+    "archiver": "^7.0.1",
+    "pngquant-bin": "^9.0.0",
     "sharp": "^0.33.5"
   },
   "repository": {
@@ -34,9 +35,7 @@
   },
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
-    "@types/async": "^3.2.24",
-    "@types/gulp": "^4.0.17",
-    "@types/gulp-zip": "^4.0.4",
+    "@types/archiver": "^6.0.3",
     "bun-types": "^1.2.10",
     "typescript": "^5.8.3",
     "@types/bun": "latest"

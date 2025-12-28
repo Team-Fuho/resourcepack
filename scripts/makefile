@@ -1,18 +1,18 @@
 all: init decals
 init:
-	pnpm i
+	bun install
 	mkdir -p assets/decals/models
 	mkdir -p assets/decals/textures
 clean:
 	rm assets/decals/*/* -rvf
 decals:
-	node decals
+	bun run decals
 build:
-	pnpm gulp default
+	bun scripts/pack.ts full
 patch:
-	pnpm gulp patch
+	bun scripts/pack.ts patch
 dev:
-	pnpm gulp pdev
+	bun scripts/pack.ts pdev
 mkdbg:
 	mkdir -p dist
 	esbuild decals.js --platform=node --target=node12.16 --bundle --minify --charset=utf8 --format=cjs > decals.min.js

@@ -49,11 +49,20 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+      - name: Prepare GitHub Pages site
+        if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        run: |
+          rm -rf site
+          mkdir -p site/assets
+          cp -R dist/. site/
+          cp explore.html explore.css site/
+          cp -R assets/decals site/assets/
+
       - name: Upload GitHub Pages artifact
         if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     if: github.event_name == 'push' && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)

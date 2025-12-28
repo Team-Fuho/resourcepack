@@ -37,8 +37,7 @@ async function computeHash(filePath: string): Promise<string> {
 
 async function processZipFiles() {
 	const zipFiles = await getZipFiles();
-	const fileMetadata: { url: string; hash: string; latest_url?: string }[] =
-		[];
+	const fileMetadata: { url: string; hash: string; latest_url?: string }[] = [];
 
 	for (const zipFile of zipFiles) {
 		try {
