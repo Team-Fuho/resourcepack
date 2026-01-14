@@ -65,6 +65,13 @@
 10037 national/mps default 0 0 1.5
 10038 national/mps default 0 0 3
 
+# flag patterns 3d
+
+10040 national/star default 0 0 1
+10041 national/star default 0 0 2
+10042 national/cp default 0 0 1
+10043 national/cp default 0 0 2
+
 # artwork
 10201 national/artworks/rebel01_812 fast 0 0 5
 10202 national/artworks/rebel02 fast 0 0 4
