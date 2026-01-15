@@ -16,20 +16,29 @@ const IGNORE_NAMES = new Set([".gitignore"]);
 const JSON_EXTS = new Set([".json", ".mcmeta"]);
 const PNG_EXTS = new Set([".png"]);
 const MAX_TEXTURE_SIZE = 2048;
+const PNGQUANT_QUALITY_DEFAULT = "60-85";
+const PNGQUANT_QUALITY_ALPHA = "30-60";
+const PNGQUANT_FLOYD_ALPHA = "0";
 const PNGQUANT_PATH =
 	typeof pngquant === "string" && pngquant.length > 0 ? pngquant : null;
 
 const powerOfTwoFloor = (value: number) => 2 ** Math.floor(Math.log2(value));
 
-const runPngquant = async (input: Buffer): Promise<Buffer | null> => {
+const runPngquant = async (
+	input: Buffer,
+	options?: { quality?: string; floyd?: string },
+): Promise<Buffer | null> => {
 	if (!PNGQUANT_PATH) return null;
+	const quality = options?.quality ?? PNGQUANT_QUALITY_DEFAULT;
+	const floyd = options?.floyd;
 	const proc = Bun.spawn({
 		cmd: [
 			PNGQUANT_PATH,
-			"--quality=65-90",
+			`--quality=${quality}`,
 			"--speed",
 			"1",
 			"--strip",
+			...(floyd ? [`--floyd=${floyd}`] : []),
 			"--output",
 			"-",
 			"--force",
@@ -58,9 +67,28 @@ const optimizePng = async (src: string): Promise<Buffer> => {
 
 	if (!meta.width || !meta.height) return input;
 
+	let hasPartialAlpha = false;
+	if (meta.hasAlpha) {
+		const stats = await image.stats();
+		const alpha = stats.channels[3];
+		if (alpha?.histogram) {
+			for (let i = 1; i < 255; i += 1) {
+				if (alpha.histogram[i] > 0) {
+					hasPartialAlpha = true;
+					break;
+				}
+			}
+		}
+	}
+
 	const longest = Math.max(meta.width, meta.height);
 	const capped = Math.min(longest, MAX_TEXTURE_SIZE);
 	const targetSize = Math.max(1, powerOfTwoFloor(capped));
+	const resizedLabel =
+		meta.width === targetSize && meta.height === targetSize ? " (no-op)" : "";
+	console.log(
+		`[pack] ${src}: ${meta.width}x${meta.height} -> ${targetSize}x${targetSize}${resizedLabel}`,
+	);
 
 	const resized = await sharp(input, { limitInputPixels: false })
 		.resize(targetSize, targetSize, {
@@ -70,7 +98,10 @@ const optimizePng = async (src: string): Promise<Buffer> => {
 		.png({ compressionLevel: 8, progressive: false })
 		.toBuffer();
 
-	const quantized = await runPngquant(resized);
+	const quantized = await runPngquant(resized, {
+		quality: hasPartialAlpha ? PNGQUANT_QUALITY_ALPHA : undefined,
+		floyd: hasPartialAlpha ? PNGQUANT_FLOYD_ALPHA : undefined,
+	});
 	return quantized ?? resized;
 };
 
@@ -145,8 +176,41 @@ const copyPackFiles = async (destDir: string) => {
 	);
 };
 
+let zipCliReady: boolean | null = null;
+const hasZipCli = async () => {
+	if (zipCliReady !== null) return zipCliReady;
+	const proc = Bun.spawn({
+		cmd: ["zip", "-v"],
+		stdout: "ignore",
+		stderr: "ignore",
+	});
+	zipCliReady = (await proc.exited) === 0;
+	return zipCliReady;
+};
+
+const zipDirCli = async (srcDir: string, outFile: string) => {
+	await fs.rm(outFile, { force: true });
+	const proc = Bun.spawn({
+		cmd: ["zip", "-9", "-X", "-q", "-r", "-D", outFile, "."],
+		cwd: srcDir,
+		stdout: "pipe",
+		stderr: "pipe",
+	});
+	const [exitCode, stderr] = await Promise.all([
+		proc.exited,
+		new Response(proc.stderr).text(),
+	]);
+	if (exitCode !== 0) {
+		throw new Error(`zip failed: ${stderr.trim()}`);
+	}
+};
+
 const zipDir = async (srcDir: string, outFile: string) => {
 	await ensureDir(path.dirname(outFile));
+	if (await hasZipCli()) {
+		await zipDirCli(srcDir, outFile);
+		return;
+	}
 	await new Promise<void>((resolve, reject) => {
 		const output = createWriteStream(outFile);
 		const archive = archiver("zip", { zlib: { level: 9 } });

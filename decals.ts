@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
-import { copyFile, mkdirSync, statSync } from "node:fs";
+import { mkdirSync, statSync } from "node:fs";
+import { copyFile } from "node:fs/promises";
 import * as path from "node:path";
+import sharp from "sharp";
 
 // Ensure required directories exist
 for (const dir of [
@@ -28,6 +30,75 @@ Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Inv
 <link rel="stylesheet" type="text/css" href="explore.css" />
 <div class=expl_gr>`.replace("\n", "<br>"),
 ];
+
+const DECALS_DIR = "decals";
+const POSTPROCESS_PATH = path.join(DECALS_DIR, "postprocess.txt");
+
+type PostprocessRule = { regexes: RegExp[]; size: number };
+
+const globToRegex = (pattern: string): RegExp => {
+	const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&");
+	const regex = `^${escaped.replace(/\*/g, "[^/]*")}$`;
+	return new RegExp(regex);
+};
+
+const parsePostprocess = (raw: string): PostprocessRule[] =>
+	raw
+		.split("\n")
+		.map((line) => line.trim())
+		.filter((line) => line && !line.startsWith("#"))
+		.map((line) => {
+			const parts = line.split(/\s+/);
+			if (parts.length < 2) return null;
+			const sizeRaw = parts.pop();
+			const size = Number.parseInt(sizeRaw ?? "", 10);
+			if (!Number.isFinite(size) || size <= 0) return null;
+			const patterns = parts
+				.join(" ")
+				.split(",")
+				.map((pattern) => pattern.trim())
+				.filter(Boolean);
+			if (!patterns.length) return null;
+			return { regexes: patterns.map(globToRegex), size };
+		})
+		.filter((rule): rule is PostprocessRule => Boolean(rule));
+
+let postprocessRules: PostprocessRule[] = [];
+try {
+	const raw = await Bun.file(POSTPROCESS_PATH).text();
+	postprocessRules = parsePostprocess(raw);
+} catch {
+	postprocessRules = [];
+}
+
+const matchPostprocessSize = (
+	relPath: string,
+	relNoExt: string,
+): number | null => {
+	for (const rule of postprocessRules) {
+		for (const regex of rule.regexes) {
+			if (regex.test(relPath) || regex.test(relNoExt)) {
+				return rule.size;
+			}
+		}
+	}
+	return null;
+};
+
+const rescaleToLongEdge = async (
+	input: Buffer,
+	targetSize: number,
+): Promise<Buffer> => {
+	const image = sharp(input, { limitInputPixels: false });
+	const meta = await image.metadata();
+	if (!meta.width || !meta.height) return input;
+	if (Math.max(meta.width, meta.height) === targetSize) return input;
+
+	return await image
+		.resize(targetSize, targetSize, { fit: "inside" })
+		.png({ compressionLevel: 8, progressive: false })
+		.toBuffer();
+};
 
 // Read and process decals
 const rawDecalText = await Bun.file("decals/decals.txt").text();
@@ -151,10 +222,21 @@ Bun.write("explore.html", [...explorable, "</div>"].join("\n"));
 for (const i of Object.entries(textures)) {
 	const [sourcePath, hashId] = i;
 	if (!sourcePath || !hashId) continue;
-	copyFile(
-		sourcePath,
-		vd(path.join("assets/decals/textures/", `item/t${hashId}.png`)),
-		() => {},
+	const destPath = vd(
+		path.join("assets/decals/textures/", `item/t${hashId}.png`),
 	);
+	const relPath = path
+		.relative(DECALS_DIR, sourcePath)
+		.replaceAll(path.sep, "/");
+	const relNoExt = relPath.replace(/\.png$/i, "");
+	const targetSize = matchPostprocessSize(relPath, relNoExt);
+	if (!targetSize) {
+		await copyFile(sourcePath, destPath);
+		lfs(`* ${sourcePath}`)();
+		continue;
+	}
+	const input = Buffer.from(await Bun.file(sourcePath).arrayBuffer());
+	const resized = await rescaleToLongEdge(input, targetSize);
+	await Bun.write(destPath, resized);
 	lfs(`* ${sourcePath}`)();
 }
