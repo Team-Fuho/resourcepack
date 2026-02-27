@@ -282,7 +282,7 @@ const buildPdev = async () => {
 	const patches = await getPatches();
 	const packMeta = JSON.stringify({
 		pack: {
-			pack_format: 6,
+			pack_format: 64,
 			description: [
 				"",
 				{

@@ -141,6 +141,13 @@ const mode = {
 
 const tex = makeHasher(true);
 const mod = makeHasher(false);
+const parseDecalLine = (line: string) => {
+	const [iStr, name, modeKey, xStr, yStr, scaleStr] = line.split(/\s+/);
+	if (!scaleStr) {
+		throw new Error(`Invalid decal line: "${line}"`);
+	}
+	return { iStr, name, modeKey, xStr, yStr, scaleStr };
+};
 
 // Add a decal entry
 function add(
@@ -150,7 +157,10 @@ function add(
 	xStr: string,
 	yStr: string,
 	scaleStr: string,
-): { predicate: { custom_model_data: number }; model: string } {
+): {
+	threshold: number;
+	model: { type: "minecraft:model"; model: string };
+} {
 	const i = Number.parseInt(iStr, 10);
 	const resolvedMode = mode[modeKey as keyof typeof mode] ?? mode.fast;
 	const x = Number.parseFloat(xStr);
@@ -163,7 +173,7 @@ function add(
 
 	explorable.push(
 		`<div class=expl_i>
-<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span><span class=ip>minecraft:give @p paper[custom_model_data=${i}]</span>
+<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span><span class=ip>minecraft:give @p paper[custom_model_data={floats:[${i}]}]</span>
 <div class=expl_bg><img src=assets/decals/textures/item/t${texKey}.png class=${resolvedMode} style=--x:${-x};--y:${-y};--s:${s}></div>
 </div>`,
 	);
@@ -191,24 +201,54 @@ function add(
 
 	lfs()();
 	return {
-		predicate: { custom_model_data: i },
-		model: `decals:${modelKey}`,
+		threshold: i,
+		model: {
+			type: "minecraft:model",
+			model: `decals:${modelKey}`,
+		},
 	};
 }
 
-// Create main item override model file
-const paperPath = vd(path.join("assets/minecraft/models/item/paper.json"));
+// Create item model resources for custom_model_data in 1.21.8 format
+const paperItemPath = vd(path.join("assets/minecraft/items/paper.json"));
+const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
+const entries = df
+	.map((line) => {
+		const { iStr, name, modeKey, xStr, yStr, scaleStr } = parseDecalLine(line);
+		return add(iStr, name, modeKey, xStr, yStr, scaleStr);
+	})
+	.sort((a, b) => a.threshold - b.threshold);
+const highestThreshold = entries.at(-1)?.threshold;
+if (highestThreshold !== undefined) {
+	entries.push({
+		threshold: highestThreshold + 1,
+		model: {
+			type: "minecraft:model",
+			model: "minecraft:item/paper",
+		},
+	});
+}
 Bun.write(
-	paperPath,
+	paperItemPath,
+	JSON.stringify({
+		model: {
+			type: "minecraft:range_dispatch",
+			property: "minecraft:custom_model_data",
+			fallback: {
+				type: "minecraft:model",
+				model: "minecraft:item/paper",
+			},
+			entries,
+		},
+	}),
+);
+Bun.write(
+	paperModelPath,
 	JSON.stringify({
 		parent: "minecraft:item/generated",
 		textures: {
 			layer0: "minecraft:item/paper",
 		},
-		overrides: df.map((line) =>
-			// @ts-ignore
-			add(...line.split(" ")),
-		),
 	}),
 );
 
