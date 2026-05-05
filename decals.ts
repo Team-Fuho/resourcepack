@@ -30,13 +30,13 @@ async function generateShell(
 
 	const elements = [];
 	for (let i = 0; i < slices; i++) {
-		const z = zStart + i;
+		const z = zStart + i / slices;
 		elements.push({
 			from: [fromX, fromY, z],
 			to: [toX, toY, z],
 			faces: {
 				north: { uv: [0, 0, 16, 16], texture: "#layer0" },
-				south: { uv: [0, 0, 16, 16], texture: "#layer0" },
+				south: { uv: [16, 0, 0, 16], texture: "#layer0" },
 			},
 		});
 	}
@@ -77,12 +77,14 @@ async function generateShell(
 	);
 }
 
-await generateShell("f1", 16, 1, 8);
-await generateShell("f2", 32, 1, 8);
-await generateShell("f3", 48, 1, 8);
-await generateShell("f1s", 16, 8, 0);
-await generateShell("f2s", 32, 8, 0);
-await generateShell("f3s", 48, 8, 0);
+const SHEET_SCALES = 5;
+const SHEET_BASE_SCALE = 16;
+const SHELL_QUALITY = 16;
+
+for (let i = 1; i <= SHEET_SCALES; i++) {
+	await generateShell(`f${i}`, SHEET_BASE_SCALE * i, 1, 8);
+	await generateShell(`f${i}s`, SHEET_BASE_SCALE * i, SHELL_QUALITY, 7);
+}
 
 // Logging utilities
 const vd = <T>(a: T): T => (console.log(a), a);
@@ -387,7 +389,7 @@ function add(
 
 	const d = -f(s);
 
-	const n = Math.min(3, Math.ceil(s / 2.0));
+	const n = Math.min(SHEET_SCALES, Math.ceil(s / 2.0));
 	const s_mc = s / n;
 
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br

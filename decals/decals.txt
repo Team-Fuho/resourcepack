@@ -32,7 +32,7 @@
 # extra cm logo
 10015 national/cmil default 0 0 1
 10016 national/quochuy default 0 0 1.07
-10017 national/quochuy fast 0 0 3
+10017 national/quochuy shell 0 0 3
 10018 national/cmil default 0 0 2
 
 # extra flag
@@ -82,7 +82,7 @@
 # colision 10023
 10232 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
-10300 env/brass/nha_quoc_hoi default 0 0 3
+10300 env/brass/nha_quoc_hoi shell 0 0 12
 
 # Misc
 11000 graffiti/anya fast 0 0 2

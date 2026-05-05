@@ -2,4 +2,4 @@ national/*square_v2,national/*vertical_v2,national/mps,national/cmil 512
 national/cp,national/star 128
 national/quochuy 512
 env/exit 256
-env/brass/* 512f
+env/brass/* 1024f
