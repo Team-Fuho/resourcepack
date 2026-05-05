@@ -6,7 +6,11 @@ import sharp from "sharp";
 import { buildExplorerHtml } from "./scripts/explore-template.ts";
 
 // Ensure required directories exist
-for (const dir of ["dist", "assets/decals/textures", "assets/decals/models"]) {
+for (const dir of [
+	"dist",
+	"assets/decals/textures/item",
+	"assets/decals/models",
+]) {
 	mkdirSync(dir, { recursive: true });
 }
 
@@ -284,7 +288,7 @@ function add(
 		id: i,
 		name,
 		mode: resolvedMode,
-		texPath: `assets/decals/textures/t${texKey}.png`,
+		texPath: `assets/decals/textures/item/t${texKey}.png`,
 		x,
 		y,
 		s,
@@ -304,7 +308,7 @@ function add(
 	];
 
 	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;
-	const texRef = `decals:t${texKey}`;
+	const texRef = `decals:item/t${texKey}`;
 
 	const makeDisplay = (dx: number, dy: number) => {
 		let tx = x * 32 + dx;
@@ -354,7 +358,7 @@ for (const e of entries) {
 			parent: a === 0 ? `fuho:${e.parentMode}` : `decals:v${e.threshold}_0`,
 		};
 		if (a === 0) {
-			modelData.textures = { layer0: e.texRef, particle: "fuho:noop" };
+			modelData.textures = { layer0: e.texRef, particle: "fuho:item/noop" };
 		}
 		modelData.display = e.makeDisplay(dx, dy);
 
@@ -403,7 +407,9 @@ Bun.write("explore.html", buildExplorerHtml(explorable));
 for (const i of Object.entries(textures)) {
 	const [sourcePath, hashId] = i;
 	if (!sourcePath || !hashId) continue;
-	const destPath = vd(path.join("assets/decals/textures/", `t${hashId}.png`));
+	const destPath = vd(
+		path.join("assets/decals/textures/", `item/t${hashId}.png`),
+	);
 	const relPath = path
 		.relative(DECALS_DIR, sourcePath)
 		.replaceAll(path.sep, "/");

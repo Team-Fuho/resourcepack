@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "fuho:noop"
+    "layer0": "fuho:item/noop"
   }
 }
