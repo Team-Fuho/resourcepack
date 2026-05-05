@@ -39,7 +39,7 @@ const DECALS_DIR = "decals";
 const POSTPROCESS_PATH = path.join(DECALS_DIR, "postprocess.txt");
 const PBR_PATH = path.join(DECALS_DIR, "pbr.txt");
 
-type PostprocessRule = { regexes: RegExp[]; size: number };
+type PostprocessRule = { regexes: RegExp[]; size: number; fit: boolean };
 
 type PbrRule = {
 	regexes: RegExp[];
@@ -63,8 +63,9 @@ const parsePostprocess = (raw: string): PostprocessRule[] =>
 		.map((line) => {
 			const parts = line.split(/\s+/);
 			if (parts.length < 2) return null;
-			const sizeRaw = parts.pop();
-			const size = Number.parseInt(sizeRaw ?? "", 10);
+			const sizeRaw = parts.pop() ?? "";
+			const fit = sizeRaw.endsWith("f");
+			const size = Number.parseInt(sizeRaw, 10);
 			if (!Number.isFinite(size) || size <= 0) return null;
 			const patterns = parts
 				.join(" ")
@@ -72,7 +73,7 @@ const parsePostprocess = (raw: string): PostprocessRule[] =>
 				.map((pattern) => pattern.trim())
 				.filter(Boolean);
 			if (!patterns.length) return null;
-			return { regexes: patterns.map(globToRegex), size };
+			return { regexes: patterns.map(globToRegex), size, fit };
 		})
 		.filter((rule): rule is PostprocessRule => Boolean(rule));
 
@@ -120,14 +121,14 @@ try {
 	pbrRules = [];
 }
 
-const matchPostprocessSize = (
+const matchPostprocessRule = (
 	relPath: string,
 	relNoExt: string,
-): number | null => {
+): PostprocessRule | null => {
 	for (const rule of postprocessRules) {
 		for (const regex of rule.regexes) {
 			if (regex.test(relPath) || regex.test(relNoExt)) {
-				return rule.size;
+				return rule;
 			}
 		}
 	}
@@ -221,6 +222,24 @@ const rescaleToLongEdge = async (
 		.toBuffer();
 };
 
+const rescaleToSquare = async (
+	input: Buffer,
+	targetSize: number,
+): Promise<Buffer> => {
+	const image = sharp(input, { limitInputPixels: false });
+	const meta = await image.metadata();
+	if (!meta.width || !meta.height) return input;
+	if (meta.width === targetSize && meta.height === targetSize) return input;
+
+	return await image
+		.resize(targetSize, targetSize, {
+			fit: "contain",
+			background: { r: 0, g: 0, b: 0, alpha: 0 },
+		})
+		.png({ compressionLevel: 8, progressive: false })
+		.toBuffer();
+};
+
 // Read and process decals
 const rawDecalText = await Bun.file("decals/decals.txt").text();
 const df = rawDecalText
@@ -235,11 +254,7 @@ function sign(filePath: string): string {
 }
 
 const hash = (text: string): string =>
-	createHash("sha1")
-		.update(text)
-		.digest("base64url")
-		.slice(0, 12)
-		.toLowerCase();
+	createHash("sha1").update(text).digest("base64url").slice(0, 12).toLowerCase();
 
 // Generate hash-based key and memoize
 const makeHasher =
@@ -294,17 +309,24 @@ function add(
 		s,
 	});
 
+	// make sense?
+	function f(x: number) {
+		return 16 / x;
+	}
+
+	const d = -f(s);
+
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
 		{ a: 0, dx: 0, dy: 0 }, // c
-		{ a: 1, dx: 0, dy: -4 * s }, // t
-		{ a: 2, dx: 0, dy: 4 * s }, // b
-		{ a: 3, dx: 4 * s, dy: 0 }, // l
-		{ a: 4, dx: -4 * s, dy: 0 }, // r
-		{ a: 5, dx: 4 * s, dy: -4 * s }, // tl
-		{ a: 6, dx: -4 * s, dy: -4 * s }, // tr
-		{ a: 7, dx: 4 * s, dy: 4 * s }, // bl
-		{ a: 8, dx: -4 * s, dy: 4 * s }, // br
+		{ a: 1, dx: 0, dy: -d * s }, // t
+		{ a: 2, dx: 0, dy: d * s }, // b
+		{ a: 3, dx: d * s, dy: 0 }, // l
+		{ a: 4, dx: -d * s, dy: 0 }, // r
+		{ a: 5, dx: d * s, dy: -d * s }, // tl
+		{ a: 6, dx: -d * s, dy: -d * s }, // tr
+		{ a: 7, dx: d * s, dy: d * s }, // bl
+		{ a: 8, dx: -d * s, dy: d * s }, // br
 	];
 
 	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;
@@ -318,7 +340,7 @@ function add(
 		// fuho:f renders north face (mirrored X vs fuho:d which corrects via [0,180,0]).
 		// Negate tx for fast mode to flip X back to correct direction.
 		// Negate ty always: dy is screen-space (down+), MC translation Y is up+.
-		const xSign = resolvedMode === mode.fast ? -1 : 1;
+		const xSign = resolvedMode === mode.fast ? -1 : -1;
 		let tx = visual_x * xSign;
 		let ty = visual_y;
 
@@ -423,14 +445,18 @@ for (const i of Object.entries(textures)) {
 		.relative(DECALS_DIR, sourcePath)
 		.replaceAll(path.sep, "/");
 	const relNoExt = relPath.replace(/\.png$/i, "");
-	const targetSize = matchPostprocessSize(relPath, relNoExt);
+	const ppRule = matchPostprocessRule(relPath, relNoExt);
 
 	const copyOrResize = async (src: string, dst: string) => {
-		if (!targetSize) {
+		if (!ppRule) {
 			await copyFile(src, dst);
+		} else if (ppRule.fit) {
+			const input = Buffer.from(await Bun.file(src).arrayBuffer());
+			const resized = await rescaleToSquare(input, ppRule.size);
+			await Bun.write(dst, resized);
 		} else {
 			const input = Buffer.from(await Bun.file(src).arrayBuffer());
-			const resized = await rescaleToLongEdge(input, targetSize);
+			const resized = await rescaleToLongEdge(input, ppRule.size);
 			await Bun.write(dst, resized);
 		}
 	};
