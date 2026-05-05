@@ -11,3 +11,5 @@
 # ao:        Ambient occlusion intensity, 0 to 10. If > 0, generates a normal map.
 # glowness:  Emission intensity, 0 to 10.
 #
+
+env/brass/* 2 iron 0 0

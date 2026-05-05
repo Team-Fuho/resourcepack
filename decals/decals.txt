@@ -82,6 +82,8 @@
 # colision 10023
 10232 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
+10300 env/brass/nha_quoc_hoi default 0 0 3
+
 # Misc
 11000 graffiti/anya fast 0 0 2
 11002 graffiti/suanha fast 0 0 1
