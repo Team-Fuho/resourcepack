@@ -331,7 +331,14 @@ const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
 const entries = df
 	.map((line) => {
 		const { iStr, name, modeKey, xStr, yStr, scaleStr } = parseDecalLine(line);
-		return add(iStr!, name!, modeKey!, xStr!, yStr!, scaleStr!);
+		return add(
+			iStr as string,
+			name as string,
+			modeKey as string,
+			xStr as string,
+			yStr as string,
+			scaleStr as string,
+		);
 	})
 	.sort((a, b) => a.threshold - b.threshold);
 
@@ -347,7 +354,7 @@ for (const e of entries) {
 			parent: a === 0 ? `fuho:${e.parentMode}` : `decals:v${e.threshold}_0`,
 		};
 		if (a === 0) {
-			modelData.textures = { layer0: e.texRef };
+			modelData.textures = { layer0: e.texRef, particle: "fuho:noop" };
 		}
 		modelData.display = e.makeDisplay(dx, dy);
 
@@ -396,9 +403,7 @@ Bun.write("explore.html", buildExplorerHtml(explorable));
 for (const i of Object.entries(textures)) {
 	const [sourcePath, hashId] = i;
 	if (!sourcePath || !hashId) continue;
-	const destPath = vd(
-		path.join("assets/decals/textures/", `t${hashId}.png`),
-	);
+	const destPath = vd(path.join("assets/decals/textures/", `t${hashId}.png`));
 	const relPath = path
 		.relative(DECALS_DIR, sourcePath)
 		.replaceAll(path.sep, "/");
