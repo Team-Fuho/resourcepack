@@ -3,6 +3,7 @@ import { mkdirSync, statSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
 import * as path from "node:path";
 import sharp from "sharp";
+import { buildExplorerHtml } from "./scripts/explore-template.ts";
 
 // Ensure required directories exist
 for (const dir of ["dist", "assets/decals/textures/item"]) {
@@ -18,13 +19,17 @@ const lfs =
 
 // Texture mappings
 const textures: Record<string, string> = {};
-const explorable: string[] = [
-	`<h1>Team Fuho's decal explorer</h1>
-Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span>
-<span class=ip>minecraft:give @p item_frame[entity_data={id:"minecraft:item_frame",Invisible:true}] 1</span>
-<link rel="stylesheet" type="text/css" href="explore.css" />
-<div class=expl_gr>`.replace("\n", "<br>"),
-];
+
+type ExplorerEntry = {
+	id: number;
+	name: string;
+	mode: string;
+	texPath: string;
+	x: number;
+	y: number;
+	s: number;
+};
+const explorable: ExplorerEntry[] = [];
 
 const DECALS_DIR = "decals";
 const POSTPROCESS_PATH = path.join(DECALS_DIR, "postprocess.txt");
@@ -160,12 +165,7 @@ function add(
 
 	const texKey = tex(path.join("decals/", `${name}.png`));
 
-	explorable.push(
-		`<div class=expl_i>
-<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper[custom_data={n:${i}}]</span>
-<div class=expl_bg><img src=assets/decals/textures/item/t${texKey}.png class=${resolvedMode} style=--x:${-x};--y:${-y};--s:${s}></div>
-</div>`,
-	);
+	explorable.push({ id: i, name, mode: resolvedMode, texPath: `assets/decals/textures/item/t${texKey}.png`, x, y, s });
 
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
@@ -269,7 +269,7 @@ Bun.write(
 lfs()();
 
 // Generate explorer HTML
-Bun.write("explore.html", [...explorable, "</div>"].join("\n"));
+Bun.write("explore.html", buildExplorerHtml(explorable));
 
 // Copy texture files
 
