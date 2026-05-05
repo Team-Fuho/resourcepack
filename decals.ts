@@ -318,8 +318,9 @@ function add(
 		// fuho:f has geometry centered at (8,8) in model space; generated items
 		// (fuho:d) are implicitly centered at origin. Compensate so both align.
 		const geomOffset = resolvedMode === mode.fast ? -8 : 0;
+		// dy is in screen-space (positive = down). Minecraft Y is up, so negate dy.
 		let tx = visual_x + geomOffset;
-		let ty = visual_y + geomOffset;
+		let ty = -(visual_y) + geomOffset;
 
 		if (resolvedMode === mode.inbetween) {
 			tx += 8 / s;
