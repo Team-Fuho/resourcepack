@@ -1,24 +1,24 @@
 export type ExplorerEntry = {
-  id: number;
-  name: string;
-  mode: string;
-  texPath: string;
-  x: number;
-  y: number;
-  s: number;
+	id: number;
+	name: string;
+	mode: string;
+	texPath: string;
+	x: number;
+	y: number;
+	s: number;
 };
 
 // Grid position (tl t tr / l c r / bl b br) → alignment index a
 // a: 0=c 1=t 2=b 3=l 4=r 5=tl 6=tr 7=bl 8=br
 const GRID_POS_TO_A = [5, 1, 6, 3, 0, 4, 7, 2, 8];
-const GRID_LABELS   = ["tl","t","tr","l","c","r","bl","b","br"];
+const GRID_LABELS = ["tl", "t", "tr", "l", "c", "r", "bl", "b", "br"];
 
 export function buildExplorerHtml(entries: ExplorerEntry[]): string {
-  const dataJson = JSON.stringify(entries);
-  const posToA   = JSON.stringify(GRID_POS_TO_A);
-  const labels   = JSON.stringify(GRID_LABELS);
+	const dataJson = JSON.stringify(entries);
+	const posToA = JSON.stringify(GRID_POS_TO_A);
+	const labels = JSON.stringify(GRID_LABELS);
 
-const script = `
+	const script = `
 const DECALS=${dataJson};
 const ALIGN_A=${posToA};
 const ALIGN_LBL=${labels};
@@ -143,11 +143,11 @@ var container=document.querySelector('.expl_gr');
 DECALS.forEach(function(d){ container.appendChild(makeCard(d)); });
 `;
 
-  const header = `<h1>Team Fuho's decal explorer</h1><br>
+	const header = `<h1>Team Fuho's decal explorer</h1><br>
 Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span><br>
 <span class=ip>minecraft:give @p item_frame[entity_data={id:"minecraft:item_frame",Invisible:true}] 1</span>`;
 
-  return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">

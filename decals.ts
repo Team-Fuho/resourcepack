@@ -1,12 +1,12 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, statSync, existsSync } from "node:fs";
+import { existsSync, mkdirSync, statSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
 import * as path from "node:path";
 import sharp from "sharp";
 import { buildExplorerHtml } from "./scripts/explore-template.ts";
 
 // Ensure required directories exist
-for (const dir of ["dist", "assets/decals/textures/item"]) {
+for (const dir of ["dist", "assets/decals/textures", "assets/decals/models"]) {
 	mkdirSync(dir, { recursive: true });
 }
 
@@ -242,9 +242,7 @@ const makeHasher =
 	(isTexture: boolean) =>
 	(filePath: string): string => {
 		if (textures[filePath]) return textures[filePath];
-		const input = isTexture
-			? `${filePath} ${sign(filePath)}`
-			: filePath;
+		const input = isTexture ? `${filePath} ${sign(filePath)}` : filePath;
 		const result = hash(input);
 		textures[filePath] = result;
 		return result;
@@ -282,15 +280,23 @@ function add(
 
 	const texKey = tex(path.join("decals/", `${name}.png`));
 
-	explorable.push({ id: i, name, mode: resolvedMode, texPath: `assets/decals/textures/item/t${texKey}.png`, x, y, s });
+	explorable.push({
+		id: i,
+		name,
+		mode: resolvedMode,
+		texPath: `assets/decals/textures/t${texKey}.png`,
+		x,
+		y,
+		s,
+	});
 
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
-		{ a: 0, dx: 0,          dy: 0 },         // c
-		{ a: 1, dx: 0,          dy: 8 - 8 * s }, // t
-		{ a: 2, dx: 0,          dy: 8 * s - 8 }, // b
-		{ a: 3, dx: 8 - 8 * s, dy: 0 },         // l
-		{ a: 4, dx: 8 * s - 8, dy: 0 },         // r
+		{ a: 0, dx: 0, dy: 0 }, // c
+		{ a: 1, dx: 0, dy: 8 - 8 * s }, // t
+		{ a: 2, dx: 0, dy: 8 * s - 8 }, // b
+		{ a: 3, dx: 8 - 8 * s, dy: 0 }, // l
+		{ a: 4, dx: 8 * s - 8, dy: 0 }, // r
 		{ a: 5, dx: 8 - 8 * s, dy: 8 - 8 * s }, // tl
 		{ a: 6, dx: 8 * s - 8, dy: 8 - 8 * s }, // tr
 		{ a: 7, dx: 8 - 8 * s, dy: 8 * s - 8 }, // bl
@@ -298,7 +304,7 @@ function add(
 	];
 
 	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;
-	const texRef = `decals:item/t${texKey}`;
+	const texRef = `decals:t${texKey}`;
 
 	const makeDisplay = (dx: number, dy: number) => {
 		let tx = x * 32 + dx;
@@ -307,7 +313,7 @@ function add(
 			tx += 8 / s;
 			ty += 8 / s;
 		}
-			const tf = {
+		const tf = {
 			translation: [tx, ty, -0.03],
 			scale: Array(3).fill(s * 2),
 			...(resolvedMode === "d" ? { rotation: [0, 180, 0] } : {}),
@@ -334,14 +340,25 @@ const rangeEntries: { threshold: number; model: unknown }[] = [];
 for (const e of entries) {
 	// a: 0=c, 1=t, 2=b, 3=l, 4=r, 5=tl, 6=tr, 7=bl, 8=br
 	for (const { a, dx, dy } of e.alignmentOffsets) {
+		const modelPath = vd(
+			path.join("assets/decals/models/", `v${e.threshold}_${a}.json`),
+		);
+		const modelData: any = {
+			parent: a === 0 ? `fuho:${e.parentMode}` : `decals:v${e.threshold}_0`,
+		};
+		if (a === 0) {
+			modelData.textures = { layer0: e.texRef };
+		}
+		modelData.display = e.makeDisplay(dx, dy);
+
+		Bun.write(modelPath, JSON.stringify(modelData));
+
 		rangeEntries.push({
 			// format as float
 			threshold: e.threshold + a / 10,
 			model: {
 				type: "minecraft:model",
-				model: `fuho:${e.parentMode}`,
-				textures: { layer0: e.texRef },
-				display: e.makeDisplay(dx, dy),
+				model: `decals:v${e.threshold}_${a}`,
 			},
 		});
 	}
@@ -380,7 +397,7 @@ for (const i of Object.entries(textures)) {
 	const [sourcePath, hashId] = i;
 	if (!sourcePath || !hashId) continue;
 	const destPath = vd(
-		path.join("assets/decals/textures/", `item/t${hashId}.png`),
+		path.join("assets/decals/textures/", `t${hashId}.png`),
 	);
 	const relPath = path
 		.relative(DECALS_DIR, sourcePath)
