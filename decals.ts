@@ -297,14 +297,14 @@ function add(
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
 		{ a: 0, dx: 0, dy: 0 }, // c
-		{ a: 1, dx: 0, dy: 8 - 8 * s }, // t
-		{ a: 2, dx: 0, dy: 8 * s - 8 }, // b
-		{ a: 3, dx: 8 - 8 * s, dy: 0 }, // l
-		{ a: 4, dx: 8 * s - 8, dy: 0 }, // r
-		{ a: 5, dx: 8 - 8 * s, dy: 8 - 8 * s }, // tl
-		{ a: 6, dx: 8 * s - 8, dy: 8 - 8 * s }, // tr
-		{ a: 7, dx: 8 - 8 * s, dy: 8 * s - 8 }, // bl
-		{ a: 8, dx: 8 * s - 8, dy: 8 * s - 8 }, // br
+		{ a: 1, dx: 0, dy: 8 * s - 8 }, // t
+		{ a: 2, dx: 0, dy: 8 - 8 * s }, // b
+		{ a: 3, dx: 8 * s - 8, dy: 0 }, // l
+		{ a: 4, dx: 8 - 8 * s, dy: 0 }, // r
+		{ a: 5, dx: 8 * s - 8, dy: 8 * s - 8 }, // tl
+		{ a: 6, dx: 8 - 8 * s, dy: 8 * s - 8 }, // tr
+		{ a: 7, dx: 8 * s - 8, dy: 8 - 8 * s }, // bl
+		{ a: 8, dx: 8 - 8 * s, dy: 8 - 8 * s }, // br
 	];
 
 	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;

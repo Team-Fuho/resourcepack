@@ -29,10 +29,10 @@ var subscribers=[];
 
 function alignOffsets(a,s){
   var v=[
-    [0,0],[0,8-8*s],[0,8*s-8],
-    [8-8*s,0],[8*s-8,0],
-    [8-8*s,8-8*s],[8*s-8,8-8*s],
-    [8-8*s,8*s-8],[8*s-8,8*s-8]
+    [0,0],[0,8*s-8],[0,8-8*s],
+    [8*s-8,0],[8-8*s,0],
+    [8*s-8,8*s-8],[8-8*s,8*s-8],
+    [8*s-8,8-8*s],[8-8*s,8-8*s]
   ];
   return v[a]||[0,0];
 }
@@ -121,8 +121,8 @@ function makeCard(d){
     var sz=s*128;
     img.style.width=sz+'px';
     img.style.height=sz+'px';
-    var cx=192 - sz/2 - d.x*128 + dx*8;
-    var cy=192 - sz/2 - d.y*128 + dy*8;
+    var cx=192 - sz/2 - d.x*128 - dx*8;
+    var cy=192 - sz/2 - d.y*128 - dy*8;
     img.style.left=cx+'px';
     img.style.top=cy+'px';
     cmd.textContent='minecraft:give @p paper[custom_model_data={floats:['+(d.id + a/10)+']}]';
