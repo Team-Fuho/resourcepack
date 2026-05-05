@@ -315,12 +315,12 @@ function add(
 		const visual_x = -x * 32 + dx;
 		const visual_y = y * 32 + dy;
 
-		// fuho:f has geometry centered at (8,8) in model space; generated items
-		// (fuho:d) are implicitly centered at origin. Compensate so both align.
-		const geomOffset = resolvedMode === mode.fast ? -8 : 0;
-		// dy is in screen-space (positive = down). Minecraft Y is up, so negate dy.
-		let tx = visual_x + geomOffset;
-		let ty = -(visual_y) + geomOffset;
+		// fuho:f renders north face (mirrored X vs fuho:d which corrects via [0,180,0]).
+		// Negate tx for fast mode to flip X back to correct direction.
+		// Negate ty always: dy is screen-space (down+), MC translation Y is up+.
+		const xSign = resolvedMode === mode.fast ? -1 : 1;
+		let tx = visual_x * xSign;
+		let ty = -visual_y;
 
 		if (resolvedMode === mode.inbetween) {
 			tx += 8 / s;
