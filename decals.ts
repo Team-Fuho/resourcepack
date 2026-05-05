@@ -10,9 +10,79 @@ for (const dir of [
 	"dist",
 	"assets/decals/textures/item",
 	"assets/decals/models",
+	"assets/fuho/models",
 ]) {
 	mkdirSync(dir, { recursive: true });
 }
+
+// Shell generation
+async function generateShell(
+	name: string,
+	size: number,
+	slices = 8,
+	zStart = 0,
+) {
+	const halfSize = size / 2;
+	const fromX = 8 - halfSize;
+	const toX = 8 + halfSize;
+	const fromY = 8 - halfSize;
+	const toY = 8 + halfSize;
+
+	const elements = [];
+	for (let i = 0; i < slices; i++) {
+		const z = zStart + i;
+		elements.push({
+			from: [fromX, fromY, z],
+			to: [toX, toY, z],
+			faces: {
+				north: { uv: [0, 0, 16, 16], texture: "#layer0" },
+				south: { uv: [0, 0, 16, 16], texture: "#layer0" },
+			},
+		});
+	}
+
+	const model = {
+		credit: `fuho:${name} — shell: ${slices} slices, double-faced`,
+		textures: { layer0: "fuho:item/noop" },
+		elements,
+		display: {
+			thirdperson_righthand: {
+				rotation: [68, 0, 0],
+				translation: [-6, 0, 0],
+				scale: [0.5, 0.5, 0.5],
+			},
+			thirdperson_lefthand: {
+				rotation: [68, 0, 0],
+				translation: [-6, 0, 0],
+				scale: [0.5, 0.5, 0.5],
+			},
+			firstperson_righthand: {
+				rotation: [0, 180, 0],
+				translation: [0, 8, 0],
+				scale: [0.25, 0.25, 1],
+			},
+			firstperson_lefthand: {
+				rotation: [0, -180, 0],
+				translation: [0, 8, 0],
+				scale: [0.25, 0.25, 1],
+			},
+			gui: { rotation: [0, -180, 0], scale: [0.5, 0.5, 0.5] },
+			head: { translation: [0, 0, -6.5], scale: [0.5, 0.5, 1] },
+			fixed: { translation: [0, 0, -0.01] },
+		},
+	};
+	await Bun.write(
+		`assets/fuho/models/${name}.json`,
+		JSON.stringify(model, null, 2),
+	);
+}
+
+await generateShell("f1", 16, 1, 8);
+await generateShell("f2", 32, 1, 8);
+await generateShell("f3", 48, 1, 8);
+await generateShell("f1s", 16, 8, 0);
+await generateShell("f2s", 32, 8, 0);
+await generateShell("f3s", 48, 8, 0);
 
 // Logging utilities
 const vd = <T>(a: T): T => (console.log(a), a);
@@ -271,6 +341,7 @@ const mode = {
 	fast: "f",
 	default: "d",
 	inbetween: "i",
+	shell: "s",
 } as const;
 
 const tex = makeHasher(true);
@@ -316,6 +387,9 @@ function add(
 
 	const d = -f(s);
 
+	const n = Math.min(3, Math.ceil(s / 2.0));
+	const s_mc = s / n;
+
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
 		{ a: 0, dx: 0, dy: 0 }, // c
@@ -329,7 +403,14 @@ function add(
 		{ a: 8, dx: -d * s, dy: d * s }, // br
 	];
 
-	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;
+	const isFastOrShell =
+		resolvedMode === mode.fast || resolvedMode === mode.shell;
+	const parentMode =
+		resolvedMode === mode.inbetween
+			? mode.fast
+			: isFastOrShell
+				? `f${n}${resolvedMode === mode.shell ? "s" : ""}`
+				: resolvedMode;
 	const texRef = `decals:item/t${texKey}`;
 
 	const makeDisplay = (dx: number, dy: number) => {
@@ -340,9 +421,13 @@ function add(
 		// fuho:f renders north face (mirrored X vs fuho:d which corrects via [0,180,0]).
 		// Negate tx for fast mode to flip X back to correct direction.
 		// Negate ty always: dy is screen-space (down+), MC translation Y is up+.
-		const xSign = resolvedMode === mode.fast ? -1 : -1;
-		let tx = visual_x * xSign;
-		let ty = visual_y;
+		const xSign = isFastOrShell ? -1 : -1;
+
+		// Scale bypass logic: s_mc = s / n.
+		// To preserve displacement D = tx * scale_mc * 2, we need tx_mc = tx * n.
+		const scaleFactor = isFastOrShell ? n : 1;
+		let tx = visual_x * xSign * scaleFactor;
+		let ty = visual_y * scaleFactor;
 
 		if (resolvedMode === mode.inbetween) {
 			tx += 8 / s;
@@ -350,7 +435,7 @@ function add(
 		}
 		const tf = {
 			translation: [tx, ty, -0.03],
-			scale: Array(3).fill(s * 2),
+			scale: Array(3).fill((isFastOrShell ? s_mc : s) * 2),
 			...(resolvedMode === "d" ? { rotation: [0, 180, 0] } : {}),
 		};
 		return { head: tf, fixed: tf };

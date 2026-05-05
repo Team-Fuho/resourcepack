@@ -146,6 +146,7 @@ dist
 
 bedrock/**
 !bedrock/converter.sh
+assets/fuho/models/f*.json
 assets/decals
 assets/minecraft/items/paper.*
 assets/minecraft/models/item/paper.*
