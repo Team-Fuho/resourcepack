@@ -315,10 +315,11 @@ function add(
 		const visual_x = -x * 32 + dx;
 		const visual_y = y * 32 + dy;
 
-		// Map visual shift to Minecraft local coordinates
-		// fuho:d has rotation [0, 180, 0] which mirrors X axis
-		let tx = visual_x * (resolvedMode === "d" ? -1 : 1);
-		let ty = visual_y;
+		// fuho:f has geometry centered at (8,8) in model space; generated items
+		// (fuho:d) are implicitly centered at origin. Compensate so both align.
+		const geomOffset = resolvedMode === mode.fast ? -8 : 0;
+		let tx = visual_x + geomOffset;
+		let ty = visual_y + geomOffset;
 
 		if (resolvedMode === mode.inbetween) {
 			tx += 8 / s;

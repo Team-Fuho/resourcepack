@@ -27,12 +27,18 @@ const ALIGN_LBL=${labels};
 var currentA=0;
 var subscribers=[];
 
-function alignOffsets(a,s){
+function alignOffsets(a){
+  // unit alignment directions (scale-independent)
   var v=[
-    [0,0],[0,8-8*s],[0,8*s-8],
-    [8-8*s,0],[8*s-8,0],
-    [8-8*s,8-8*s],[8*s-8,8-8*s],
-    [8-8*s,8*s-8],[8*s-8,8*s-8]
+    [0,0],    // c
+    [0,-8],   // t
+    [0,8],    // b
+    [8,0],    // l
+    [-8,0],   // r
+    [8,-8],   // tl
+    [-8,-8],  // tr
+    [8,8],    // bl
+    [-8,8],   // br
   ];
   return v[a]||[0,0];
 }
@@ -116,7 +122,7 @@ function makeCard(d){
 
   function applyAlign(a){
     var s=d.s;
-    var off=alignOffsets(a,s);
+    var off=alignOffsets(a);
     var dx=off[0], dy=off[1];
     var sz=s*128;
     img.style.width=sz+'px';
