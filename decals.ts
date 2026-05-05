@@ -5,11 +5,7 @@ import * as path from "node:path";
 import sharp from "sharp";
 
 // Ensure required directories exist
-for (const dir of [
-	"dist",
-	"assets/decals/models",
-	"assets/decals/textures/item",
-]) {
+for (const dir of ["dist", "assets/decals/textures/item"]) {
 	mkdirSync(dir, { recursive: true });
 }
 
@@ -20,9 +16,8 @@ const lfs =
 	(...suffix: any[]): void =>
 		prefix[0] && console.log(...prefix, ...suffix);
 
-// Model and texture mappings
+// Texture mappings
 const textures: Record<string, string> = {};
-const models: Record<string, string> = {};
 const explorable: string[] = [
 	`<h1>Team Fuho's decal explorer</h1>
 Invisible item_frame: <span class=ip>minecraft:give @p item_frame{EntityTag:{Invisible:1}}</span>
@@ -123,24 +118,23 @@ const hash = (text: string): string =>
 // Generate hash-based key and memoize
 const makeHasher =
 	(isTexture: boolean) =>
-	(filePath: string, metadata?: unknown): string => {
-		const store = isTexture ? textures : models;
-		if (store[filePath]) return store[filePath];
+	(filePath: string): string => {
+		if (textures[filePath]) return textures[filePath];
 		const input = isTexture
 			? `${filePath} ${sign(filePath)}`
-			: [filePath, metadata ?? []].flat().join();
+			: filePath;
 		const result = hash(input);
-		store[filePath] = result;
+		textures[filePath] = result;
 		return result;
 	};
 
 const mode = {
 	fast: "f",
 	default: "d",
+	inbetween: "i",
 } as const;
 
 const tex = makeHasher(true);
-const mod = makeHasher(false);
 const parseDecalLine = (line: string) => {
 	const [iStr, name, modeKey, xStr, yStr, scaleStr] = line.split(/\s+/);
 	if (!scaleStr) {
@@ -157,100 +151,120 @@ function add(
 	xStr: string,
 	yStr: string,
 	scaleStr: string,
-): {
-	threshold: number;
-	model: { type: "minecraft:model"; model: string };
-} {
+) {
 	const i = Number.parseInt(iStr, 10);
 	const resolvedMode = mode[modeKey as keyof typeof mode] ?? mode.fast;
 	const x = Number.parseFloat(xStr);
 	const y = Number.parseFloat(yStr);
 	const s = Number.parseFloat(scaleStr);
 
-	const modelKey = `m${i}_${mod(name, [name, resolvedMode, x, y, s])}`;
-	const modelPath = vd(path.join("assets/decals/models/", `${modelKey}.json`));
 	const texKey = tex(path.join("decals/", `${name}.png`));
 
 	explorable.push(
 		`<div class=expl_i>
-<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper{CustomModelData:${i}}</span><span class=ip>minecraft:give @p paper[custom_model_data={floats:[${i}]}]</span>
+<b><code>${i} ${name}</code> ${resolvedMode}</b> <span class=ip>minecraft:give @p paper[custom_data={n:${i}}]</span>
 <div class=expl_bg><img src=assets/decals/textures/item/t${texKey}.png class=${resolvedMode} style=--x:${-x};--y:${-y};--s:${s}></div>
 </div>`,
 	);
 
-	const gentf = (slot: string) => ({
-		translation: [x * 32, y * 32, -0.03],
-		scale: Array(3).fill(s * (resolvedMode === mode.default ? 2 : 1)),
-		rotation: resolvedMode === "d" ? [0, 180, 0] : undefined,
-	});
+	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
+	const alignmentOffsets = [
+		{ a: 0, dx: 0,          dy: 0 },         // c
+		{ a: 1, dx: 0,          dy: 8 - 8 * s }, // t
+		{ a: 2, dx: 0,          dy: 8 * s - 8 }, // b
+		{ a: 3, dx: 8 - 8 * s, dy: 0 },         // l
+		{ a: 4, dx: 8 * s - 8, dy: 0 },         // r
+		{ a: 5, dx: 8 - 8 * s, dy: 8 - 8 * s }, // tl
+		{ a: 6, dx: 8 * s - 8, dy: 8 - 8 * s }, // tr
+		{ a: 7, dx: 8 - 8 * s, dy: 8 * s - 8 }, // bl
+		{ a: 8, dx: 8 * s - 8, dy: 8 * s - 8 }, // br
+	];
 
-	Bun.write(
-		modelPath,
-		JSON.stringify({
-			parent: `fuho:${resolvedMode}`,
-			textures: {
-				[resolvedMode === mode.default ? "layer0" : "0"]:
-					`decals:item/t${texKey}`,
-			},
-			display: {
-				head: gentf("head"),
-				fixed: gentf("frame"),
-			},
-		}),
-	);
+	const parentMode = resolvedMode === mode.inbetween ? mode.fast : resolvedMode;
+	const texRef = `decals:item/t${texKey}`;
+
+	const makeDisplay = (dx: number, dy: number) => {
+		let tx = x * 32 + dx;
+		let ty = y * 32 + dy;
+		if (resolvedMode === mode.inbetween) {
+			tx += 8 / s;
+			ty += 8 / s;
+		}
+			const tf = {
+			translation: [tx, ty, -0.03],
+			scale: Array(3).fill(s * 2),
+			...(resolvedMode === "d" ? { rotation: [0, 180, 0] } : {}),
+		};
+		return { head: tf, fixed: tf };
+	};
 
 	lfs()();
-	return {
-		threshold: i,
-		model: {
-			type: "minecraft:model",
-			model: `decals:${modelKey}`,
-		},
-	};
+	return { threshold: i, texRef, parentMode, alignmentOffsets, makeDisplay };
 }
 
-// Create item model resources for custom_model_data in 1.21.8 format
+// Create item model resources
 const paperItemPath = vd(path.join("assets/minecraft/items/paper.json"));
 const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
 const entries = df
 	.map((line) => {
 		const { iStr, name, modeKey, xStr, yStr, scaleStr } = parseDecalLine(line);
-		return add(iStr, name, modeKey, xStr, yStr, scaleStr);
+		return add(iStr!, name!, modeKey!, xStr!, yStr!, scaleStr!);
 	})
 	.sort((a, b) => a.threshold - b.threshold);
-const highestThreshold = entries.at(-1)?.threshold;
-if (highestThreshold !== undefined) {
-	entries.push({
-		threshold: highestThreshold + 1,
-		model: {
-			type: "minecraft:model",
-			model: "minecraft:item/paper",
-		},
-	});
+
+// Flat cases: one entry per (decal × alignment), keyed by SNBT compound {n:<id>,a:<idx>}
+const customDataCases: { when: string; model: unknown }[] = [];
+for (const e of entries) {
+	for (const { a, dx, dy } of e.alignmentOffsets) {
+		customDataCases.push({
+			when: `{n:${e.threshold},a:${a}}`,
+			model: {
+				type: "minecraft:model",
+				model: `fuho:${e.parentMode}`,
+				textures: { layer0: e.texRef },
+				display: e.makeDisplay(dx, dy),
+			},
+		});
+	}
 }
+
+// Backward-compat: range_dispatch on custom_model_data (center only)
+const rangeEntries = entries.map((e) => ({
+	threshold: e.threshold,
+	model: {
+		type: "minecraft:model",
+		model: `fuho:${e.parentMode}`,
+		textures: { layer0: e.texRef },
+		display: e.makeDisplay(0, 0),
+	},
+}));
+
 Bun.write(
 	paperItemPath,
 	JSON.stringify({
 		model: {
-			type: "minecraft:range_dispatch",
-			property: "minecraft:custom_model_data",
+			type: "minecraft:select",
+			property: "minecraft:custom_data",
+			cases: customDataCases,
 			fallback: {
-				type: "minecraft:model",
-				model: "minecraft:item/paper",
+				type: "minecraft:range_dispatch",
+				property: "minecraft:custom_model_data",
+				fallback: { type: "minecraft:model", model: "minecraft:item/paper" },
+				entries: rangeEntries,
 			},
-			entries,
 		},
 	}),
 );
+
+/*
 Bun.write(
 	paperModelPath,
 	JSON.stringify({
 		parent: "minecraft:item/generated",
-		textures: {
-			layer0: "minecraft:item/paper",
-		},
+		textures: { layer0: "minecraft:item/paper" },
 	}),
 );
+*/
 
 lfs()();
 

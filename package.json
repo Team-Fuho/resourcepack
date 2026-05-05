@@ -35,9 +35,9 @@
   },
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
-    "@types/archiver": "^6.0.3",
-    "bun-types": "^1.2.10",
-    "typescript": "^5.8.3",
+    "@types/archiver": "^6.0.4",
+    "bun-types": "^1.3.13",
+    "typescript": "^5.9.3",
     "@types/bun": "latest"
   },
   "private": true

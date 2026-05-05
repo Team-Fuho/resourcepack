@@ -147,6 +147,7 @@ dist
 bedrock/**
 !bedrock/converter.sh
 assets/decals
+assets/minecraft/items/paper.*
 assets/minecraft/models/item/paper.*
 explore.html
 *.min.js

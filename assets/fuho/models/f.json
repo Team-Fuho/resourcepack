@@ -1,14 +1,14 @@
 {
   "credit": "Made with Blockbench",
   "textures": {
-    "0": "placeholder"
+    "layer0": "placeholder"
   },
   "elements": [
     {
-      "from": [-8, -8, 8],
-      "to": [24, 24, 8],
+      "from": [0, 0, 8],
+      "to": [16, 16, 8],
       "faces": {
-        "north": { "uv": [0, 0, 16, 16], "texture": "#0" }
+        "north": { "uv": [0, 0, 16, 16], "texture": "#layer0" }
       }
     }
   ],
