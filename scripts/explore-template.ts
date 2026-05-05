@@ -95,7 +95,7 @@ function makeCard(d){
 
   var baseCmd=document.createElement('span');
   baseCmd.className='ip';
-  baseCmd.textContent='minecraft:give @p paper[custom_data={n:'+d.id+'}]';
+  baseCmd.textContent='minecraft:give @p paper[custom_model_data='+d.id+']';
 
   var cmd=document.createElement('span');
   cmd.className='ip';
@@ -125,7 +125,7 @@ function makeCard(d){
     var cy=192 - sz/2 - d.y*128 + dy*8;
     img.style.left=cx+'px';
     img.style.top=cy+'px';
-    cmd.textContent='minecraft:give @p paper[custom_data={n:'+d.id+',a:'+a+'}]';
+    cmd.textContent='minecraft:give @p paper[custom_model_data='+(d.id + a/10)+']';
   }
 
   subscribers.push(applyAlign);

@@ -329,12 +329,14 @@ const entries = df
 	})
 	.sort((a, b) => a.threshold - b.threshold);
 
-// Flat cases: one entry per (decal × alignment), keyed by SNBT compound {n:<id>,a:<idx>}
-const customDataCases: { when: string; model: unknown }[] = [];
+// Float abuse: id.a (e.g., 10001.0 for a=0, 10001.1 for a=1)
+const rangeEntries: { threshold: number; model: unknown }[] = [];
 for (const e of entries) {
+	// a: 0=c, 1=t, 2=b, 3=l, 4=r, 5=tl, 6=tr, 7=bl, 8=br
 	for (const { a, dx, dy } of e.alignmentOffsets) {
-		customDataCases.push({
-			when: `{n:${e.threshold},a:${a}}`,
+		rangeEntries.push({
+			// format as float
+			threshold: e.threshold + a / 10,
 			model: {
 				type: "minecraft:model",
 				model: `fuho:${e.parentMode}`,
@@ -345,30 +347,14 @@ for (const e of entries) {
 	}
 }
 
-// Backward-compat: range_dispatch on custom_model_data (center only)
-const rangeEntries = entries.map((e) => ({
-	threshold: e.threshold,
-	model: {
-		type: "minecraft:model",
-		model: `fuho:${e.parentMode}`,
-		textures: { layer0: e.texRef },
-		display: e.makeDisplay(0, 0),
-	},
-}));
-
 Bun.write(
 	paperItemPath,
 	JSON.stringify({
 		model: {
-			type: "minecraft:select",
-			property: "minecraft:custom_data",
-			cases: customDataCases,
-			fallback: {
-				type: "minecraft:range_dispatch",
-				property: "minecraft:custom_model_data",
-				fallback: { type: "minecraft:model", model: "minecraft:item/paper" },
-				entries: rangeEntries,
-			},
+			type: "minecraft:range_dispatch",
+			property: "minecraft:custom_model_data",
+			fallback: { type: "minecraft:model", model: "minecraft:item/paper" },
+			entries: rangeEntries,
 		},
 	}),
 );
