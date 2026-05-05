@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { mkdirSync, statSync } from "node:fs";
+import { mkdirSync, statSync, existsSync } from "node:fs";
 import { copyFile } from "node:fs/promises";
 import * as path from "node:path";
 import sharp from "sharp";
@@ -33,8 +33,17 @@ const explorable: ExplorerEntry[] = [];
 
 const DECALS_DIR = "decals";
 const POSTPROCESS_PATH = path.join(DECALS_DIR, "postprocess.txt");
+const PBR_PATH = path.join(DECALS_DIR, "pbr.txt");
 
 type PostprocessRule = { regexes: RegExp[]; size: number };
+
+type PbrRule = {
+	regexes: RegExp[];
+	roughness: number;
+	metalnessStr: string;
+	ao: number;
+	glowness: number;
+};
 
 const globToRegex = (pattern: string): RegExp => {
 	const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, "\\$&");
@@ -63,12 +72,48 @@ const parsePostprocess = (raw: string): PostprocessRule[] =>
 		})
 		.filter((rule): rule is PostprocessRule => Boolean(rule));
 
+const parsePbr = (raw: string): PbrRule[] =>
+	raw
+		.split("\n")
+		.map((line) => line.trim())
+		.filter((line) => line && !line.startsWith("#"))
+		.map((line) => {
+			const parts = line.split(/\s+/);
+			if (parts.length < 5) return null;
+			const glowness = Number.parseFloat(parts.pop() ?? "0");
+			const ao = Number.parseFloat(parts.pop() ?? "0");
+			const metalnessStr = parts.pop() ?? "0";
+			const roughness = Number.parseFloat(parts.pop() ?? "0");
+			const patterns = parts
+				.join(" ")
+				.split(",")
+				.map((pattern) => pattern.trim())
+				.filter(Boolean);
+			if (!patterns.length) return null;
+			return {
+				regexes: patterns.map(globToRegex),
+				roughness,
+				metalnessStr,
+				ao,
+				glowness,
+			};
+		})
+		.filter((rule): rule is PbrRule => Boolean(rule));
+
 let postprocessRules: PostprocessRule[] = [];
 try {
 	const raw = await Bun.file(POSTPROCESS_PATH).text();
 	postprocessRules = parsePostprocess(raw);
 } catch {
 	postprocessRules = [];
+}
+
+let pbrRules: PbrRule[] = [];
+try {
+	const raw = await Bun.file(PBR_PATH).text();
+	pbrRules = parsePbr(raw);
+} catch {
+	pbrRules = [];
 }
 
 const matchPostprocessSize = (
@@ -83,6 +128,78 @@ const matchPostprocessSize = (
 		}
 	}
 	return null;
+};
+
+const matchPbrRule = (relPath: string, relNoExt: string): PbrRule | null => {
+	for (const rule of pbrRules) {
+		for (const regex of rule.regexes) {
+			if (regex.test(relPath) || regex.test(relNoExt)) {
+				return rule;
+			}
+		}
+	}
+	return null;
+};
+
+const generateSpecMapBuffer = async (rule: PbrRule): Promise<Buffer> => {
+	// R: roughness (0-10) -> perceptualSmoothness -> linearRoughness
+	let r = Math.round(255 * (1.0 - Math.sqrt(rule.roughness / 10.0)));
+	if (r < 0) r = 0;
+	if (r > 255) r = 255;
+	if (rule.roughness === 0) r = 255;
+
+	// G: metalness
+	let g = 9; // default dielectric ~0.04
+	const m = rule.metalnessStr.toLowerCase();
+	const metals: Record<string, number> = {
+		iron: 230,
+		gold: 231,
+		aluminum: 232,
+		chrome: 233,
+		copper: 234,
+		lead: 235,
+		platinum: 236,
+		silver: 237,
+	};
+	if (metals[m] !== undefined) {
+		g = metals[m];
+	} else {
+		const mNum = Number.parseFloat(m);
+		if (!Number.isNaN(mNum)) {
+			if (mNum > 0) g = 255; // Custom metal
+			if (mNum === 0) g = 9; // Dielectric
+		}
+	}
+
+	// B: Porosity / SSS
+	const b = 0;
+
+	// A: Emission
+	let a = 255;
+	if (rule.glowness > 0) {
+		a = Math.round((rule.glowness / 10.0) * 254);
+	}
+
+	const raw = Buffer.from([r, g, b, a]);
+	return await sharp(raw, {
+		raw: { width: 1, height: 1, channels: 4 },
+	})
+		.png()
+		.toBuffer();
+};
+
+const generateNormalMapBuffer = async (rule: PbrRule): Promise<Buffer> => {
+	const r = 128;
+	const g = 128;
+	const b = Math.round((rule.ao / 10.0) * 255);
+	const a = 255;
+
+	const raw = Buffer.from([r, g, b, a]);
+	return await sharp(raw, {
+		raw: { width: 1, height: 1, channels: 4 },
+	})
+		.png()
+		.toBuffer();
 };
 
 const rescaleToLongEdge = async (
@@ -284,13 +401,46 @@ for (const i of Object.entries(textures)) {
 		.replaceAll(path.sep, "/");
 	const relNoExt = relPath.replace(/\.png$/i, "");
 	const targetSize = matchPostprocessSize(relPath, relNoExt);
-	if (!targetSize) {
-		await copyFile(sourcePath, destPath);
-		lfs(`* ${sourcePath}`)();
-		continue;
+
+	const copyOrResize = async (src: string, dst: string) => {
+		if (!targetSize) {
+			await copyFile(src, dst);
+		} else {
+			const input = Buffer.from(await Bun.file(src).arrayBuffer());
+			const resized = await rescaleToLongEdge(input, targetSize);
+			await Bun.write(dst, resized);
+		}
+	};
+
+	const normalSource = sourcePath.replace(/\.png$/i, "_n.png");
+	const specSource = sourcePath.replace(/\.png$/i, "_s.png");
+	const normalDest = destPath.replace(/\.png$/i, "_n.png");
+	const specDest = destPath.replace(/\.png$/i, "_s.png");
+
+	if (existsSync(normalSource)) {
+		await copyOrResize(normalSource, normalDest);
+		lfs(`* ${normalSource}`)();
 	}
-	const input = Buffer.from(await Bun.file(sourcePath).arrayBuffer());
-	const resized = await rescaleToLongEdge(input, targetSize);
-	await Bun.write(destPath, resized);
+
+	if (existsSync(specSource)) {
+		await copyOrResize(specSource, specDest);
+		lfs(`* ${specSource}`)();
+	}
+
+	const pbrRule = matchPbrRule(relPath, relNoExt);
+	if (pbrRule) {
+		if (!existsSync(specSource)) {
+			const specBuf = await generateSpecMapBuffer(pbrRule);
+			await Bun.write(specDest, specBuf);
+			lfs(`* generated spec for ${sourcePath}`)();
+		}
+		if (!existsSync(normalSource) && pbrRule.ao > 0) {
+			const normBuf = await generateNormalMapBuffer(pbrRule);
+			await Bun.write(normalDest, normBuf);
+			lfs(`* generated normal for ${sourcePath}`)();
+		}
+	}
+
+	await copyOrResize(sourcePath, destPath);
 	lfs(`* ${sourcePath}`)();
 }

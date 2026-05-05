@@ -1,0 +1,13 @@
+# PBR Rule Configuration (LABPBR Standard)
+# Generates 1x1 specular (_s.png) and/or normal (_n.png) maps if they don't exist.
+# Existing texture files have priority and will NOT be overwritten.
+# 
+# Format: <selector> <roughness> <metalness> <ao> <glowness>
+#
+# selector:  Glob pattern matching the texture path (e.g., national/* or env/exit).
+# roughness: 0 (smooth) to 10 (rough). Maps to perceptual smoothness.
+# metalness: 0 (dielectric) to 10 (custom metal) OR a specific named metal:
+#            iron, gold, aluminum, chrome, copper, lead, platinum, silver
+# ao:        Ambient occlusion intensity, 0 to 10. If > 0, generates a normal map.
+# glowness:  Emission intensity, 0 to 10.
+#
