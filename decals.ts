@@ -22,7 +22,8 @@ async function generateShell(
 	slices = 8,
 	zStart = 0,
 ) {
-	const halfSize = size / 2;
+	const modelSize = Math.min(size, 48);
+	const halfSize = modelSize / 2;
 	const fromX = 8 - halfSize;
 	const toX = 8 + halfSize;
 	const fromY = 8 - halfSize;
@@ -77,13 +78,14 @@ async function generateShell(
 	);
 }
 
-const SHEET_SCALES = 5;
+const SHEET_SCALES = 4;
 const SHEET_BASE_SCALE = 16;
 const SHELL_QUALITY = 16;
 
 for (let i = 1; i <= SHEET_SCALES; i++) {
-	await generateShell(`f${i}`, SHEET_BASE_SCALE * i, 1, 8);
-	await generateShell(`f${i}s`, SHEET_BASE_SCALE * i, SHELL_QUALITY, 7);
+	const scale = 2 ** (i - 1);
+	await generateShell(`f${i}`, SHEET_BASE_SCALE * scale, 1, 8);
+	await generateShell(`f${i}s`, SHEET_BASE_SCALE * scale, SHELL_QUALITY, 7);
 }
 
 // Logging utilities
@@ -389,8 +391,10 @@ function add(
 
 	const d = -f(s);
 
-	const n = Math.min(SHEET_SCALES, Math.ceil(s / 2.0));
-	const s_mc = s / n;
+	const n = Math.min(SHEET_SCALES, Math.max(1, Math.ceil(Math.log2(s))));
+	const parentScale = 2 ** (n - 1);
+	const geometryScale = Math.min(parentScale, 3);
+	const s_mc = s / geometryScale;
 
 	// a:0=c a:1=t a:2=b a:3=l a:4=r a:5=tl a:6=tr a:7=bl a:8=br
 	const alignmentOffsets = [
@@ -425,9 +429,9 @@ function add(
 		// Negate ty always: dy is screen-space (down+), MC translation Y is up+.
 		const xSign = isFastOrShell ? -1 : -1;
 
-		// Scale bypass logic: s_mc = s / n.
-		// To preserve displacement D = tx * scale_mc * 2, we need tx_mc = tx * n.
-		const scaleFactor = isFastOrShell ? n : 1;
+		// Scale bypass logic: s_mc = s / parentScale.
+		// To preserve displacement D = tx * scale_mc * 2, we need tx_mc = tx * parentScale.
+		const scaleFactor = isFastOrShell ? parentScale : 1;
 		let tx = visual_x * xSign * scaleFactor;
 		let ty = visual_y * scaleFactor;
 
@@ -435,9 +439,10 @@ function add(
 			tx += 8 / s;
 			ty += 8 / s;
 		}
+		const displayScale = isFastOrShell ? Math.min(s_mc * 2, 4) : s * 2;
 		const tf = {
 			translation: [tx, ty, -0.03],
-			scale: Array(3).fill((isFastOrShell ? s_mc : s) * 2),
+			scale: Array(3).fill(displayScale),
 			...(resolvedMode === "d" ? { rotation: [0, 180, 0] } : {}),
 		};
 		return { head: tf, fixed: tf };
