@@ -11,8 +11,8 @@
 
 # # National
 # normal
-10001 national/quochuy default 0 0 2
-10002 national/quochuy default 0 0 4
+10001 national/quochuy_new default 0 0 2
+10002 national/quochuy_new default 0 0 4
 # fragment 5x5
 10003 national/quochuy_0 default 0 0 2
 10004 national/quochuy_1 default 0 0 2
@@ -82,12 +82,24 @@
 # colision 10023
 10232 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
-10300 env/brass/nha_quoc_hoi shell 0 0 12
+10300 env/brass/nha_quoc_hoi shell 0 0 6
+10301 env/brass/chu_tich fast 0 0 2
+10302 env/brass/hcm_side_left fast 0 0 2
+10303 env/brass/hcm_side_left fast 0 0 2
+10304 env/brass/ho_chi_minh fast 0 0 2
+10305 env/brass/nha_quoc_hoi_serif fast 0 0 2
+10306 env/brass/quoc_hoi_khoa_xvi fast 0 0 2
+
+
 
 # Misc
-11000 graffiti/anya fast 0 0 2
-11002 graffiti/suanha fast 0 0 1
+11000 graffiti/teamfuho_opaque fast 0 0 1
+11001 graffiti/teamfuho fast 0 0 1
+11002 graffiti/teamfuho shell 0 0 1
 11003 env/exit default 0 0 1
+11004 graffiti/teamfuho_opaque fast 0 0 2
+11005 graffiti/teamfuho fast 0 0 2
+11006 graffiti/teamfuho shell 0 0 2
 
 # Test
 #65501 graffiti/coconut default 0 0 1
