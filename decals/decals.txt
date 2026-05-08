@@ -82,6 +82,7 @@
 # colision 10023
 10232 national/flag_fnl_vertical_v2 fast 0 -0.5 2
 
+# brass text
 10300 env/brass/nha_quoc_hoi shell 0 0 6
 10301 env/brass/chu_tich fast 0 0 2
 10302 env/brass/hcm_side_left fast 0 0 2
@@ -90,7 +91,8 @@
 10305 env/brass/nha_quoc_hoi_serif fast 0 0 2
 10306 env/brass/quoc_hoi_khoa_xvi fast 0 0 2
 
-
+# signs
+10400 env/signs/van_phong_chu_tich_nuoc default 0 0 1
 
 # Misc
 11000 graffiti/teamfuho_opaque fast 0 0 1
@@ -100,9 +102,3 @@
 11004 graffiti/teamfuho_opaque fast 0 0 2
 11005 graffiti/teamfuho fast 0 0 2
 11006 graffiti/teamfuho shell 0 0 2
-
-# Test
-#65501 graffiti/coconut default 0 0 1
-#65502 graffiti/coconut default 1 1 2
-#65503 graffiti/coconut fast 0 0 1
-#65504 graffiti/coconut default 0 0 10
