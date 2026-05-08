@@ -3,3 +3,4 @@ national/cp,national/star 128
 national/quochuy,national/quochuy_new 512
 env/exit 256
 env/brass/* 1024f
+env/signs/* 512f
