@@ -113,7 +113,7 @@ const DECALS_DIR = "decals";
 const POSTPROCESS_PATH = path.join(DECALS_DIR, "postprocess.txt");
 const PBR_PATH = path.join(DECALS_DIR, "pbr.txt");
 
-type PostprocessRule = { regexes: RegExp[]; size: number; fit: boolean };
+type PostprocessRule = { regexes: RegExp[]; size: number; fit: boolean; nearest: boolean; alphaBoolean: boolean; stretch: boolean };
 
 type PbrRule = {
 	regexes: RegExp[];
@@ -138,8 +138,14 @@ const parsePostprocess = (raw: string): PostprocessRule[] =>
 			const parts = line.split(/\s+/);
 			if (parts.length < 2) return null;
 			const sizeRaw = parts.pop() ?? "";
-			const fit = sizeRaw.endsWith("f");
-			const size = Number.parseInt(sizeRaw, 10);
+			const alphaBoolean = sizeRaw.endsWith("a");
+			const strippedA = alphaBoolean ? sizeRaw.slice(0, -1) : sizeRaw;
+			const nearest = strippedA.endsWith("n");
+			const strippedN = nearest ? strippedA.slice(0, -1) : strippedA;
+			const stretch = strippedN.endsWith("s");
+			const strippedS = stretch ? strippedN.slice(0, -1) : strippedN;
+			const fit = strippedS.endsWith("f");
+			const size = Number.parseInt(strippedS, 10);
 			if (!Number.isFinite(size) || size <= 0) return null;
 			const patterns = parts
 				.join(" ")
@@ -147,7 +153,7 @@ const parsePostprocess = (raw: string): PostprocessRule[] =>
 				.map((pattern) => pattern.trim())
 				.filter(Boolean);
 			if (!patterns.length) return null;
-			return { regexes: patterns.map(globToRegex), size, fit };
+			return { regexes: patterns.map(globToRegex), size, fit, nearest, alphaBoolean, stretch };
 		})
 		.filter((rule): rule is PostprocessRule => Boolean(rule));
 
@@ -281,37 +287,67 @@ const generateNormalMapBuffer = async (rule: PbrRule): Promise<Buffer> => {
 		.toBuffer();
 };
 
-const rescaleToLongEdge = async (
+const rescaleFit = async (
 	input: Buffer,
 	targetSize: number,
+	nearest = false,
+	alphaBoolean = false,
 ): Promise<Buffer> => {
 	const image = sharp(input, { limitInputPixels: false });
 	const meta = await image.metadata();
 	if (!meta.width || !meta.height) return input;
-	if (Math.max(meta.width, meta.height) === targetSize) return input;
+	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean) return input;
 
-	return await image
-		.resize(targetSize, targetSize, { fit: "inside" })
-		.png({ compressionLevel: 8, progressive: false })
-		.toBuffer();
-};
-
-const rescaleToSquare = async (
-	input: Buffer,
-	targetSize: number,
-): Promise<Buffer> => {
-	const image = sharp(input, { limitInputPixels: false });
-	const meta = await image.metadata();
-	if (!meta.width || !meta.height) return input;
-	if (meta.width === targetSize && meta.height === targetSize) return input;
-
-	return await image
-		.resize(targetSize, targetSize, {
+	let pipe = image;
+	if (meta.width !== targetSize || meta.height !== targetSize) {
+		pipe = pipe.resize(targetSize, targetSize, {
 			fit: "contain",
 			background: { r: 0, g: 0, b: 0, alpha: 0 },
-		})
-		.png({ compressionLevel: 8, progressive: false })
-		.toBuffer();
+			kernel: nearest ? "nearest" : "lanczos3",
+		});
+	}
+	let result = await pipe.png({ compressionLevel: 8, progressive: false }).toBuffer();
+	if (alphaBoolean) {
+		const raw = await sharp(result).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+		for (let i = 3; i < raw.data.length; i += 4) {
+			raw.data[i] = raw.data[i] < 128 ? 0 : 255;
+		}
+		result = await sharp(raw.data, {
+			raw: { width: raw.info.width, height: raw.info.height, channels: raw.info.channels },
+		}).png({ compressionLevel: 8, progressive: false }).toBuffer();
+	}
+	return result;
+};
+
+const rescaleStretch = async (
+	input: Buffer,
+	targetSize: number,
+	nearest = false,
+	alphaBoolean = false,
+): Promise<Buffer> => {
+	const image = sharp(input, { limitInputPixels: false });
+	const meta = await image.metadata();
+	if (!meta.width || !meta.height) return input;
+	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean) return input;
+
+	let pipe = image;
+	if (meta.width !== targetSize || meta.height !== targetSize) {
+		pipe = pipe.resize(targetSize, targetSize, {
+			fit: "fill",
+			kernel: nearest ? "nearest" : "lanczos3",
+		});
+	}
+	let result = await pipe.png({ compressionLevel: 8, progressive: false }).toBuffer();
+	if (alphaBoolean) {
+		const raw = await sharp(result).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+		for (let i = 3; i < raw.data.length; i += 4) {
+			raw.data[i] = raw.data[i] < 128 ? 0 : 255;
+		}
+		result = await sharp(raw.data, {
+			raw: { width: raw.info.width, height: raw.info.height, channels: raw.info.channels },
+		}).png({ compressionLevel: 8, progressive: false }).toBuffer();
+	}
+	return result;
 };
 
 // Read and process decals
@@ -542,13 +578,13 @@ for (const i of Object.entries(textures)) {
 	const copyOrResize = async (src: string, dst: string) => {
 		if (!ppRule) {
 			await copyFile(src, dst);
-		} else if (ppRule.fit) {
+		} else if (ppRule.stretch) {
 			const input = Buffer.from(await Bun.file(src).arrayBuffer());
-			const resized = await rescaleToSquare(input, ppRule.size);
+			const resized = await rescaleStretch(input, ppRule.size, ppRule.nearest, ppRule.alphaBoolean);
 			await Bun.write(dst, resized);
 		} else {
 			const input = Buffer.from(await Bun.file(src).arrayBuffer());
-			const resized = await rescaleToLongEdge(input, ppRule.size);
+			const resized = await rescaleFit(input, ppRule.size, ppRule.nearest, ppRule.alphaBoolean);
 			await Bun.write(dst, resized);
 		}
 	};
