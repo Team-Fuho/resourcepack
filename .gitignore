@@ -144,6 +144,9 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 
+# Python
+__pycache__
+
 bedrock/**
 !bedrock/converter.sh
 assets/fuho/models/f*.json
