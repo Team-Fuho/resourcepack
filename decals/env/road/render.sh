@@ -16,13 +16,14 @@ PALETTE=$(mktemp /tmp/road_palette_XXXXXX.png)
 trap 'rm -f "$PALETTE"' EXIT
 
 magick \
+	\( -size 1x1 xc:none \) \
 	\( -size 1x1 xc:'#FFFFFF' \) \
 	\( -size 1x1 xc:'#000000' \) \
 	\( -size 1x1 xc:'#F00A0A' \) \
 	\( -size 1x1 xc:'#0046AA' \) \
 	\( -size 1x1 xc:'#FFD70F' \) \
 	\( -size 1x1 xc:'#0A9646' \) \
-	-append "$PALETTE"
+	-append -alpha On "$PALETTE"
 
 for svg in "$src"/*.svg; do
 	base=$(basename "$svg" .svg)
@@ -35,6 +36,6 @@ for svg in "$src"/*.svg; do
 		inkscape --export-type=png --export-filename="$out" -h "$res" "$svg" 2>/dev/null
 	fi
 
-	magick "$out" -dither None -remap "$PALETTE" "$out"
+	magick "$out" -dither None -remap "$PALETTE" -channel A -threshold 50% +channel "$out"
 	echo "Rendered: $base"
 done
