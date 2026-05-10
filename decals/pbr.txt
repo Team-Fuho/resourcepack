@@ -1,7 +1,7 @@
 # PBR Rule Configuration (LABPBR Standard)
 # Generates 1x1 specular (_s.png) and/or normal (_n.png) maps if they don't exist.
 # Existing texture files have priority and will NOT be overwritten.
-# 
+#
 # Format: <selector> <roughness> <metalness> <ao> <glowness>
 #
 # selector:  Glob pattern matching the texture path (e.g., national/* or env/exit).
@@ -13,3 +13,4 @@
 #
 
 env/brass/* 2 iron 0 0
+national/badges/* 4 2 0 1
