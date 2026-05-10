@@ -10,7 +10,7 @@ const DIST_DIR = path.join(ROOT, "dist");
 const ASSETS_DIR = path.join(ROOT, "assets");
 const PATCHES_DIR = path.join(ROOT, "patches");
 
-const PACK_FILES = ["pack.mcmeta", "pack.png", "LICENSE"];
+const PACK_FILES = ["pack.mcmeta", "pack.png", "LICENSE", "texture.properties"];
 const IGNORE_EXTS = new Set([".bbmodel"]);
 const IGNORE_NAMES = new Set([".gitignore"]);
 const JSON_EXTS = new Set([".json", ".mcmeta"]);

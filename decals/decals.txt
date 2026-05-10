@@ -94,6 +94,9 @@
 # signs
 10400 env/signs/van_phong_chu_tich_nuoc default 0 0 1
 
+# badges
+10500 national/badges/quanhieu fast 0 0 1
+
 # Misc
 11000 graffiti/teamfuho_opaque fast 0 0 1
 11001 graffiti/teamfuho fast 0 0 1
