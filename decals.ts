@@ -37,14 +37,14 @@ async function generateShell(
 			to: [toX, toY, z],
 			faces: {
 				north: { uv: [0, 0, 16, 16], texture: "#layer0" },
-				south: { uv: [16, 0, 0, 16], texture: "#layer0" },
+				south: { uv: [16, 0, 0, 16], texture: "#layer1" },
 			},
 		});
 	}
 
 	const model = {
 		credit: `fuho:${name} — shell: ${slices} slices, double-faced`,
-		textures: { layer0: "fuho:item/noop" },
+		textures: { layer0: "fuho:item/noop", layer1: "#layer0" },
 		elements,
 		display: {
 			thirdperson_righthand: {
@@ -424,11 +424,19 @@ const mode = {
 
 const tex = makeHasher(true);
 const parseDecalLine = (line: string) => {
-	const [iStr, name, modeKey, xStr, yStr, scaleStr] = line.split(/\s+/);
-	if (!scaleStr) {
+	const parts = line.split(/\s+/);
+	if (parts.length < 6) {
 		throw new Error(`Invalid decal line: "${line}"`);
 	}
-	return { iStr, name, modeKey, xStr, yStr, scaleStr };
+	return {
+		iStr: parts[0],
+		name: parts[1],
+		modeKey: parts[2],
+		xStr: parts[3],
+		yStr: parts[4],
+		scaleStr: parts[5],
+		stencilRef: parts[6],
+	};
 };
 
 // Add a decal entry
@@ -439,6 +447,7 @@ function add(
 	xStr: string,
 	yStr: string,
 	scaleStr: string,
+	stencilRef?: string,
 ) {
 	const i = Number.parseInt(iStr, 10);
 	const resolvedMode = mode[modeKey as keyof typeof mode] ?? mode.fast;
@@ -447,6 +456,10 @@ function add(
 	const s = Number.parseFloat(scaleStr);
 
 	const texKey = tex(path.join("decals/", `${name}.png`));
+	let stencilTexKey: string | undefined;
+	if (stencilRef) {
+		stencilTexKey = tex(path.join("decals/", `${stencilRef}.png`));
+	}
 
 	explorable.push({
 		id: i,
@@ -523,7 +536,14 @@ function add(
 	};
 
 	lfs()();
-	return { threshold: i, texRef, parentMode, alignmentOffsets, makeDisplay };
+	return {
+		threshold: i,
+		texRef,
+		stencilTexKey,
+		parentMode,
+		alignmentOffsets,
+		makeDisplay,
+	};
 }
 
 // Create item model resources
@@ -531,7 +551,8 @@ const paperItemPath = vd(path.join("assets/minecraft/items/paper.json"));
 const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
 const entries = df
 	.map((line) => {
-		const { iStr, name, modeKey, xStr, yStr, scaleStr } = parseDecalLine(line);
+		const { iStr, name, modeKey, xStr, yStr, scaleStr, stencilRef } =
+			parseDecalLine(line);
 		return add(
 			iStr as string,
 			name as string,
@@ -539,6 +560,7 @@ const entries = df
 			xStr as string,
 			yStr as string,
 			scaleStr as string,
+			stencilRef as string | undefined,
 		);
 	})
 	.sort((a, b) => a.threshold - b.threshold);
@@ -556,6 +578,9 @@ for (const e of entries) {
 		};
 		if (a === 0) {
 			modelData.textures = { layer0: e.texRef, particle: "fuho:item/noop" };
+			if (e.stencilTexKey) {
+				modelData.textures.layer1 = `decals:item/t${e.stencilTexKey}`;
+			}
 		}
 		modelData.display = e.makeDisplay(dx, dy);
 

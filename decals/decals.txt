@@ -107,63 +107,63 @@
 11006 graffiti/teamfuho shell 0 0 2
 
 # Traffic (11500-11699)
-11500 env/road/png/Vietnam_road_sign_I407a shell 0 0 1
-11501 env/road/png/Vietnam_road_sign_I408 shell 0 0 1
-11502 env/road/png/Vietnam_road_sign_I423b shell 0 0 1
-11503 env/road/png/Vietnam_road_sign_I424a shell 0 0 1
-11504 env/road/png/Vietnam_road_sign_I424c shell 0 0 1
-11505 env/road/png/Vietnam_road_sign_I424d shell 0 0 1
-11506 env/road/png/Vietnam_road_sign_I425 shell 0 0 1
-11507 env/road/png/Vietnam_road_sign_I437 shell 0 0 1
-11508 env/road/png/Vietnam_road_sign_I444k shell 0 0 1
-11509 env/road/png/Vietnam_road_sign_IE453c shell 0 0 1
-11510 env/road/png/Vietnam_road_sign_IE467b shell 0 0 1
-11511 env/road/png/Vietnam_road_sign_IE468b shell 0 0 1
-11512 env/road/png/Vietnam_road_sign_P.125_(QCVN_41-2016-BGTVT) shell 0 0 1
-11513 env/road/png/Vietnam_road_sign_P101 shell 0 0 1
-11514 env/road/png/Vietnam_road_sign_P102 shell 0 0 1
-11515 env/road/png/Vietnam_road_sign_P103a shell 0 0 1
-11516 env/road/png/Vietnam_road_sign_P103b shell 0 0 1
-11517 env/road/png/Vietnam_road_sign_P103c shell 0 0 1
-11518 env/road/png/Vietnam_road_sign_P104 shell 0 0 1
-11519 env/road/png/Vietnam_road_sign_P105 shell 0 0 1
-11520 env/road/png/Vietnam_road_sign_P106a shell 0 0 1
-11521 env/road/png/Vietnam_road_sign_P107 shell 0 0 1
-11522 env/road/png/Vietnam_road_sign_P107a shell 0 0 1
-11523 env/road/png/Vietnam_road_sign_P110a shell 0 0 1
-11524 env/road/png/Vietnam_road_sign_P111a shell 0 0 1
-11525 env/road/png/Vietnam_road_sign_P112 shell 0 0 1
-11526 env/road/png/Vietnam_road_sign_P123a shell 0 0 1
-11527 env/road/png/Vietnam_road_sign_P123b shell 0 0 1
-11528 env/road/png/Vietnam_road_sign_P124a1 shell 0 0 1
-11529 env/road/png/Vietnam_road_sign_P124a2 shell 0 0 1
-11530 env/road/png/Vietnam_road_sign_P124c shell 0 0 1
-11531 env/road/png/Vietnam_road_sign_P124d shell 0 0 1
-11532 env/road/png/Vietnam_road_sign_P124e shell 0 0 1
-11533 env/road/png/Vietnam_road_sign_P127-100 shell 0 0 1
-11534 env/road/png/Vietnam_road_sign_P127-120 shell 0 0 1
-11535 env/road/png/Vietnam_road_sign_P127-5 shell 0 0 1
-11536 env/road/png/Vietnam_road_sign_P127-50 shell 0 0 1
-11537 env/road/png/Vietnam_road_sign_P127c shell 0 0 1
-11538 env/road/png/Vietnam_road_sign_P130 shell 0 0 1
-11539 env/road/png/Vietnam_road_sign_P131a shell 0 0 1
-11540 env/road/png/Vietnam_road_sign_P131c shell 0 0 1
-11541 env/road/png/Vietnam_road_sign_P136 shell 0 0 1
-11542 env/road/png/Vietnam_road_sign_P138 shell 0 0 1
-11543 env/road/png/Vietnam_road_sign_P139 shell 0 0 1
-11544 env/road/png/Vietnam_road_sign_R301d shell 0 0 1
-11545 env/road/png/Vietnam_road_sign_R301e shell 0 0 1
-11546 env/road/png/Vietnam_road_sign_R303 shell 0 0 1
-11547 env/road/png/Vietnam_road_sign_R305 shell 0 0 1
-11548 env/road/png/Vietnam_road_sign_R308b shell 0 0 1
-11549 env/road/png/Vietnam_road_sign_R415a shell 0 0 1
-11550 env/road/png/Vietnam_road_sign_R415b shell 0 0 1
-11551 env/road/png/Vietnam_road_sign_S507 shell 0 0 1
-11552 env/road/png/Vietnam_road_sign_W204 shell 0 0 1
-11553 env/road/png/Vietnam_road_sign_W208 shell 0 0 1
-11554 env/road/png/Vietnam_road_sign_W233 shell 0 0 1
-11555 env/road/png/Vietnam_road_sign_W239a shell 0 0 1
-11556 env/road/png/Vietnam_road_sign_W242b shell 0 0 1
-11557 env/road/png/Vietnam_road_sign_W245a shell 0 0 1
-11558 env/road/png/Vietnam_road_sign_W245b shell 0 0 1
-11559 env/road/png/Vietnam_road_sign_W247 shell 0 0 1
+11500 env/road/png/Vietnam_road_sign_I407a shell 0 0 1 env/road/stencils/stencil-2345
+11501 env/road/png/Vietnam_road_sign_I408 shell 0 0 1 env/road/stencils/stencil-2345
+11502 env/road/png/Vietnam_road_sign_I423b shell 0 0 1 env/road/stencils/stencil-2345
+11503 env/road/png/Vietnam_road_sign_I424a shell 0 0 1 env/road/stencils/stencil-2345
+11504 env/road/png/Vietnam_road_sign_I424c shell 0 0 1 env/road/stencils/stencil-2345
+11505 env/road/png/Vietnam_road_sign_I424d shell 0 0 1 env/road/stencils/stencil-2345
+11506 env/road/png/Vietnam_road_sign_I425 shell 0 0 1 env/road/stencils/stencil-2345
+11507 env/road/png/Vietnam_road_sign_I437 shell 0 0 1 env/road/stencils/stencil-2345
+11508 env/road/png/Vietnam_road_sign_I444k shell 0 0 1 env/road/stencils/stencil-4d23
+11509 env/road/png/Vietnam_road_sign_IE453c shell 0 0 1 env/road/stencils/stencil-2345
+11510 env/road/png/Vietnam_road_sign_IE467b shell 0 0 1 env/road/stencils/stencil-2345
+11511 env/road/png/Vietnam_road_sign_IE468b shell 0 0 1 env/road/stencils/stencil-2345
+11512 env/road/png/Vietnam_road_sign_P.125_(QCVN_41-2016-BGTVT) shell 0 0 1 env/road/stencils/stencil-108c
+11513 env/road/png/Vietnam_road_sign_P101 shell 0 0 1 env/road/stencils/stencil-108c
+11514 env/road/png/Vietnam_road_sign_P102 shell 0 0 1 env/road/stencils/stencil-108c
+11515 env/road/png/Vietnam_road_sign_P103a shell 0 0 1 env/road/stencils/stencil-108c
+11516 env/road/png/Vietnam_road_sign_P103b shell 0 0 1 env/road/stencils/stencil-108c
+11517 env/road/png/Vietnam_road_sign_P103c shell 0 0 1 env/road/stencils/stencil-108c
+11518 env/road/png/Vietnam_road_sign_P104 shell 0 0 1 env/road/stencils/stencil-108c
+11519 env/road/png/Vietnam_road_sign_P105 shell 0 0 1 env/road/stencils/stencil-108c
+11520 env/road/png/Vietnam_road_sign_P106a shell 0 0 1 env/road/stencils/stencil-108c
+11521 env/road/png/Vietnam_road_sign_P107 shell 0 0 1 env/road/stencils/stencil-108c
+11522 env/road/png/Vietnam_road_sign_P107a shell 0 0 1 env/road/stencils/stencil-108c
+11523 env/road/png/Vietnam_road_sign_P110a shell 0 0 1 env/road/stencils/stencil-108c
+11524 env/road/png/Vietnam_road_sign_P111a shell 0 0 1 env/road/stencils/stencil-108c
+11525 env/road/png/Vietnam_road_sign_P112 shell 0 0 1 env/road/stencils/stencil-108c
+11526 env/road/png/Vietnam_road_sign_P123a shell 0 0 1 env/road/stencils/stencil-108c
+11527 env/road/png/Vietnam_road_sign_P123b shell 0 0 1 env/road/stencils/stencil-108c
+11528 env/road/png/Vietnam_road_sign_P124a1 shell 0 0 1 env/road/stencils/stencil-108c
+11529 env/road/png/Vietnam_road_sign_P124a2 shell 0 0 1 env/road/stencils/stencil-108c
+11530 env/road/png/Vietnam_road_sign_P124c shell 0 0 1 env/road/stencils/stencil-108c
+11531 env/road/png/Vietnam_road_sign_P124d shell 0 0 1 env/road/stencils/stencil-108c
+11532 env/road/png/Vietnam_road_sign_P124e shell 0 0 1 env/road/stencils/stencil-108c
+11533 env/road/png/Vietnam_road_sign_P127-100 shell 0 0 1 env/road/stencils/stencil-108c
+11534 env/road/png/Vietnam_road_sign_P127-120 shell 0 0 1 env/road/stencils/stencil-108c
+11535 env/road/png/Vietnam_road_sign_P127-5 shell 0 0 1 env/road/stencils/stencil-108c
+11536 env/road/png/Vietnam_road_sign_P127-50 shell 0 0 1 env/road/stencils/stencil-108c
+11537 env/road/png/Vietnam_road_sign_P127c shell 0 0 1 env/road/stencils/stencil-2345
+11538 env/road/png/Vietnam_road_sign_P130 shell 0 0 1 env/road/stencils/stencil-108c
+11539 env/road/png/Vietnam_road_sign_P131a shell 0 0 1 env/road/stencils/stencil-108c
+11540 env/road/png/Vietnam_road_sign_P131c shell 0 0 1 env/road/stencils/stencil-108c
+11541 env/road/png/Vietnam_road_sign_P136 shell 0 0 1 env/road/stencils/stencil-108c
+11542 env/road/png/Vietnam_road_sign_P138 shell 0 0 1 env/road/stencils/stencil-108c
+11543 env/road/png/Vietnam_road_sign_P139 shell 0 0 1 env/road/stencils/stencil-108c
+11544 env/road/png/Vietnam_road_sign_R301d shell 0 0 1 env/road/stencils/stencil-108c
+11545 env/road/png/Vietnam_road_sign_R301e shell 0 0 1 env/road/stencils/stencil-108c
+11546 env/road/png/Vietnam_road_sign_R303 shell 0 0 1 env/road/stencils/stencil-108c
+11547 env/road/png/Vietnam_road_sign_R305 shell 0 0 1 env/road/stencils/stencil-108c
+11548 env/road/png/Vietnam_road_sign_R308b shell 0 0 1 env/road/stencils/stencil-108c
+11549 env/road/png/Vietnam_road_sign_R415a shell 0 0 1 env/road/stencils/stencil-2345
+11550 env/road/png/Vietnam_road_sign_R415b shell 0 0 1 env/road/stencils/stencil-2345
+11551 env/road/png/Vietnam_road_sign_S507 shell 0 0 1 env/road/stencils/stencil-2345
+11552 env/road/png/Vietnam_road_sign_W204 shell 0 0 1 env/road/stencils/stencil-eb66
+11553 env/road/png/Vietnam_road_sign_W208 shell 0 0 1 env/road/stencils/stencil-e12c
+11554 env/road/png/Vietnam_road_sign_W233 shell 0 0 1 env/road/stencils/stencil-eb66
+11555 env/road/png/Vietnam_road_sign_W239a shell 0 0 1 env/road/stencils/stencil-eb66
+11556 env/road/png/Vietnam_road_sign_W242b shell 0 0 1 env/road/stencils/stencil-1dca
+11557 env/road/png/Vietnam_road_sign_W245a shell 0 0 1 env/road/stencils/stencil-eb66
+11558 env/road/png/Vietnam_road_sign_W245b shell 0 0 1 env/road/stencils/stencil-19e6
+11559 env/road/png/Vietnam_road_sign_W247 shell 0 0 1 env/road/stencils/stencil-eb66
