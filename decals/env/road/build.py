@@ -8,16 +8,14 @@ Policies followed:
   - Uses Special:Redirect/file for source SVGs
 """
 
-import hashlib, json, os, shutil, subprocess, sys, time
+import json, sys, time
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
 OUTDIR = Path(__file__).resolve().parent
 SVGDIR = OUTDIR / "svg"
-PNGDIR = OUTDIR / "png"
-ZIPPNG = Path("/tmp/road_signs_zip/BIỂN BẢNG")
-CONTACT = "VietnamRoadSignScraper/1.0 (https://github.com/anomalyco/resourcepack; dev@anomaly.co)"
+CONTACT = "RoadSignLover/1.0 (https://github.com/Team-Fuho/resourcepack; lienhe@teamfuho.net)"
 UA = CONTACT
 
 SIGNS = {
@@ -85,7 +83,6 @@ SIGNS = {
 
 ALL = sorted(SIGNS.keys())
 SVGDIR.mkdir(exist_ok=True, parents=True)
-PNGDIR.mkdir(exist_ok=True, parents=True)
 
 
 def is_svg(p: Path) -> bool:
@@ -99,8 +96,7 @@ def urlopen_with_retry(url: str, max_retries=5) -> bytes | None:
         req = Request(url.replace(" ", "%20"), headers={"User-Agent": UA})
         try:
             with urlopen(req, timeout=60) as resp:
-                data = resp.read()
-                return data
+                return resp.read()
         except HTTPError as e:
             if e.code == 429:
                 retry_after = e.headers.get("Retry-After", "60")
@@ -111,7 +107,6 @@ def urlopen_with_retry(url: str, max_retries=5) -> bytes | None:
                 print(f"    429: waiting {wait}s (attempt {attempt+1}/{max_retries})")
                 time.sleep(wait)
                 continue
-            # Check for other errors in body
             body = e.read() if hasattr(e, 'read') else b''
             if b"429" in body or b"Too Many Requests" in body or b"too many requests" in body.lower():
                 print(f"    429 in body: waiting 60s (attempt {attempt+1}/{max_retries})")
@@ -134,7 +129,6 @@ for fn in ALL:
     if is_svg(svg):
         continue
 
-    # Use Special:Redirect/file which is the canonical download endpoint
     url_name = fn.replace("_", " ")
     dl_url = f"https://commons.wikimedia.org/wiki/Special:Redirect/file/{url_name}"
     print(f"  {fn}")
@@ -149,52 +143,9 @@ for fn in ALL:
     else:
         print(f"    FAILED")
 
-    # Max 1 req/sec — ethical scraping
     time.sleep(0.1)
 
-
-# ── 2. Copy zip PNGs ──
-print("\n=== Zip PNGs ===")
-copied = 0
-if ZIPPNG.exists():
-    for f in sorted(ZIPPNG.glob("*.svg.png")):
-        base = f.stem.replace(".svg", "").replace("_", " ")
-        dst = PNGDIR / f"{base}.png"
-        if not dst.exists():
-            shutil.copy2(f, dst)
-            copied += 1
-print(f"Copied {copied} from zip")
-
-# ── 3. Render SVGs ──
-print("\n=== Render PNGs 512x512 ===")
-for fn in ALL:
-    svg = SVGDIR / fn
-    png = PNGDIR / fn.replace(".svg", ".png")
-    if png.exists() and png.stat().st_size > 0:
-        continue
-    if not is_svg(svg):
-        continue
-
-    for cmd in [
-        ["inkscape", str(svg), "--export-type=png", f"--export-filename={png}",
-         "--export-width=512", "--export-height=512",
-         "--export-background-opacity=0", "--export-dpi=96"],
-        ["rsvg-convert", str(svg), "--width=512", "--height=512",
-         "--format=png", "-o", str(png)],
-        ["convert", "-background", "none", "-density", "300",
-         str(svg), "-resize", "512x512", str(png)],
-    ]:
-        try:
-            subprocess.run(cmd, capture_output=True, timeout=60)
-        except Exception:
-            continue
-        if png.exists() and png.stat().st_size > 0:
-            print(f"  {png.name} ({png.stat().st_size // 1024}K)")
-            break
-    else:
-        print(f"  {png.name} FAILED")
-
-# ── 4. Metadata ──
+# ── 2. Metadata ──
 print("\n=== Metadata ===")
 meta = {}
 for fn in ALL:
@@ -222,17 +173,5 @@ for fn in ALL:
 with open(OUTDIR / "metadata.json", "w", encoding="utf-8") as f:
     json.dump(meta, f, indent=2, ensure_ascii=False)
 
-with open(OUTDIR / "LICENSE", "w") as f:
-    f.write("Author/Source: Government of Vietnam\nSource of obtain: Wikimedia Commons\nLicense: Public domain\n")
-
-with open(OUTDIR / "ATTRIBUTION.md", "w", encoding="utf-8") as f:
-    f.write("# Attribution\n\n**Author/Source:** Government of Vietnam\n**License:** Public domain\n\n")
-    for fn in ALL:
-        f.write(f"- {fn}\n")
-
-# Summary
 svg_ok = sum(1 for fn in ALL if is_svg(SVGDIR / fn))
-png_ok = sum(1 for fn in ALL if (PNGDIR / fn.replace(".svg", ".png")).exists())
-print(f"\n=== Summary ===")
 print(f"SVGs: {svg_ok}/{len(ALL)}")
-print(f"PNGs: {png_ok}/{len(ALL)}")

@@ -21,7 +21,7 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
@@ -80,11 +80,11 @@
     <g
        id="g7886"
        transform="matrix(7.9544118,0,0,-7.9545451,131.12758,280.83412)"
-       style="fill:#ffd42a;stroke:none" />
+       style="fill:#FFD70F;stroke:none" />
     <g
        id="g7890"
        transform="matrix(7.9544118,0,0,-7.9545451,131.12758,280.83412)"
-       style="fill:#ffd42a;stroke:none" />
+       style="fill:#FFD70F;stroke:none" />
     <g
        id="g7910"
        transform="matrix(7.9544118,0,0,-7.9545451,-18.243453,482.31661)"
@@ -99,15 +99,15 @@
     <g
        id="g7914"
        transform="matrix(7.9544118,0,0,-7.9545451,0,286.53749)"
-       style="fill:#ffd42a;stroke:none" />
+       style="fill:#FFD70F;stroke:none" />
     <g
        id="g7918"
        transform="matrix(7.9543948,0,0,-7.9545451,0,266.58977)"
-       style="fill:#ffd42a;stroke:none" />
+       style="fill:#FFD70F;stroke:none" />
     <g
        id="g7922"
        transform="matrix(7.9543948,0,0,-7.9545451,0,266.58977)"
-       style="fill:#ffd42a;stroke:none" />
+       style="fill:#FFD70F;stroke:none" />
     <ellipse
        style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.05647551;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="path34357"

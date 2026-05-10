@@ -5,3 +5,4 @@ national/badges/* 32a
 env/exit 256
 env/brass/* 1024na
 env/signs/* 512f
+env/road/png/* 128na

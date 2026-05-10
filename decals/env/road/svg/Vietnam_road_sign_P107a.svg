@@ -21,7 +21,7 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
@@ -81,7 +81,7 @@
     <g
        id="g21319"
        transform="matrix(7.9820473,0,0,-7.9820905,122.9375,186.15064)"
-       style="fill:#cc00ff;stroke:none">
+       style="fill:#0046AA;stroke:none">
       <path
          style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.75168473;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
          d="m 15.819808,49.160052 c -0.51017,-2e-5 -1.125526,-0.642655 -1.127526,-1.428175 V 32.197078 h 47.356291 l 11.525873,1.678785 v 12.352611 c -0.0029,1.372689 -1.623518,2.921578 -3.34503,2.931578 z m 0.450985,-2.405367 h 4.209448 c 0.440751,-0.0011 0.775937,-0.32117 0.77676,-0.676538 v -9.897135 c 0.0024,-0.934333 -0.731608,-2.106326 -1.778948,-2.104712 H 16.49635 c -0.121363,-6.27e-4 -0.224901,0.180445 -0.225557,0.350763 z m 6.690057,-1.17763 H 33.659853 V 41.643231 H 22.96085 Z m 12.528126,0 H 46.187979 V 41.643231 H 35.488976 Z m 12.528126,0 H 58.716106 V 41.643231 H 48.017102 Z m 12.528059,0 H 71.244165 V 41.643231 H 60.545161 Z"

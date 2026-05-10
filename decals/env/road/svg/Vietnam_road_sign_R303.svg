@@ -32,7 +32,7 @@
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      pagecolor="#ffffff"
      id="base" />
   <metadata
@@ -62,7 +62,7 @@
     <circle
        transform="scale(-1,1)"
        r="350.5"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#29ffff;stroke-width:1.00001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#0046AA;stroke-width:1.00001;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="circle15558"
        cx="-2070.8669"
        cy="-82.413864" />

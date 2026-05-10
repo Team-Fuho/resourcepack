@@ -21,7 +21,7 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
@@ -85,7 +85,7 @@
        cy="147"
        r="150"
        id="path8376"
-       style="opacity:1;fill:#d35f5f;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.92256045;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+       style="opacity:1;fill:#F00A0A;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.92256045;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        d=""
        inkscape:connector-curvature="0" />
     <path

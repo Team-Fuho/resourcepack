@@ -21,7 +21,7 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
@@ -88,7 +88,7 @@
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cccccccccssccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccsccccccccccccsccccccccccccccccscscs" />
     <g
-       style="fill:#d38d5f;stroke:none"
+       style="fill:#FFD70F;stroke:none"
        transform="matrix(8.0086929,0,0,-7.9574747,306.61921,-72.169988)"
        id="g73010" />
   </g>

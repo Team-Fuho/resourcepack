@@ -232,7 +232,7 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
-     bordercolor="#666666"
+     bordercolor="#0A9646"
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
@@ -265,20 +265,20 @@
      id="layer1"
      transform="translate(78.19331,3.6614075)">
     <circle
-       style="fill:#f90200;fill-opacity:1;stroke:none;stroke-width:0.92209375;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#F00A0A;fill-opacity:1;stroke:none;stroke-width:0.92209375;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="circle6"
        r="138.53625"
        cy="134.87485"
        cx="60.342945" />
     <circle
-       style="fill:#1e95d4;fill-opacity:1;stroke:none;stroke-width:0.66091502;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#0046AA;fill-opacity:1;stroke:none;stroke-width:0.66091502;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="circle6-9"
        r="99.296516"
        cy="135.29677"
        cx="61.608727" />
     <path
        id="rect5690"
-       style="fill:#f90200;fill-opacity:1;stroke-width:0.25498354"
+       style="fill:#F00A0A;fill-opacity:1;stroke-width:0.25498354"
        d="M -2.8987561,55.154658 -19.403334,68.444868 125.43677,213.73901 140.05764,200.73836 Z"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccccc" />
