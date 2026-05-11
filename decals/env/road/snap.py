@@ -22,11 +22,24 @@ PALETTE = [
 ]
 
 
+WHITE_IDX = 0
+BLACK_IDX = 1
+
 def _sqdist(a, b):
     return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2
 
 
+def _saturation(r, g, b):
+    return max(r, g, b) - min(r, g, b)
+
+
 def nearest_rgb(r, g, b):
+    sat = _saturation(r, g, b)
+    # achromatic edge artifacts (mid-gray between white/black) must not
+    # snap to chromatic palette entries — force to black or white directly.
+    # bias toward black (ramp) so sign borders stay crisp
+    if sat <= 16:
+        return BLACK_IDX if max(r, g, b) <= 160 else WHITE_IDX
     best_i, best_d = 0, _sqdist((r, g, b), PALETTE[0])
     for i in range(1, len(PALETTE)):
         d = _sqdist((r, g, b), PALETTE[i])

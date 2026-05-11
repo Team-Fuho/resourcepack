@@ -19,7 +19,7 @@ SCRIPT = Path(__file__).resolve().parent
 PNG_DIR = SCRIPT / "png"
 STENCIL_DIR = SCRIPT / "stencils"
 MAP_FILE = SCRIPT / "stencil_map.json"
-FILL_COLOR = (0, 70, 170, 255)  # #0046AA
+FILL_COLOR = (213, 213, 213, 255)  # #d5d5d5
 
 
 def flood_fill_exterior(mask: np.ndarray) -> np.ndarray:
