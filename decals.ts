@@ -81,6 +81,7 @@ async function generateShell(
 const SHEET_SCALES = 4;
 const SHEET_BASE_SCALE = 16;
 const SHELL_QUALITY = 16;
+const ALIGNMENT_VARIANTS = false;
 
 for (let i = 1; i <= SHEET_SCALES; i++) {
 	const scale = 2 ** (i - 1);
@@ -569,7 +570,10 @@ const entries = df
 const rangeEntries: { threshold: number; model: unknown }[] = [];
 for (const e of entries) {
 	// a: 0=c, 1=t, 2=b, 3=l, 4=r, 5=tl, 6=tr, 7=bl, 8=br
-	for (const { a, dx, dy } of e.alignmentOffsets) {
+	const offsets = ALIGNMENT_VARIANTS
+		? e.alignmentOffsets
+		: [e.alignmentOffsets[0]];
+	for (const { a, dx, dy } of offsets) {
 		const modelPath = vd(
 			path.join("assets/decals/models/", `v${e.threshold}_${a}.json`),
 		);

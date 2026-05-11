@@ -483,6 +483,50 @@
     "license": "Public domain",
     "author": "Government of Vietnam"
   },
+  "Vietnam_road_sign_R122.svg": {
+    "filename": "Vietnam_road_sign_R122.svg",
+    "png": "Vietnam_road_sign_R122.png",
+    "display_name": "Vietnam road sign R122",
+    "sign_code": "Biển R.122",
+    "vietnamese": "Dừng lại",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R301a.svg": {
+    "filename": "Vietnam_road_sign_R301a.svg",
+    "png": "Vietnam_road_sign_R301a.png",
+    "display_name": "Vietnam road sign R301a",
+    "sign_code": "Biển R.301a",
+    "vietnamese": "Hướng đi thẳng phải theo",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R301b.svg": {
+    "filename": "Vietnam_road_sign_R301b.svg",
+    "png": "Vietnam_road_sign_R301b.png",
+    "display_name": "Vietnam road sign R301b",
+    "sign_code": "Biển R.301b",
+    "vietnamese": "Hướng đi phải phải theo",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R301c.svg": {
+    "filename": "Vietnam_road_sign_R301c.svg",
+    "png": "Vietnam_road_sign_R301c.png",
+    "display_name": "Vietnam road sign R301c",
+    "sign_code": "Biển R.301c",
+    "vietnamese": "Hướng đi trái phải theo",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
   "Vietnam_road_sign_R301d.svg": {
     "filename": "Vietnam_road_sign_R301d.svg",
     "png": "Vietnam_road_sign_R301d.png",
@@ -505,12 +549,56 @@
     "license": "Public domain",
     "author": "Government of Vietnam"
   },
+  "Vietnam_road_sign_R301i.svg": {
+    "filename": "Vietnam_road_sign_R301i.svg",
+    "png": "Vietnam_road_sign_R301i.png",
+    "display_name": "Vietnam road sign R301i",
+    "sign_code": "Biển R.301i",
+    "vietnamese": "Các xe chỉ được đi thẳng và rẽ phải",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R302a.svg": {
+    "filename": "Vietnam_road_sign_R302a.svg",
+    "png": "Vietnam_road_sign_R302a.png",
+    "display_name": "Vietnam road sign R302a",
+    "sign_code": "Biển R.302a",
+    "vietnamese": "Phải đi vòng sang bên phải",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R302b.svg": {
+    "filename": "Vietnam_road_sign_R302b.svg",
+    "png": "Vietnam_road_sign_R302b.png",
+    "display_name": "Vietnam road sign R302b",
+    "sign_code": "Biển R.302b",
+    "vietnamese": "Phải đi vòng sang bên trái",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
   "Vietnam_road_sign_R303.svg": {
     "filename": "Vietnam_road_sign_R303.svg",
     "png": "Vietnam_road_sign_R303.png",
     "display_name": "Vietnam road sign R303",
     "sign_code": "Biển R.303",
     "vietnamese": "Nơi giao nhau chạy theo vòng xuyến",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R304.svg": {
+    "filename": "Vietnam_road_sign_R304.svg",
+    "png": "Vietnam_road_sign_R304.png",
+    "display_name": "Vietnam road sign R304",
+    "sign_code": "Biển R.304",
+    "vietnamese": "Đường dành cho xe thô sơ",
     "category": "mandatory",
     "source": "Wikimedia Commons",
     "license": "Public domain",
@@ -527,12 +615,34 @@
     "license": "Public domain",
     "author": "Government of Vietnam"
   },
+  "Vietnam_road_sign_R308a.svg": {
+    "filename": "Vietnam_road_sign_R308a.svg",
+    "png": "Vietnam_road_sign_R308a.png",
+    "display_name": "Vietnam road sign R308a",
+    "sign_code": "Biển R.308a",
+    "vietnamese": "Tuyến đường cầu vượt cắt qua",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
   "Vietnam_road_sign_R308b.svg": {
     "filename": "Vietnam_road_sign_R308b.svg",
     "png": "Vietnam_road_sign_R308b.png",
     "display_name": "Vietnam road sign R308b",
     "sign_code": "Biển R.308b",
     "vietnamese": "Tuyến đường cầu vượt cắt qua",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R309.svg": {
+    "filename": "Vietnam_road_sign_R309.svg",
+    "png": "Vietnam_road_sign_R309.png",
+    "display_name": "Vietnam road sign R309",
+    "sign_code": "Biển R.309",
+    "vietnamese": "Ấn còi",
     "category": "mandatory",
     "source": "Wikimedia Commons",
     "license": "Public domain",
@@ -555,6 +665,17 @@
     "display_name": "Vietnam road sign R415b",
     "sign_code": "Biển R.415b",
     "vietnamese": "Hết phân làn",
+    "category": "mandatory",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_R420.svg": {
+    "filename": "Vietnam_road_sign_R420.svg",
+    "png": "Vietnam_road_sign_R420.png",
+    "display_name": "Vietnam road sign R420",
+    "sign_code": "Biển R.420",
+    "vietnamese": "Bắt đầu khu đông dân cư",
     "category": "mandatory",
     "source": "Wikimedia Commons",
     "license": "Public domain",
@@ -610,6 +731,17 @@
     "display_name": "Vietnam road sign W239a",
     "sign_code": "Biển W.239a",
     "vietnamese": "Giao nhau với đường không ưu tiên",
+    "category": "warning",
+    "source": "Wikimedia Commons",
+    "license": "Public domain",
+    "author": "Government of Vietnam"
+  },
+  "Vietnam_road_sign_W242a.svg": {
+    "filename": "Vietnam_road_sign_W242a.svg",
+    "png": "Vietnam_road_sign_W242a.png",
+    "display_name": "Vietnam road sign W242a",
+    "sign_code": "Biển W.242a",
+    "vietnamese": "Giao nhau vuông góc với một cặp đường ray",
     "category": "warning",
     "source": "Wikimedia Commons",
     "license": "Public domain",
