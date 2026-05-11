@@ -45,6 +45,7 @@ async function generateShell(
 	const model = {
 		credit: `fuho:${name} — shell: ${slices} slices, double-faced`,
 		textures: { layer0: "fuho:item/noop", layer1: "#layer0" },
+		gui_light: "front",
 		elements,
 		display: {
 			thirdperson_righthand: {
