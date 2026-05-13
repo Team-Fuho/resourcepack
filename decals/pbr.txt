@@ -14,5 +14,5 @@
 
 env/brass/* 3 1 1 0
 national/badges/* 4 2 0 1
-env/road/png/* 8 2 0 0
+env/road/png/* 2 8 0 0
 env/road/stencils/* 8 10 0 0
