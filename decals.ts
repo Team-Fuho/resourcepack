@@ -430,6 +430,18 @@ const parseDecalLine = (line: string) => {
 	if (parts.length < 6) {
 		throw new Error(`Invalid decal line: "${line}"`);
 	}
+	let depthScaleStr: string | undefined;
+	let stencilRef: string | undefined;
+	if (parts.length >= 7) {
+		const candidate = parts[6];
+		const candidateNum = Number.parseFloat(candidate);
+		if (!Number.isNaN(candidateNum)) {
+			depthScaleStr = candidate;
+			stencilRef = parts[7];
+		} else {
+			stencilRef = candidate;
+		}
+	}
 	return {
 		iStr: parts[0],
 		name: parts[1],
@@ -437,7 +449,8 @@ const parseDecalLine = (line: string) => {
 		xStr: parts[3],
 		yStr: parts[4],
 		scaleStr: parts[5],
-		stencilRef: parts[6],
+		depthScaleStr,
+		stencilRef,
 	};
 };
 
@@ -449,6 +462,7 @@ function add(
 	xStr: string,
 	yStr: string,
 	scaleStr: string,
+	depthScaleStr?: string,
 	stencilRef?: string,
 ) {
 	const i = Number.parseInt(iStr, 10);
@@ -456,6 +470,7 @@ function add(
 	const x = Number.parseFloat(xStr);
 	const y = Number.parseFloat(yStr);
 	const s = Number.parseFloat(scaleStr);
+	const depthScale = depthScaleStr ? Number.parseFloat(depthScaleStr) : 1;
 
 	const texKey = tex(path.join("decals/", `${name}.png`));
 	let stencilTexKey: string | undefined;
@@ -530,8 +545,8 @@ function add(
 		}
 		const displayScale = isFastOrShell ? Math.min(s_mc * 2, 4) : s * 2;
 		const tf = {
-			translation: [tx, ty, -0.03],
-			scale: Array(3).fill(displayScale),
+			translation: [tx, ty, -0.03 * depthScale],
+			scale: [displayScale, displayScale, displayScale * depthScale],
 			...(resolvedMode === "d" ? { rotation: [0, 180, 0] } : {}),
 		};
 		return { head: tf, fixed: tf };
@@ -553,7 +568,7 @@ const paperItemPath = vd(path.join("assets/minecraft/items/paper.json"));
 const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
 const entries = df
 	.map((line) => {
-		const { iStr, name, modeKey, xStr, yStr, scaleStr, stencilRef } =
+		const { iStr, name, modeKey, xStr, yStr, scaleStr, depthScaleStr, stencilRef } =
 			parseDecalLine(line);
 		return add(
 			iStr as string,
@@ -562,6 +577,7 @@ const entries = df
 			xStr as string,
 			yStr as string,
 			scaleStr as string,
+			depthScaleStr as string | undefined,
 			stencilRef as string | undefined,
 		);
 	})
