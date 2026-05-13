@@ -12,7 +12,7 @@
 # glowness:  Emission intensity, 0 to 10.
 #
 
-env/brass/* 1 8 1 0
+env/brass/* 1 8 0 0
 national/badges/* 2 2 0 1
 env/road/png/* 1 8 0 0
 env/road/stencils/* 8 6 3 0
