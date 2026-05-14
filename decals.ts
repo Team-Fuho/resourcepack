@@ -568,8 +568,16 @@ const paperItemPath = vd(path.join("assets/minecraft/items/paper.json"));
 const paperModelPath = vd(path.join("assets/minecraft/models/item/paper.json"));
 const entries = df
 	.map((line) => {
-		const { iStr, name, modeKey, xStr, yStr, scaleStr, depthScaleStr, stencilRef } =
-			parseDecalLine(line);
+		const {
+			iStr,
+			name,
+			modeKey,
+			xStr,
+			yStr,
+			scaleStr,
+			depthScaleStr,
+			stencilRef,
+		} = parseDecalLine(line);
 		return add(
 			iStr as string,
 			name as string,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate deduplicated stencil textures from rendered road sign PNGs.
 1. Extract silhouette (alpha mask, flood-fill interior holes)
-2. Downscale to 8x8 -> 64-bit key
+2. Downscale to NxN -> bitmask key (SIG_RES)
 3. Group by identical key
 4. Save canonical stencil per group with 4-char hash filename
 5. Output stencil_map.json
@@ -20,6 +20,7 @@ PNG_DIR = SCRIPT / "png"
 STENCIL_DIR = SCRIPT / "stencils"
 MAP_FILE = SCRIPT / "stencil_map.json"
 FILL_COLOR = (213, 213, 213, 255)  # #d5d5d5
+SIG_RES = 16  # signature resolution (higher = more shape detail)
 
 
 def flood_fill_exterior(mask: np.ndarray) -> np.ndarray:
@@ -55,24 +56,24 @@ def flood_fill_exterior(mask: np.ndarray) -> np.ndarray:
     return result
 
 
-def downscale_8x8(mask: np.ndarray) -> int:
-    """Downscale binary mask to 8x8, encode as 64-bit int (row-major)."""
+def downscale(mask: np.ndarray, res: int = SIG_RES) -> int:
+    """Downscale binary mask to `res`x`res`, encode as int (row-major)."""
     h, w = mask.shape
     k = 0
-    for y in range(8):
-        for x in range(8):
-            y0 = y * h // 8
-            y1 = (y + 1) * h // 8
-            x0 = x * w // 8
-            x1 = (x + 1) * w // 8
+    for y in range(res):
+        for x in range(res):
+            y0 = y * h // res
+            y1 = (y + 1) * h // res
+            x0 = x * w // res
+            x1 = (x + 1) * w // res
             block = mask[y0:y1, x0:x1]
             if np.mean(block) > 0.5:
-                k |= 1 << (y * 8 + x)
+                k |= 1 << (y * res + x)
     return k
 
 
 def key_hash(key: int) -> str:
-    """SHA1 first 4 hex chars of the 8x8 key."""
+    """SHA1 first 4 hex chars of the signature key."""
     return hashlib.sha1(str(key).encode()).hexdigest()[:4]
 
 
@@ -87,13 +88,13 @@ def main():
     STENCIL_DIR.mkdir(exist_ok=True)
     png_files = sorted(PNG_DIR.glob("Vietnam_road_sign_*.png"))
 
-    # Step 1: extract silhouettes + 8x8 keys
+    # Step 1: extract silhouettes + signature keys
     key_groups: dict[int, list[tuple[str, np.ndarray]]] = {}
     for p in png_files:
         arr = np.array(Image.open(p).convert("RGBA"))
         mask = (arr[:, :, 3] > 0).astype(np.uint8)
         filled = flood_fill_exterior(mask)
-        k = downscale_8x8(filled)
+        k = downscale(filled)
         key_groups.setdefault(k, []).append((p.stem, filled))
 
     # Step 2: save canonical stencil per group + build mapping
