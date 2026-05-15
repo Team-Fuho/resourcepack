@@ -106,6 +106,15 @@
 11005 graffiti/teamfuho fast 0 0 2
 11006 graffiti/teamfuho shell 0 0 2
 
+# Diplomatic table flags
+11100 national/stands/cp shell 0 0 1
+11101 national/stands/vn shell 0 0 1
+
+
+# Street additions
+11490 env/street/street_generic shell 0 0 1
+11491 env/street/street_hanoi shell 0 0 1
+
 # Traffic (11500-11699)
 11500 env/road/png/Vietnam_road_sign_I407a shell 0 0 1 0.1 env/road/stencils/stencil-5106
 11501 env/road/png/Vietnam_road_sign_I408 shell 0 0 1 0.1 env/road/stencils/stencil-5106

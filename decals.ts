@@ -303,17 +303,125 @@ const generateNormalMapBuffer = async (rule: PbrRule): Promise<Buffer> => {
 		.toBuffer();
 };
 
+const renormalizeNormalMap = async (buffer: Buffer): Promise<Buffer> => {
+	const raw = await sharp(buffer)
+		.ensureAlpha()
+		.raw()
+		.toBuffer({ resolveWithObject: true });
+	const { data, info } = raw;
+	for (let i = 0; i < data.length; i += 4) {
+		let x = (data[i] / 255.0) * 2.0 - 1.0;
+		let y = (data[i + 1] / 255.0) * 2.0 - 1.0;
+		const zSq = 1.0 - x * x - y * y;
+		const z = Math.sqrt(Math.max(0, zSq));
+		const len = Math.sqrt(x * x + y * y + z * z);
+		if (len > 1e-6) {
+			x /= len;
+			y /= len;
+		}
+		data[i] = Math.round((x * 0.5 + 0.5) * 255);
+		data[i + 1] = Math.round((y * 0.5 + 0.5) * 255);
+	}
+	return await sharp(data, {
+		raw: { width: info.width, height: info.height, channels: 4 },
+	})
+		.png()
+		.toBuffer();
+};
+
+const fuseNormalDepth = async (
+	normalSrc: string,
+	depthSrc: string,
+	destPath: string,
+	ppRule: PostprocessRule | null,
+): Promise<void> => {
+	const normalBuf = Buffer.from(await Bun.file(normalSrc).arrayBuffer());
+	const depthBuf = Buffer.from(await Bun.file(depthSrc).arrayBuffer());
+
+	const normalImg = sharp(normalBuf, { limitInputPixels: false });
+	const depthImg = sharp(depthBuf, { limitInputPixels: false });
+
+	const [normalMeta, depthMeta] = await Promise.all([
+		normalImg.metadata(),
+		depthImg.metadata(),
+	]);
+
+	let depthProcessed = depthImg;
+	if (
+		depthMeta.width !== normalMeta.width ||
+		depthMeta.height !== normalMeta.height
+	) {
+		depthProcessed = depthImg.resize(normalMeta.width, normalMeta.height, {
+			kernel: "lanczos3",
+		});
+	}
+
+	const [normalRaw, depthRaw] = await Promise.all([
+		normalImg.ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
+		depthProcessed
+			.toColorspace("srgb")
+			.ensureAlpha()
+			.raw()
+			.toBuffer({ resolveWithObject: true }),
+	]);
+
+	const pixelCount = normalRaw.data.length / 4;
+	const fused = Buffer.alloc(pixelCount * 4);
+	for (let i = 0; i < pixelCount; i++) {
+		const ni = i * 4;
+		const di = Math.min(i * 4, depthRaw.data.length - 4);
+		fused[ni] = normalRaw.data[ni];
+		fused[ni + 1] = normalRaw.data[ni + 1];
+		fused[ni + 2] = normalRaw.data[ni + 2];
+		fused[ni + 3] = depthRaw.data[di];
+	}
+
+	const fusedBuf = await sharp(fused, {
+		raw: {
+			width: normalRaw.info.width,
+			height: normalRaw.info.height,
+			channels: 4,
+		},
+	})
+		.png()
+		.toBuffer();
+
+	if (!ppRule) {
+		await Bun.write(destPath, fusedBuf);
+	} else if (ppRule.stretch) {
+		const resized = await rescaleStretch(
+			fusedBuf,
+			ppRule.size,
+			ppRule.nearest,
+			ppRule.alphaBoolean,
+			true,
+		);
+		await Bun.write(destPath, resized);
+	} else {
+		const resized = await rescaleFit(
+			fusedBuf,
+			ppRule.size,
+			ppRule.nearest,
+			ppRule.alphaBoolean,
+			true,
+		);
+		await Bun.write(destPath, resized);
+	}
+};
+
 const rescaleFit = async (
 	input: Buffer,
 	targetSize: number,
 	nearest = false,
 	alphaBoolean = false,
+	renormalize = false,
 ): Promise<Buffer> => {
 	const image = sharp(input, { limitInputPixels: false });
 	const meta = await image.metadata();
 	if (!meta.width || !meta.height) return input;
-	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean)
-		return input;
+	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean) {
+		return renormalize ? renormalizeNormalMap(input) : input;
+	}
 
 	let pipe = image;
 	if (meta.width !== targetSize || meta.height !== targetSize) {
@@ -344,6 +452,9 @@ const rescaleFit = async (
 			.png({ compressionLevel: 8, progressive: false })
 			.toBuffer();
 	}
+	if (renormalize) {
+		result = await renormalizeNormalMap(result);
+	}
 	return result;
 };
 
@@ -352,12 +463,14 @@ const rescaleStretch = async (
 	targetSize: number,
 	nearest = false,
 	alphaBoolean = false,
+	renormalize = false,
 ): Promise<Buffer> => {
 	const image = sharp(input, { limitInputPixels: false });
 	const meta = await image.metadata();
 	if (!meta.width || !meta.height) return input;
-	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean)
-		return input;
+	if (meta.width === targetSize && meta.height === targetSize && !alphaBoolean) {
+		return renormalize ? renormalizeNormalMap(input) : input;
+	}
 
 	let pipe = image;
 	if (meta.width !== targetSize || meta.height !== targetSize) {
@@ -386,6 +499,9 @@ const rescaleStretch = async (
 		})
 			.png({ compressionLevel: 8, progressive: false })
 			.toBuffer();
+	}
+	if (renormalize) {
+		result = await renormalizeNormalMap(result);
 	}
 	return result;
 };
@@ -667,9 +783,14 @@ for (const i of Object.entries(textures)) {
 	const relNoExt = relPath.replace(/\.png$/i, "");
 	const ppRule = matchPostprocessRule(relPath, relNoExt);
 
-	const copyOrResize = async (src: string, dst: string) => {
+	const copyOrResize = async (src: string, dst: string, renormalize = false) => {
 		if (!ppRule) {
-			await copyFile(src, dst);
+			if (renormalize) {
+				const input = Buffer.from(await Bun.file(src).arrayBuffer());
+				await Bun.write(dst, await renormalizeNormalMap(input));
+			} else {
+				await copyFile(src, dst);
+			}
 		} else if (ppRule.stretch) {
 			const input = Buffer.from(await Bun.file(src).arrayBuffer());
 			const resized = await rescaleStretch(
@@ -677,6 +798,7 @@ for (const i of Object.entries(textures)) {
 				ppRule.size,
 				ppRule.nearest,
 				ppRule.alphaBoolean,
+				renormalize,
 			);
 			await Bun.write(dst, resized);
 		} else {
@@ -686,6 +808,7 @@ for (const i of Object.entries(textures)) {
 				ppRule.size,
 				ppRule.nearest,
 				ppRule.alphaBoolean,
+				renormalize,
 			);
 			await Bun.write(dst, resized);
 		}
@@ -693,12 +816,18 @@ for (const i of Object.entries(textures)) {
 
 	const normalSource = sourcePath.replace(/\.png$/i, "_n.png");
 	const specSource = sourcePath.replace(/\.png$/i, "_s.png");
+	const depthSource = sourcePath.replace(/\.png$/i, "_d.png");
 	const normalDest = destPath.replace(/\.png$/i, "_n.png");
 	const specDest = destPath.replace(/\.png$/i, "_s.png");
 
 	if (existsSync(normalSource)) {
-		await copyOrResize(normalSource, normalDest);
-		lfs(`* ${normalSource}`)();
+		if (existsSync(depthSource)) {
+			await fuseNormalDepth(normalSource, depthSource, normalDest, ppRule);
+			lfs(`* fused ${normalSource} + ${depthSource}`)();
+		} else {
+			await copyOrResize(normalSource, normalDest, true);
+			lfs(`* ${normalSource}`)();
+		}
 	}
 
 	if (existsSync(specSource)) {

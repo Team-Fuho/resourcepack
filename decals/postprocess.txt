@@ -1,6 +1,6 @@
 national/*square_v2,national/*vertical_v2,national/mps,national/cmil 512
 national/cp,national/star 128
-national/quochuy,national/quochuy_new 512
+national/quochuy,national/quochuy_new,national/stands/* 512
 national/badges/* 32a
 env/exit 256
 env/brass/* 1024na
