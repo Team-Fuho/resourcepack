@@ -113,7 +113,7 @@
 
 # Street additions
 11490 env/street/street_generic shell 0 0 1
-11491 env/street/street_hanoi shell 0 0 1
+11491 env/street/street_hanoi shell 0 0 1 env/street/street_hanoi_back
 
 # Traffic (11500-11699)
 11500 env/road/png/Vietnam_road_sign_I407a shell 0 0 1 0.1 env/road/stencils/stencil-5106
