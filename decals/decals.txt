@@ -111,9 +111,15 @@
 11101 national/stands/vn shell 0 0 1
 
 
+# Pole
+11480 env/street/pole_strip pole 0 0 1
+11481 env/street/pole_alu pole 0 0 1
+
 # Street additions
 11490 env/street/street_generic shell 0 0 1
 11491 env/street/street_hanoi shell 0 0 1 env/street/street_hanoi_back
+11482 env/street/generic shell 0 0 1 env/road/stencils/stencil-5106
+11483 env/street/generic_w shell 0 0 1 env/road/stencils/stencil-5106
 
 # Traffic (11500-11699)
 11500 env/road/png/Vietnam_road_sign_I407a shell 0 0 1 0.1 env/road/stencils/stencil-5106

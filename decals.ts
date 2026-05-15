@@ -538,6 +538,7 @@ const mode = {
 	default: "d",
 	inbetween: "i",
 	shell: "s",
+	pole: "pole",
 } as const;
 
 const tex = makeHasher(true);
