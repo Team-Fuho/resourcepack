@@ -109,6 +109,7 @@
 # Diplomatic table flags
 11100 national/stands/cp shell 0 0 1
 11101 national/stands/vn shell 0 0 1
+11102 national/stands/lao shell 0 0 1
 
 
 # Pole
