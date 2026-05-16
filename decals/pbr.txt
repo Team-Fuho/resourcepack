@@ -2,7 +2,7 @@
 # Generates 1x1 specular (_s.png) and/or normal (_n.png) maps if they don't exist.
 # Existing texture files have priority and will NOT be overwritten.
 #
-# Format: <selector> <roughness> <metalness> <ao> <glowness>
+# Format: <selector> <roughness> <metalness> <ao> <glowness> [flags]
 #
 # selector:  Glob pattern matching the texture path (e.g., national/* or env/exit).
 # roughness: 0 (smooth) to 10 (rough). Maps to perceptual smoothness.
@@ -10,6 +10,8 @@
 #            iron, gold, aluminum, chrome, copper, lead, platinum, silver
 # ao:        Ambient occlusion intensity, 0 to 10. If > 0, generates a normal map.
 # glowness:  Emission intensity, 0 to 10.
+# flags:     Optional. d = flip depth (invert alpha/hardness), n = flip normals Y.
+#            Combine: dn flips both. Applies to _n and _d textures in matched dirs.
 #
 
 env/brass/* 1 8 0 0
@@ -17,3 +19,4 @@ national/badges/* 2 2 0 1
 env/street/pole* 5 aluminum 0 0
 env/road/png/*,env/street/* 1 8 0 0
 env/road/stencils/*,env/street/backplate 8 6 3 0
+national/stands/* 1 8 0 0 d

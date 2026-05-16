@@ -130,6 +130,7 @@ type PbrRule = {
 	metalnessStr: string;
 	ao: number;
 	glowness: number;
+	flags: string;
 };
 
 const globToRegex = (pattern: string): RegExp => {
@@ -181,6 +182,15 @@ const parsePbr = (raw: string): PbrRule[] =>
 		.map((line) => {
 			const parts = line.split(/\s+/);
 			if (parts.length < 5) return null;
+			let flags = "";
+			const last = parts[parts.length - 1];
+			if (
+				last &&
+				/^[a-zA-Z]+$/.test(last) &&
+				Number.isNaN(Number.parseFloat(last))
+			) {
+				flags = parts.pop() ?? "";
+			}
 			const glowness = Number.parseFloat(parts.pop() ?? "0");
 			const ao = Number.parseFloat(parts.pop() ?? "0");
 			const metalnessStr = parts.pop() ?? "0";
@@ -197,6 +207,7 @@ const parsePbr = (raw: string): PbrRule[] =>
 				metalnessStr,
 				ao,
 				glowness,
+				flags,
 			};
 		})
 		.filter((rule): rule is PbrRule => Boolean(rule));
@@ -334,79 +345,68 @@ const fuseNormalDepth = async (
 	depthSrc: string,
 	destPath: string,
 	ppRule: PostprocessRule | null,
+	flags: string,
 ): Promise<void> => {
-	const normalBuf = Buffer.from(await Bun.file(normalSrc).arrayBuffer());
-	const depthBuf = Buffer.from(await Bun.file(depthSrc).arrayBuffer());
+	const [normalBuf, depthBuf] = await Promise.all([
+		Bun.file(normalSrc).arrayBuffer().then(Buffer.from),
+		Bun.file(depthSrc).arrayBuffer().then(Buffer.from),
+	]);
 
 	const normalImg = sharp(normalBuf, { limitInputPixels: false });
 	const depthImg = sharp(depthBuf, { limitInputPixels: false });
 
-	const [normalMeta, depthMeta] = await Promise.all([
-		normalImg.metadata(),
-		depthImg.metadata(),
-	]);
-
-	let depthProcessed = depthImg;
-	if (
-		depthMeta.width !== normalMeta.width ||
-		depthMeta.height !== normalMeta.height
-	) {
-		depthProcessed = depthImg.resize(normalMeta.width, normalMeta.height, {
-			kernel: "lanczos3",
-		});
-	}
-
 	const [normalRaw, depthRaw] = await Promise.all([
 		normalImg.ensureAlpha().raw().toBuffer({ resolveWithObject: true }),
-		depthProcessed
+		depthImg
 			.toColorspace("srgb")
 			.ensureAlpha()
 			.raw()
 			.toBuffer({ resolveWithObject: true }),
 	]);
 
+	const flipN = flags.includes("n");
+	const flipD = flags.includes("d");
 	const pixelCount = normalRaw.data.length / 4;
 	const fused = Buffer.alloc(pixelCount * 4);
 	for (let i = 0; i < pixelCount; i++) {
 		const ni = i * 4;
-		const di = Math.min(i * 4, depthRaw.data.length - 4);
 		fused[ni] = normalRaw.data[ni];
-		fused[ni + 1] = normalRaw.data[ni + 1];
+		fused[ni + 1] = flipN ? 255 - normalRaw.data[ni + 1] : normalRaw.data[ni + 1];
 		fused[ni + 2] = normalRaw.data[ni + 2];
-		fused[ni + 3] = depthRaw.data[di];
+		fused[ni + 3] = flipD ? 255 - depthRaw.data[ni] : depthRaw.data[ni];
 	}
-
-	const fusedBuf = await sharp(fused, {
-		raw: {
-			width: normalRaw.info.width,
-			height: normalRaw.info.height,
-			channels: 4,
-		},
-	})
-		.png()
-		.toBuffer();
 
 	if (!ppRule) {
-		await Bun.write(destPath, fusedBuf);
-	} else if (ppRule.stretch) {
-		const resized = await rescaleStretch(
-			fusedBuf,
-			ppRule.size,
-			ppRule.nearest,
-			ppRule.alphaBoolean,
-			true,
-		);
-		await Bun.write(destPath, resized);
-	} else {
-		const resized = await rescaleFit(
-			fusedBuf,
-			ppRule.size,
-			ppRule.nearest,
-			ppRule.alphaBoolean,
-			true,
-		);
-		await Bun.write(destPath, resized);
+		const buf = await sharp(fused, {
+			raw: {
+				width: normalRaw.info.width,
+				height: normalRaw.info.height,
+				channels: 4,
+			},
+		})
+			.png()
+			.toBuffer();
+		await Bun.write(destPath, buf);
+		return;
 	}
+
+	const w = normalRaw.info.width;
+	const h = normalRaw.info.height;
+	let pipe = sharp(fused, {
+		raw: { width: w, height: h, channels: 4 },
+	});
+	if (w !== ppRule.size || h !== ppRule.size) {
+		pipe = pipe.resize(ppRule.size, ppRule.size, {
+			fit: ppRule.stretch ? "fill" : "contain",
+			background: { r: 128, g: 128, b: 255, alpha: 0 },
+			kernel: ppRule.nearest ? "nearest" : "lanczos3",
+		});
+	}
+	let result = await pipe
+		.png({ compressionLevel: 8, progressive: false })
+		.toBuffer();
+	result = await renormalizeNormalMap(result);
+	await Bun.write(destPath, result);
 };
 
 const rescaleFit = async (
@@ -425,16 +425,19 @@ const rescaleFit = async (
 
 	let pipe = image;
 	if (meta.width !== targetSize || meta.height !== targetSize) {
+		const bg = renormalize
+			? { r: 128, g: 128, b: 255, alpha: 0 }
+			: { r: 0, g: 0, b: 0, alpha: 0 };
 		pipe = pipe.resize(targetSize, targetSize, {
 			fit: "contain",
-			background: { r: 0, g: 0, b: 0, alpha: 0 },
+			background: bg,
 			kernel: nearest ? "nearest" : "lanczos3",
 		});
 	}
 	let result = await pipe
 		.png({ compressionLevel: 8, progressive: false })
 		.toBuffer();
-	if (alphaBoolean) {
+	if (alphaBoolean && !renormalize) {
 		const raw = await sharp(result)
 			.ensureAlpha()
 			.raw()
@@ -482,7 +485,7 @@ const rescaleStretch = async (
 	let result = await pipe
 		.png({ compressionLevel: 8, progressive: false })
 		.toBuffer();
-	if (alphaBoolean) {
+	if (alphaBoolean && !renormalize) {
 		const raw = await sharp(result)
 			.ensureAlpha()
 			.raw()
@@ -784,18 +787,31 @@ for (const i of Object.entries(textures)) {
 	const relNoExt = relPath.replace(/\.png$/i, "");
 	const ppRule = matchPostprocessRule(relPath, relNoExt);
 
-	const copyOrResize = async (src: string, dst: string, renormalize = false) => {
+	const copyOrResize = async (
+		input: string | Buffer,
+		dst: string,
+		renormalize = false,
+	) => {
+		const srcBuf = typeof input === "string" ? undefined : input;
+		const srcPath = typeof input === "string" ? input : undefined;
+
+		const load = async (): Promise<Buffer> => {
+			if (srcBuf) return srcBuf;
+			if (!srcPath) throw new Error("copyOrResize: no input");
+			return Buffer.from(await Bun.file(srcPath).arrayBuffer());
+		};
+
 		if (!ppRule) {
 			if (renormalize) {
-				const input = Buffer.from(await Bun.file(src).arrayBuffer());
-				await Bun.write(dst, await renormalizeNormalMap(input));
-			} else {
-				await copyFile(src, dst);
+				await Bun.write(dst, await renormalizeNormalMap(await load()));
+			} else if (srcPath) {
+				await copyFile(srcPath, dst);
+			} else if (srcBuf) {
+				await Bun.write(dst, srcBuf);
 			}
 		} else if (ppRule.stretch) {
-			const input = Buffer.from(await Bun.file(src).arrayBuffer());
 			const resized = await rescaleStretch(
-				input,
+				await load(),
 				ppRule.size,
 				ppRule.nearest,
 				ppRule.alphaBoolean,
@@ -803,9 +819,8 @@ for (const i of Object.entries(textures)) {
 			);
 			await Bun.write(dst, resized);
 		} else {
-			const input = Buffer.from(await Bun.file(src).arrayBuffer());
 			const resized = await rescaleFit(
-				input,
+				await load(),
 				ppRule.size,
 				ppRule.nearest,
 				ppRule.alphaBoolean,
@@ -820,13 +835,38 @@ for (const i of Object.entries(textures)) {
 	const depthSource = sourcePath.replace(/\.png$/i, "_d.png");
 	const normalDest = destPath.replace(/\.png$/i, "_n.png");
 	const specDest = destPath.replace(/\.png$/i, "_s.png");
+	const pbrRule = matchPbrRule(relPath, relNoExt);
+	const flags = pbrRule?.flags ?? "";
 
 	if (existsSync(normalSource)) {
 		if (existsSync(depthSource)) {
-			await fuseNormalDepth(normalSource, depthSource, normalDest, ppRule);
+			await fuseNormalDepth(normalSource, depthSource, normalDest, ppRule, flags);
 			lfs(`* fused ${normalSource} + ${depthSource}`)();
 		} else {
-			await copyOrResize(normalSource, normalDest, true);
+			const needsFlip = flags.includes("n") || flags.includes("d");
+			if (needsFlip) {
+				const buf = Buffer.from(await Bun.file(normalSource).arrayBuffer());
+				const { data, info } = await sharp(buf)
+					.ensureAlpha()
+					.raw()
+					.toBuffer({ resolveWithObject: true });
+				for (let i = 0; i < data.length; i += 4) {
+					if (flags.includes("n")) data[i + 1] = 255 - data[i + 1];
+					if (flags.includes("d")) data[i + 3] = 255 - data[i + 3];
+				}
+				const flipped = await sharp(data, {
+					raw: {
+						width: info.width,
+						height: info.height,
+						channels: 4,
+					},
+				})
+					.png()
+					.toBuffer();
+				await copyOrResize(flipped, normalDest, true);
+			} else {
+				await copyOrResize(normalSource, normalDest, true);
+			}
 			lfs(`* ${normalSource}`)();
 		}
 	}
@@ -836,7 +876,6 @@ for (const i of Object.entries(textures)) {
 		lfs(`* ${specSource}`)();
 	}
 
-	const pbrRule = matchPbrRule(relPath, relNoExt);
 	if (pbrRule) {
 		if (!existsSync(specSource)) {
 			const specBuf = await generateSpecMapBuffer(pbrRule);
