@@ -20,10 +20,10 @@
   "author": "hUwUtao",
   "license": "MIT",
   "dependencies": {
-    "@biomejs/biome": "^1.9.4",
-    "archiver": "^7.0.1",
+    "@biomejs/biome": "^2.4.15",
     "pngquant-bin": "^9.0.0",
-    "sharp": "^0.33.5"
+    "sharp": "^0.34.5",
+    "zip-bun": "^1.3.8"
   },
   "repository": {
     "type": "git",
@@ -35,10 +35,9 @@
   },
   "homepage": "https://github.com/Team-Fuho/resourcepack#readme",
   "devDependencies": {
-    "@types/archiver": "^6.0.4",
     "bun-types": "^1.3.14",
-    "typescript": "^5.9.3",
-    "@types/bun": "latest"
+    "typescript": "^6.0.3",
+    "@types/bun": "^1.3.14"
   },
   "private": true
 }

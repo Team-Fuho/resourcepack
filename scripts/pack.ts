@@ -1,7 +1,6 @@
-import { createWriteStream } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import archiver from "archiver";
+import { zipDirectory, CompressionLevel } from "zip-bun";
 import pngquant from "pngquant-bin";
 import sharp from "sharp";
 
@@ -60,26 +59,16 @@ const runPngquant = async (
 	return Buffer.from(output);
 };
 
+const hasAlpha = (input: Buffer) => {
+	const ct = input[25];
+	return ct === 4 || ct === 6;
+};
+
 const optimizePng = async (src: string): Promise<Buffer> => {
 	const input = await fs.readFile(src);
-	const image = sharp(input, { limitInputPixels: false });
-	const meta = await image.metadata();
+	const meta = await Bun.file(src).image().metadata();
 
 	if (!meta.width || !meta.height) return input;
-
-	let hasPartialAlpha = false;
-	if (meta.hasAlpha) {
-		const stats = await image.stats();
-		const alpha = stats.channels[3];
-		if (alpha?.histogram) {
-			for (let i = 1; i < 255; i += 1) {
-				if (alpha.histogram[i] > 0) {
-					hasPartialAlpha = true;
-					break;
-				}
-			}
-		}
-	}
 
 	const longest = Math.max(meta.width, meta.height);
 	const capped = Math.min(longest, MAX_TEXTURE_SIZE);
@@ -98,9 +87,10 @@ const optimizePng = async (src: string): Promise<Buffer> => {
 		.png({ compressionLevel: 8, progressive: false })
 		.toBuffer();
 
+	const useAlphaSettings = hasAlpha(input);
 	const quantized = await runPngquant(resized, {
-		quality: hasPartialAlpha ? PNGQUANT_QUALITY_ALPHA : undefined,
-		floyd: hasPartialAlpha ? PNGQUANT_FLOYD_ALPHA : undefined,
+		quality: useAlphaSettings ? PNGQUANT_QUALITY_ALPHA : undefined,
+		floyd: useAlphaSettings ? PNGQUANT_FLOYD_ALPHA : undefined,
 	});
 	return quantized ?? resized;
 };
@@ -176,57 +166,9 @@ const copyPackFiles = async (destDir: string) => {
 	);
 };
 
-let zipCliReady: boolean | null = null;
-const hasZipCli = async () => {
-	if (zipCliReady !== null) return zipCliReady;
-	const proc = Bun.spawn({
-		cmd: ["zip", "-v"],
-		stdout: "ignore",
-		stderr: "ignore",
-	});
-	zipCliReady = (await proc.exited) === 0;
-	return zipCliReady;
-};
-
-const zipDirCli = async (srcDir: string, outFile: string) => {
-	await fs.rm(outFile, { force: true });
-	const proc = Bun.spawn({
-		cmd: ["zip", "-9", "-X", "-q", "-r", "-D", outFile, "."],
-		cwd: srcDir,
-		stdout: "pipe",
-		stderr: "pipe",
-	});
-	const [exitCode, stderr] = await Promise.all([
-		proc.exited,
-		new Response(proc.stderr).text(),
-	]);
-	if (exitCode !== 0) {
-		throw new Error(`zip failed: ${stderr.trim()}`);
-	}
-};
-
 const zipDir = async (srcDir: string, outFile: string) => {
 	await ensureDir(path.dirname(outFile));
-	if (await hasZipCli()) {
-		await zipDirCli(srcDir, outFile);
-		return;
-	}
-	await new Promise<void>((resolve, reject) => {
-		const output = createWriteStream(outFile);
-		const archive = archiver("zip", { zlib: { level: 9 } });
-
-		output.on("close", () => resolve());
-		archive.on("error", (error) => reject(error));
-		archive.on("warning", (error) => {
-			if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
-				reject(error);
-			}
-		});
-
-		archive.pipe(output);
-		archive.directory(srcDir, false);
-		archive.finalize();
-	});
+	await zipDirectory(srcDir, outFile, CompressionLevel.BEST_COMPRESSION);
 };
 
 const getPatches = async () => {
