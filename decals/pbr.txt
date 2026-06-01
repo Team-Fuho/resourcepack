@@ -19,4 +19,3 @@ national/badges/* 2 2 0 1
 env/street/pole* 5 aluminum 0 0
 env/road/png/*,env/street/* 1 8 0 0
 env/road/stencils/*,env/street/backplate 8 6 3 0
-national/stands/* 1 8 0 0 d
