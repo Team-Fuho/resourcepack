@@ -59,13 +59,8 @@
        id="circle817-0-1"
        cx="-3849.4307"
        cy="43.997906" />
-    <circle
-       transform="scale(-1,1)"
-       r="350.5"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.00002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       id="circle881-3-0"
-       cx="-3849.4307"
-       cy="43.997906" />
+    <!-- removed white halo stroke -->
+
     <path
        sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
        inkscape:connector-curvature="0"

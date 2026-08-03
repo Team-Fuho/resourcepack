@@ -72,11 +72,7 @@
        id="path841"
        d="m 699.8,-89 1,13 0.7,22 -0.7,22 -1,13 H 176 V 16 L 71,-54 176,-124 v 35 z"
        style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.42200851;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.86400008;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
-    <circle
-       cy="-54"
-       cx="351"
-       id="circle881"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#FFFFFF;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       r="350.5" />
+    <!-- removed white halo stroke -->
+
   </g>
 </svg>

@@ -71,11 +71,7 @@
        id="path819"
        d="m 129.10989,-325.38758 -9.89949,8.48528 -16.05133,15.06137 -15.061371,16.05133 -8.485282,9.89949 L 449.99495,94.492424 425.24621,119.24116 548.9899,143.9899 524.24116,20.246212 499.49242,44.994949 Z"
        style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:5.42200851;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:3.86400008;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers" />
-    <circle
-       cy="-54"
-       cx="351"
-       id="circle841"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       r="350.5" />
+    <!-- removed white halo stroke -->
+
   </g>
 </svg>

@@ -2,12 +2,11 @@
 # render.sh — render SVGs to pixel-art-sharp PNGs at 128px using the fixed
 # 6-color road sign palette.
 #
-# Posterize pipeline:
+# Posterize pipeline (no box-average — averages invent leak colours):
 #   1. Render at 4× supersample (512px)  — sub-pixel alpha precision
 #   2. Threshold alpha to binary at high res
-#   3. Box-filter downscale to 128px      — area-average = natural posterize
-#   4. snap.py: per-sign dynamic palette  — only colours present in the sign
-#      are used as remap targets (no black bleed into red-only signs, etc.)
+#   3. snap.py: palette snap @ high res, then majority-vote downscale
+#      (only colours with real presence; midtones never invent foreign hues)
 
 set -euo pipefail
 shopt -s nullglob
@@ -37,12 +36,12 @@ for svg in "$src"/*.svg; do
 	inkscape --export-type=png --export-filename="$tmp" "${dims[@]}" \
 		--export-background-opacity=0 "$svg" 2>/dev/null
 
+	# Binary alpha only — do NOT box-resize (that invents midtone RGB).
 	magick "$tmp" \
 		-channel A -threshold 50% +channel \
-		-filter box -resize "${res}x${res}" \
 		/tmp/road_snap_in.png
 
-	python3 "$SCRIPT_DIR/snap.py" /tmp/road_snap_in.png "$out"
+	python3 "$SCRIPT_DIR/snap.py" /tmp/road_snap_in.png "$out" "$supersample"
 
 	rm -f "$tmp" /tmp/road_snap_in.png
 	echo "Rendered: $base"

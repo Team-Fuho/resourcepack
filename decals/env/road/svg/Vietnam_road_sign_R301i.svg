@@ -75,11 +75,7 @@
        id="circle866"
        cx="1916.8214"
        cy="-180.9381" />
-    <circle
-       r="350.5"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       id="circle869"
-       cx="1916.8214"
-       cy="-180.4881" />
+    <!-- removed white halo stroke -->
+
   </g>
 </svg>

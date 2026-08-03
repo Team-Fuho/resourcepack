@@ -59,13 +59,8 @@
        style="opacity:1;fill:#0046aa;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:315.817;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        r="350.00003"
        transform="scale(-1,1)" />
-    <circle
-       cy="50.232197"
-       cx="-4609.2314"
-       id="circle881-3"
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.00002;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
-       r="350.5"
-       transform="scale(-1,1)" />
+    <!-- removed white halo stroke -->
+
     <path
        sodipodi:nodetypes="sscsccccsccccsccssssccscss"
        inkscape:connector-curvature="0"
