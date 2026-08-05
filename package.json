@@ -29,7 +29,11 @@
     "type": "git",
     "url": "git+https://github.com/Team-Fuho/resourcepack.git"
   },
-  "keywords": ["minecraft", "resourcepack", "bundler"],
+  "keywords": [
+    "minecraft",
+    "resourcepack",
+    "bundler"
+  ],
   "bugs": {
     "url": "https://github.com/Team-Fuho/resourcepack/issues"
   },

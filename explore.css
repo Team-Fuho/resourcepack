@@ -34,7 +34,9 @@ body {
   background-color: #eee;
   background-image: var(--bi), var(--bi);
   background-size: 256px 256px;
-  background-position: 0 0, 128px 128px;
+  background-position:
+    0 0,
+    128px 128px;
   transition: all 64ms ease-in-out;
   transform: none;
   transform-style: preserve-3d;
@@ -61,7 +63,9 @@ img {
   height: var(--cs);
   image-rendering: crisp-edges;
   position: absolute;
-  transition: left 80ms ease, top 80ms ease;
+  transition:
+    left 80ms ease,
+    top 80ms ease;
 }
 
 /* alignment picker */

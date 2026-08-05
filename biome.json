@@ -1,22 +1,31 @@
 {
   "$schema": "https://raw.githubusercontent.com/biomejs/biome/main/packages/%40biomejs/biome/configuration_schema.json",
+  "files": {
+    "includes": [
+      "scripts/**/*.ts",
+      "decals.ts",
+      "package.json",
+      "tsconfig.json",
+      "biome.json"
+    ]
+  },
   "formatter": {
-    "ignore": ["node_modules", "public", "dist", "assets/decals"],
     "lineEnding": "lf",
     "useEditorconfig": true
   },
   "linter": {
-    "ignore": ["node_modules", "public", "dist", "patches"],
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "suspicious": {
         "noExplicitAny": "off",
         "noAssignInExpressions": "off"
       },
       "style": {
         "useSingleVarDeclarator": "off",
-        "noCommaOperator": "off",
         "noParameterAssign": "off"
+      },
+      "complexity": {
+        "noCommaOperator": "off"
       }
     }
   }
