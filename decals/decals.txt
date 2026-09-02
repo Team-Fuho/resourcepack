@@ -58,6 +58,9 @@
 10031 national/UncleHoPortrait default 0 0 1
 10032 national/UncleHoPortrait fast 0 0 2
 10033 national/UncleHoPortrait fast 0 0 7
+10044 national/vngiapbw default 0 0 1
+10045 national/vngiapportrait default 0 0 1
+10046 national/vngiapportraitformal default 0 0 1
 
 # mps
 
@@ -93,6 +96,11 @@
 
 # signs
 10400 env/signs/van_phong_chu_tich_nuoc default 0 0 1
+10401 env/signs/d5m default 0 0 1
+10402 env/signs/lim60 default 0 0 1
+10403 env/signs/lim70 default 0 0 1
+10404 env/signs/lim80 default 0 0 1
+10405 env/signs/lim90 default 0 0 1
 
 # badges
 10500 national/badges/quanhieu fast 0 0 1
