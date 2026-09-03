@@ -96,11 +96,18 @@
 
 # signs
 10400 env/signs/van_phong_chu_tich_nuoc default 0 0 1
-10401 env/signs/d5m default 0 0 1
-10402 env/signs/lim60 default 0 0 1
-10403 env/signs/lim70 default 0 0 1
-10404 env/signs/lim80 default 0 0 1
-10405 env/signs/lim90 default 0 0 1
+11610 env/road/png/d5m shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11611 env/road/png/lim60 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11612 env/road/png/lim70 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11613 env/road/png/lim80 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11614 env/road/png/lim90 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11700 env/road/png/arrow_d1 fast 0 0 1
+11701 env/road/png/arrow_d2 fast 0 0 1
+11702 env/road/png/arrow_d3 fast 0 0 1
+11703 env/road/png/arrow_d4 fast 0 0 1
+11704 env/road/png/arrow_d5 fast 0 0 1
+11705 env/road/png/arrow_d6 fast 0 0 1
+11706 env/road/png/arrow_d7 fast 0 0 1
 
 # badges
 10500 national/badges/quanhieu fast 0 0 1
