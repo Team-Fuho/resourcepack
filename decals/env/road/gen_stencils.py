@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Generate deduplicated stencil textures from rendered road sign PNGs.
 1. Extract silhouette (alpha mask, flood-fill interior holes)
-2. Downscale to NxN -> bitmask key (SIG_RES)
-3. Group by identical key
-4. Save canonical stencil per group with 4-char hash filename
-5. Output stencil_map.json
+2. Scale-fit to the postprocessed texture canvas
+3. Downscale to NxN -> bitmask key (SIG_RES)
+4. Group by identical key
+5. Save canonical stencil per group with 4-char hash filename
+6. Output stencil_map.json
 """
 
 import hashlib
@@ -21,6 +22,7 @@ STENCIL_DIR = SCRIPT / "stencils"
 MAP_FILE = SCRIPT / "stencil_map.json"
 FILL_COLOR = (213, 213, 213, 255)  # #d5d5d5
 SIG_RES = 16  # signature resolution (higher = more shape detail)
+TEXTURE_SIZE = 128  # matches the `env/road/png/* 128na` postprocess rule
 
 
 def flood_fill_exterior(mask: np.ndarray) -> np.ndarray:
@@ -72,6 +74,24 @@ def downscale(mask: np.ndarray, res: int = SIG_RES) -> int:
     return k
 
 
+def scale_fit(mask: np.ndarray, size: int = TEXTURE_SIZE) -> np.ndarray:
+    """Contain-fit a mask into the square texture canvas using nearest pixels."""
+    h, w = mask.shape
+    scale = min(size / h, size / w)
+    fitted_h = round(h * scale)
+    fitted_w = round(w * scale)
+    resized = Image.fromarray(mask * 255).resize(
+        (fitted_w, fitted_h), Image.Resampling.NEAREST
+    )
+    fitted = np.zeros((size, size), dtype=np.uint8)
+    y0 = (size - fitted_h) // 2
+    x0 = (size - fitted_w) // 2
+    fitted[y0 : y0 + fitted_h, x0 : x0 + fitted_w] = (
+        np.asarray(resized) > 0
+    )
+    return fitted
+
+
 def key_hash(key: int) -> str:
     """SHA1 first 4 hex chars of the signature key."""
     return hashlib.sha1(str(key).encode()).hexdigest()[:4]
@@ -94,8 +114,9 @@ def main():
         arr = np.array(Image.open(p).convert("RGBA"))
         mask = (arr[:, :, 3] > 0).astype(np.uint8)
         filled = flood_fill_exterior(mask)
-        k = downscale(filled)
-        key_groups.setdefault(k, []).append((p.stem, filled))
+        fitted = scale_fit(filled)
+        k = downscale(fitted)
+        key_groups.setdefault(k, []).append((p.stem, fitted))
 
     # Step 2: save canonical stencil per group + build mapping
     mapping: dict[str, str] = {}
