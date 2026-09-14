@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1500 1500">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        fill: #f00a0a;
+      }
+    </style>
+  </defs>
+  <image width="120" height="120" transform="translate(955.9073 -1849) scale(16.0889)" xlink:href="Bien bao giao thong VN/Vietnam_road_sign_P117.svg.png"/>
+  <g id="layer1">
+    <circle id="circle817" class="cls-1" cx="750" cy="750" r="641.17"/>
+    <path id="rect839" d="M445.48,146.27h609.04l-304.52,304.52L445.48,146.27Z"/>
+    <path id="path873" d="M445.48,1353.73h609.04l-304.52-304.52-304.52,304.52Z"/>
+    <path id="path884" class="cls-2" d="M750,1.96C336.87,1.96,1.96,336.87,1.96,750c0,0,0,0,0,0,0,413.13,334.91,748.04,748.04,748.04,413.13,0,748.04-334.91,748.04-748.04h0c0-413.13-334.91-748.04-748.04-748.04h0ZM750,215.69c295.09,0,534.31,239.22,534.31,534.31h0c0,295.09-239.22,534.31-534.31,534.31h0c-295.09,0-534.31-239.22-534.31-534.31,0-295.09,239.22-534.31,534.31-534.31h0Z"/>
+  </g>
+</svg>

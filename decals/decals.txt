@@ -61,6 +61,9 @@
 10044 national/vngiapbw default 0 0 1
 10045 national/vngiapportrait default 0 0 1
 10046 national/vngiapportraitformal default 0 0 1
+10047 national/vngiapportrait_new default 0 0 1
+10048 national/codang2 fast 0 -0.5 2
+10049 national/cotq2 fast 0 -0.5 2
 
 # mps
 
@@ -108,6 +111,14 @@
 11704 env/road/png/arrow_d5 fast 0 0 1
 11705 env/road/png/arrow_d6 fast 0 0 1
 11706 env/road/png/arrow_d7 fast 0 0 1
+# new directional arrows; 11700-11706 are retained
+11707 env/road/png/arrow_rephai fast 0 0 1
+11708 env/road/png/arrow_retrai fast 0 0 1
+11709 env/road/png/arrow_thangtrai fast 0 0 1
+11710 env/road/png/arrow_thangphai fast 0 0 1
+11711 env/road/png/arrow_quaydau fast 0 0 1
+11712 env/road/png/arrow_dithang fast 0 0 1
+11713 env/road/png/arrow_traiphai fast 0 0 1
 
 # badges
 10500 national/badges/quanhieu fast 0 0 1
@@ -241,3 +252,6 @@
 11600 env/road/png/Vietnam_road_sign_W243a shell 0 0 1 0.1 env/road/stencils/stencil-87f7
 11601 env/road/png/Vietnam_road_sign_W243b shell 0 0 1 0.1 env/road/stencils/stencil-87f7
 11602 env/road/png/Vietnam_road_sign_W243c shell 0 0 1 0.1 env/road/stencils/stencil-87f7
+11603 env/road/png/Vietnam_road_sign_P135 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+# special standalone fallback; original SVG references missing P117 artwork
+11604 env/road/png/TFH_6 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
