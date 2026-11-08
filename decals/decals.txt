@@ -255,3 +255,15 @@
 11603 env/road/png/Vietnam_road_sign_P135 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
 # special standalone fallback; original SVG references missing P117 artwork
 11604 env/road/png/TFH_6 shell 0 0 1 0.1 env/road/stencils/stencil-e5ae
+11605 env/road/png/Vietnam_road_sign_I405a shell 0 0 1 0.1 env/road/stencils/stencil-5e2f
+11606 env/road/png/Vietnam_road_sign_I405b shell 0 0 1 0.1 env/road/stencils/stencil-5e2f
+11607 env/road/png/Vietnam_road_sign_I405c shell 0 0 1 0.1 env/road/stencils/stencil-5106
+11608 env/road/png/Vietnam_road_sign_I424b shell 0 0 1 0.1 env/road/stencils/stencil-5106
+11609 env/road/png/Vietnam_road_sign_I442 shell 0 0 1 0.1 env/road/stencils/stencil-c10b
+11610 env/road/png/Vietnam_road_sign_W203a shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11611 env/road/png/Vietnam_road_sign_W203b shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11612 env/road/png/Vietnam_road_sign_W203c shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11613 env/road/png/Vietnam_road_sign_W205a shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11614 env/road/png/Vietnam_road_sign_W205b shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11615 env/road/png/Vietnam_road_sign_W205c shell 0 0 1 0.1 env/road/stencils/stencil-8504
+11616 env/road/png/Vietnam_road_sign_W205d shell 0 0 1 0.1 env/road/stencils/stencil-8504
