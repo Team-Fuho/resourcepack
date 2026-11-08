@@ -1,7 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1500 1500">
-  <defs>
-    <style>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer_1"
+   data-name="Layer 1"
+   viewBox="0 0 1500 1500"
+   version="1.1"
+   sodipodi:docname="TFH_6.svg"
+   inkscape:version="1.4.4 (dcaf3e7d9e, 2026-05-05)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.16770833"
+     inkscape:cx="1365.4658"
+     inkscape:cy="664.84472"
+     inkscape:window-width="1920"
+     inkscape:window-height="1014"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer_1" />
+  <defs
+     id="defs1">
+    <style
+       id="style1">
       .cls-1 {
         fill: #fff;
       }
@@ -11,11 +42,30 @@
       }
     </style>
   </defs>
-  <image width="120" height="120" transform="translate(955.9073 -1849) scale(16.0889)" xlink:href="Bien bao giao thong VN/Vietnam_road_sign_P117.svg.png"/>
-  <g id="layer1">
-    <circle id="circle817" class="cls-1" cx="750" cy="750" r="641.17"/>
-    <path id="rect839" d="M445.48,146.27h609.04l-304.52,304.52L445.48,146.27Z"/>
-    <path id="path873" d="M445.48,1353.73h609.04l-304.52-304.52-304.52,304.52Z"/>
-    <path id="path884" class="cls-2" d="M750,1.96C336.87,1.96,1.96,336.87,1.96,750c0,0,0,0,0,0,0,413.13,334.91,748.04,748.04,748.04,413.13,0,748.04-334.91,748.04-748.04h0c0-413.13-334.91-748.04-748.04-748.04h0ZM750,215.69c295.09,0,534.31,239.22,534.31,534.31h0c0,295.09-239.22,534.31-534.31,534.31h0c-295.09,0-534.31-239.22-534.31-534.31,0-295.09,239.22-534.31,534.31-534.31h0Z"/>
+  <image
+     width="1930.668"
+     height="1930.668"
+     xlink:href="Bien%20bao%20giao%20thong%20VN/Vietnam_road_sign_P117.svg.png"
+     id="image1"
+     x="955.90729"
+     y="-1977" />
+  <g
+     id="layer1">
+    <circle
+       id="circle817"
+       class="cls-1"
+       cx="750"
+       cy="750"
+       r="641.17" />
+    <path
+       id="rect839"
+       d="M445.48,146.27h609.04l-304.52,304.52L445.48,146.27Z" />
+    <path
+       id="path873"
+       d="M445.48,1353.73h609.04l-304.52-304.52-304.52,304.52Z" />
+    <path
+       id="path884"
+       class="cls-2"
+       d="M750,1.96C336.87,1.96,1.96,336.87,1.96,750c0,0,0,0,0,0,0,413.13,334.91,748.04,748.04,748.04,413.13,0,748.04-334.91,748.04-748.04h0c0-413.13-334.91-748.04-748.04-748.04h0ZM750,215.69c295.09,0,534.31,239.22,534.31,534.31h0c0,295.09-239.22,534.31-534.31,534.31h0c-295.09,0-534.31-239.22-534.31-534.31,0-295.09,239.22-534.31,534.31-534.31h0Z" />
   </g>
 </svg>
